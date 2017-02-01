@@ -279,6 +279,44 @@ void __init parse_early_options(char *cmdline);
 
 #else /* MODULE */
 
+/*
+ * In most cases loadable modules do not need custom
+ * initcall levels. There are still some valid cases where
+ * a driver may be needed early if built in, and does not
+ * matter when built as a loadable module. Like bus
+ * snooping debug drivers.
+ */
+#define early_initcall(fn)		module_init(fn)
+#define core_initcall(fn)		module_init(fn)
+#define core_initcall_sync(fn)		module_init(fn)
+#define postcore_initcall(fn)		module_init(fn)
+#define postcore_initcall_sync(fn)	module_init(fn)
+#define arch_initcall(fn)		module_init(fn)
+#define subsys_initcall(fn)		module_init(fn)
+#define subsys_initcall_sync(fn)	module_init(fn)
+#define fs_initcall(fn)			module_init(fn)
+#define fs_initcall_sync(fn)		module_init(fn)
+#define rootfs_initcall(fn)		module_init(fn)
+#define device_initcall(fn)		module_init(fn)
+#define device_initcall_sync(fn)	module_init(fn)
+#define late_initcall(fn)		module_init(fn)
+#define late_initcall_sync(fn)		module_init(fn)
+
+#define console_initcall(fn)		module_init(fn)
+#define security_initcall(fn)		module_init(fn)
+
+/* Each module must use one module_init(). */
+#define module_init(initfn)					\
+	static inline initcall_t __maybe_unused __inittest(void)		\
+	{ return initfn; }					\
+	int init_module(void) __copy(initfn) __attribute__((alias(#initfn)));
+
+/* This is only required if you want to be unloadable. */
+#define module_exit(exitfn)					\
+	static inline exitcall_t __maybe_unused __exittest(void)		\
+	{ return exitfn; }					\
+	void cleanup_module(void) __copy(exitfn) __attribute__((alias(#exitfn)));
+
 #define __setup_param(str, unique_id, fn)	/* nothing */
 #define __setup(str, func) 			/* nothing */
 #endif
