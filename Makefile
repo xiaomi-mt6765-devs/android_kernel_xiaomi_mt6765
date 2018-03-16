@@ -418,6 +418,8 @@ KBUILD_CFLAGS_KERNEL :=
 KBUILD_AFLAGS_MODULE  := -DMODULE
 KBUILD_CFLAGS_MODULE  := -DMODULE
 KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
+LDFLAGS :=
+GCC_PLUGINS_CFLAGS :=
 CLANG_FLAGS :=
 
 # Read KERNELRELEASE from include/config/kernel.release (if it exists)
