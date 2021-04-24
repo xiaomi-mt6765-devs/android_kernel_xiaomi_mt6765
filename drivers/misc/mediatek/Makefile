@@ -146,7 +146,9 @@ obj-$(CONFIG_MTK_SSMR) += memory-ssmr/
 obj-$(CONFIG_ZONE_MOVABLE_CMA) += zone_movable_cma/
 obj-$(CONFIG_MTK_DEBUG_LATCH)   += debug_latch/
 obj-$(CONFIG_MTK_DFD_INTERNAL_DUMP) += dfd/
+ifneq ($(CONFIG_MTK_SYSTRACKER_DISABLE),y)
 obj-$(CONFIG_MTK_SYSTRACKER)   += systracker/
+endif
 obj-$(CONFIG_MEDIATEK_SOLUTION) += cmo/
 obj-$(CONFIG_MTK_VOW_SUPPORT)  += vow/
 ifneq (, (filter y,$(CONFIG_MTK_MD_DIRECT_TETHERING_SUPPORT) $(CONFIG_MTK_MDDP_WH_SUPPORT) $(CONFIG_MTK_MCIF_WSVC_SUPPORT)))
