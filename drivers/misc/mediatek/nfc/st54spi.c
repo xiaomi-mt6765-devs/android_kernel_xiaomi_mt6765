@@ -199,7 +199,7 @@ st54spi_read(struct file *filp, char __user *buf, size_t count, loff_t *f_pos)
 	st54spi = filp->private_data;
 
 	if (debug_enabled)
-		pr_info("st54spi Read: %d bytes\n", count);
+		pr_debug("st54spi Read: %d bytes\n", count);
 
 	mutex_lock(&st54spi->buf_lock);
 	status = st54spi_sync_read(st54spi, count);
@@ -215,7 +215,7 @@ st54spi_read(struct file *filp, char __user *buf, size_t count, loff_t *f_pos)
 	mutex_unlock(&st54spi->buf_lock);
 
 	if (debug_enabled)
-		pr_info("st54spi Read: status: %d\n", status);
+		pr_debug("st54spi Read: status: %d\n", status);
 
 	return status;
 }
@@ -236,7 +236,7 @@ st54spi_write(struct file *filp, const char __user *buf,
 	st54spi = filp->private_data;
 
 	if (debug_enabled)
-		pr_info("st54spi Write: %d bytes\n", count);
+		pr_debug("st54spi Write: %d bytes\n", count);
 
 	mutex_lock(&st54spi->buf_lock);
 	missing = copy_from_user(st54spi->tx_buffer, buf, count);
@@ -247,7 +247,7 @@ st54spi_write(struct file *filp, const char __user *buf,
 	mutex_unlock(&st54spi->buf_lock);
 
 	if (debug_enabled)
-		pr_info("st54spi Write: status: %d\n", status);
+		pr_debug("st54spi Write: status: %d\n", status);
 
 	return status;
 }
@@ -423,7 +423,7 @@ st54spi_power_off(struct st54spi_data	*st54spi)
 		spi_message_init(&m);
 		spi_message_add_tail(&t, &m);
 
-		pr_info("%s : change NSS polarity to %d\n", __func__,
+		pr_debug("%s : change NSS polarity to %d\n", __func__,
 			st54spi_chip_info.cs_pol);
 		st54spi->spi->controller_data = &st54spi_chip_info;
 		st54spi_sync(st54spi, &m);
@@ -477,7 +477,7 @@ st54spi_power_on(struct st54spi_data	*st54spi)
 		spi_message_init(&m);
 		spi_message_add_tail(&t, &m);
 
-		pr_info("%s : restored polarity and force 1 xfer\n",
+		pr_debug("%s : restored polarity and force 1 xfer\n",
 			__func__);
 		st54spi_sync(st54spi, &m);
 	}
@@ -491,13 +491,13 @@ st54spi_power_set(struct st54spi_data	*st54spi, int val)
 {
 #ifndef WITH_SE_PWR_CONTROL
 	if (debug_enabled)
-		pr_info("st54spi se_pwr_req DISABLED: %d\n", val);
+		pr_debug("st54spi se_pwr_req DISABLED: %d\n", val);
 #else // WITH_SE_PWR_CONTROL
 	if (!st54spi)
 		return;
 
 	if (debug_enabled)
-		pr_info("st54spi sehal pwr_req: %d\n", val);
+		pr_debug("st54spi sehal pwr_req: %d\n", val);
 
 	if (val) {
 		st54spi->sehal_needs_poweron = 1;
@@ -558,7 +558,7 @@ st54spi_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 	spin_unlock_irq(&st54spi->spi_lock);
 
 	if (debug_enabled)
-		pr_info("st54spi ioctl cmd %d\n", cmd);
+		pr_debug("st54spi ioctl cmd %d\n", cmd);
 
 	if (spi == NULL)
 		return -ESHUTDOWN;
@@ -694,7 +694,7 @@ st54spi_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 	spi_dev_put(spi);
 
 	if (debug_enabled)
-		pr_info("st54spi ioctl retval %d\n", retval);
+		pr_debug("st54spi ioctl retval %d\n", retval);
 
 	return retval;
 }
@@ -724,7 +724,7 @@ st54spi_compat_ioc_message(struct file *filp, unsigned int cmd,
 	spin_unlock_irq(&st54spi->spi_lock);
 
 	if (debug_enabled)
-		pr_info("st54spi compat_ioctl cmd %d\n", cmd);
+		pr_debug("st54spi compat_ioctl cmd %d\n", cmd);
 	if (spi == NULL)
 		return -ESHUTDOWN;
 
@@ -754,7 +754,7 @@ done:
 	mutex_unlock(&st54spi->buf_lock);
 	spi_dev_put(spi);
 	if (debug_enabled)
-		pr_info("st54spi compat_ioctl retval %d\n", retval);
+		pr_debug("st54spi compat_ioctl retval %d\n", retval);
 	return retval;
 }
 
@@ -792,7 +792,7 @@ static int st54spi_open(struct inode *inode, struct file *filp)
 	}
 
 	if (debug_enabled)
-		pr_info("st54spi: open\n");
+		pr_debug("st54spi: open\n");
 
 	if (!st54spi->tx_buffer) {
 		st54spi->tx_buffer = kmalloc(bufsiz, GFP_KERNEL);
@@ -819,7 +819,7 @@ static int st54spi_open(struct inode *inode, struct file *filp)
 	mutex_unlock(&device_list_lock);
 
 	if (debug_enabled)
-		pr_info("st54spi: open - force power on\n");
+		pr_debug("st54spi: open - force power on\n");
 	st54spi_power_set(st54spi, 1);
 	return 0;
 
@@ -840,7 +840,7 @@ static int st54spi_release(struct inode *inode, struct file *filp)
 	filp->private_data = NULL;
 
 	if (debug_enabled)
-		pr_info("st54spi: release\n");
+		pr_debug("st54spi: release\n");
 
 	/* last close? */
 	st54spi->users--;
@@ -848,7 +848,7 @@ static int st54spi_release(struct inode *inode, struct file *filp)
 		int		dofree;
 
 		if (debug_enabled)
-			pr_info("st54spi: release - may allow power off\n");
+			pr_debug("st54spi: release - may allow power off\n");
 		st54spi_power_set(st54spi, 0);
 
 		kfree(st54spi->tx_buffer);
@@ -955,7 +955,7 @@ static int st54spi_parse_dt(struct device *dev, struct st54spi_data	*pdata)
 #if (!defined(CONFIG_MTK_GPIO) || defined(CONFIG_MTK_GPIOLIB_STAND))
 		r = of_get_named_gpio(np, "gpio-power-std", 0);
 		if (r < 0)
-			pr_info("%s: get ST54 failed (%d)", __FILE__, r);
+			pr_debug("%s: get ST54 failed (%d)", __FILE__, r);
 		else
 			pdata->power_gpio = r;
 		r = 0;
@@ -964,11 +964,11 @@ static int st54spi_parse_dt(struct device *dev, struct st54spi_data	*pdata)
 			&(pdata->power_gpio), 1);
 #endif
 	} else {
-		pr_info("%s : get num err.\n", __func__);
+		pr_debug("%s : get num err.\n", __func__);
 		return -1;
 	}
 
-	pr_info("[dsc]%s : get power_gpio[%d]\n", __func__, pdata->power_gpio);
+	pr_debug("[dsc]%s : get power_gpio[%d]\n", __func__, pdata->power_gpio);
 	return r;
 }
 #else
@@ -984,7 +984,7 @@ static void st54spi_st21nfc_cb(int dir, void *data)
 {
 	struct st54spi_data	*st54spi = (struct st54spi_data	*)data;
 
-	pr_info("%s : dir %d data %p\n", __func__, dir, st54spi);
+	pr_debug("%s : dir %d data %p\n", __func__, dir, st54spi);
 	if (!st54spi)
 		return;
 
@@ -1111,14 +1111,14 @@ static int st54spi_probe(struct spi_device *spi)
 #endif
 				);
 		if (ret)
-			pr_info("%s : power request failed (%d)\n", __FILE__,
+			pr_debug("%s : power request failed (%d)\n", __FILE__,
 				ret);
 
-		pr_info("%s : power GPIO = %d\n", __func__,
+		pr_debug("%s : power GPIO = %d\n", __func__,
 			st54spi->power_gpio);
 		ret = gpio_direction_output(st54spi->power_gpio, 1);
 		if (ret)
-			pr_info("%s : reset direction_output failed\n",
+			pr_debug("%s : reset direction_output failed\n",
 				__FILE__);
 
 		/* active high */
@@ -1126,7 +1126,7 @@ static int st54spi_probe(struct spi_device *spi)
 	}
 
 	#ifdef WITH_SE_PWR_CONTROL
-	pr_info("%s : Register with st21nfc driver, %p\n", __func__, st54spi);
+	pr_debug("%s : Register with st21nfc driver, %p\n", __func__, st54spi);
 	st21nfc_register_st54spi_cb(st54spi_st21nfc_cb, st54spi);
 	#endif // WITH_SE_PWR_CONTROL
 
@@ -1138,7 +1138,7 @@ static int st54spi_remove(struct spi_device *spi)
 	struct st54spi_data	*st54spi = spi_get_drvdata(spi);
 
 	#ifdef WITH_SE_PWR_CONTROL
-	pr_info("%s : Unregister from st21nfc driver\n", __func__);
+	pr_debug("%s : Unregister from st21nfc driver\n", __func__);
 	st21nfc_unregister_st54spi_cb();
 	#endif // WITH_SE_PWR_CONTROL
 
@@ -1182,7 +1182,7 @@ static int __init st54spi_init(void)
 {
 	int status;
 
-	pr_info("Loading st54spi driver\n");
+	pr_debug("Loading st54spi driver\n");
 
 	/* Claim our 256 reserved device numbers.  Then register a class
 	 * that will key udev/mdev to add/remove /dev nodes.  Last, register
@@ -1191,7 +1191,7 @@ static int __init st54spi_init(void)
 	BUILD_BUG_ON(N_SPI_MINORS > 256);
 	spidev_major = __register_chrdev(0, 0, N_SPI_MINORS, "spi",
 		&st54spi_fops);
-	pr_info("Loading st54spi driver, major: %d\n", spidev_major);
+	pr_debug("Loading st54spi driver, major: %d\n", spidev_major);
 
 	st54spi_class = class_create(THIS_MODULE, "spidev");
 	if (IS_ERR(st54spi_class)) {
@@ -1204,7 +1204,7 @@ static int __init st54spi_init(void)
 		class_destroy(st54spi_class);
 		unregister_chrdev(spidev_major, st54spi_spi_driver.driver.name);
 	}
-	pr_info("Loading st54spi driver: %d\n", status);
+	pr_debug("Loading st54spi driver: %d\n", status);
 	return status;
 }
 module_init(st54spi_init);
