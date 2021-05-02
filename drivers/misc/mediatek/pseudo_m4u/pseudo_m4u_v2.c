@@ -69,7 +69,7 @@ static unsigned int temp_en;
 do { \
 	if (level > m4u_log_level) { \
 		if (level > m4u_log_to_uart) \
-			pr_info("[PSEUDO][%s #%d]: "string,		\
+			pr_debug("[PSEUDO][%s #%d]: "string,		\
 				__func__, __LINE__, ##args); \
 		else\
 			pr_debug("[PSEUDO][%s #%d]: "string,		\
@@ -84,7 +84,7 @@ do { \
 #define M4UTRACE() \
 do { \
 	if (!m4u_log_to_uart) \
-		pr_info("[PSEUDO] %s, %d\n", __func__, __LINE__); \
+		pr_debug("[PSEUDO] %s, %d\n", __func__, __LINE__); \
 } while (0)
 
 LIST_HEAD(pseudo_sglist);
@@ -1504,7 +1504,7 @@ static int __map_sg_chunk(struct device *dev, struct scatterlist *sg,
 	*handle = DMA_ERROR_CODE;
 
 	if (!mapping) {
-		pr_info("func %s, mapping %p\n", __func__, mapping);
+		pr_debug("func %s, mapping %p\n", __func__, mapping);
 		return -ENOMEM;
 	}
 	iova_base = iova = _alloc_iova(mapping, size);
@@ -1670,7 +1670,7 @@ static int __pseudo_alloc_mva(int port, unsigned long va, unsigned int size,
 	domain = iommu_get_domain_for_dev(dev);
 
 	if (!domain) {
-		pr_info("func %s, dom is null\n", __func__);
+		pr_debug("func %s, dom is null\n", __func__);
 		return -EINVAL;
 	}
 #endif
