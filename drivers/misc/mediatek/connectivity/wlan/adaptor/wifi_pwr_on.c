@@ -39,7 +39,7 @@ uint32_t DbgLevel = WIFI_FW_LOG_DBG;
 #define WIFI_DBG_FUNC(fmt, arg...)	\
 	do { \
 		if (DbgLevel >= WIFI_FW_LOG_DBG) \
-			pr_info(PFX "%s[D]: " fmt, __func__, ##arg); \
+			pr_debug(PFX "%s[D]: " fmt, __func__, ##arg); \
 	} while (0)
 #define WIFI_INFO_FUNC(fmt, arg...)	\
 	do { \
@@ -54,12 +54,12 @@ uint32_t DbgLevel = WIFI_FW_LOG_DBG;
 #define WIFI_WARN_FUNC(fmt, arg...)	\
 	do { \
 		if (DbgLevel >= WIFI_FW_LOG_WARN) \
-			pr_info(PFX "%s[W]: " fmt, __func__, ##arg); \
+			pr_warn(PFX "%s[W]: " fmt, __func__, ##arg); \
 	} while (0)
 #define WIFI_ERR_FUNC(fmt, arg...)	\
 	do { \
 		if (DbgLevel >= WIFI_FW_LOG_ERR) \
-			pr_info(PFX "%s[E]: " fmt, __func__, ##arg); \
+			pr_err(PFX "%s[E]: " fmt, __func__, ##arg); \
 	} while (0)
 
 
@@ -82,7 +82,7 @@ int wifi_pwr_on_init(void)
 	int result = 0;
 
 	init_completion(&wlan_pendComp);
-	WIFI_INFO_FUNC("Do wifi_pwr_on_init.\n");
+	WIFI_DBG_FUNC("Do wifi_pwr_on_init.\n");
 	return result;
 }
 EXPORT_SYMBOL(wifi_pwr_on_init);
@@ -98,7 +98,7 @@ int mtk_wcn_wlan_reg(struct MTK_WCN_WLAN_CB_INFO *pWlanCbInfo)
 		WIFI_ERR_FUNC("wlan cb info in null!\n");
 		return -1;
 	}
-	WIFI_INFO_FUNC("wmt wlan cb register\n");
+	WIFI_DBG_FUNC("wmt wlan cb register\n");
 	mtk_wlan_probe_function = pWlanCbInfo->wlan_probe_cb;
 	mtk_wlan_remove_function = pWlanCbInfo->wlan_remove_cb;
 
@@ -109,7 +109,7 @@ EXPORT_SYMBOL(mtk_wcn_wlan_reg);
 int mtk_wcn_wlan_unreg(void)
 {
 
-	WIFI_INFO_FUNC("wmt wlan cb unregister\n");
+	WIFI_DBG_FUNC("wmt wlan cb unregister\n");
 	mtk_wlan_probe_function = NULL;
 	mtk_wlan_remove_function = NULL;
 

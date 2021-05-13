@@ -106,7 +106,7 @@ do { if (gDbgLevel >= GPS_LOG_ERR)	\
 } while (0)
 #define GPS_TRC_FUNC(f)	\
 do { if (gDbgLevel >= GPS_LOG_DBG)	\
-		pr_info(PFX "<%s> <%d>\n", __func__, __LINE__);	\
+		pr_debug(PFX "<%s> <%d>\n", __func__, __LINE__);	\
 } while (0)
 
 #ifdef GPS_FWCTL_SUPPORT
@@ -465,7 +465,7 @@ long GPS_fwctl(struct gps_fwctl_data *user_ptr)
 	if (fwctl_ready && (status == 0) && (rx_len <= GPS_FWCTL_BUF_MAX) && (rx_len >= 2)) {
 		rx0 = rx_buf[0];
 		rx1 = rx_buf[1];
-		pr_info("GPS_fwctl: st=%d, tx_len=%u ([0]=%u), rx_len=%u ([0]=%u, [1]=%u), us=%u",
+		pr_debug("GPS_fwctl: st=%d, tx_len=%u ([0]=%u), rx_len=%u ([0]=%u, [1]=%u), us=%u",
 			status, ctl_data.tx_len, tx0, rx_len, rx0, rx1, (UINT32)delta_time);
 
 		if (ctl_data.rx_max < rx_len)
@@ -485,7 +485,7 @@ long GPS_fwctl(struct gps_fwctl_data *user_ptr)
 		return retval;
 	}
 
-	pr_info("GPS_fwctl: st=%d, tx_len=%u ([0]=%u), rx_len=%u, us=%u, ready=%u",
+	pr_debug("GPS_fwctl: st=%d, tx_len=%u ([0]=%u), rx_len=%u, us=%u, ready=%u",
 		status, ctl_data.tx_len, tx0, rx_len, (UINT32)delta_time, (UINT32)fwctl_ready);
 	return -EFAULT;
 }
@@ -552,7 +552,7 @@ void GPS_fwlog_ctrl_inner(bool on)
 		}
 	}
 
-	pr_info("GPS_fwlog: st=%d, rx_len=%u ([0]=%u, [1]=%u), ms0=%u, ms1=%u, fw_tick=%u",
+	pr_debug("GPS_fwlog: st=%d, rx_len=%u ([0]=%u, [1]=%u), ms0=%u, ms1=%u, fw_tick=%u",
 		status, rx_len, rx0, rx1, local_ms0, local_ms1, fw_tick);
 }
 
@@ -608,7 +608,7 @@ static int GPS_hw_suspend_ctrl(bool to_suspend)
 	}
 
 	/* Okay */
-	GPS_INFO_FUNC("GPS_hw_suspend_ctrl %d: st=%d, rx_len=%u ([0]=%u, [1]=%u), ms0=%u, ms1=%u",
+	GPS_DBG_FUNC("GPS_hw_suspend_ctrl %d: st=%d, rx_len=%u ([0]=%u, [1]=%u), ms0=%u, ms1=%u",
 		to_suspend, wmt_status, rx_len, rx0, rx1, local_ms0, local_ms1);
 	return 0;
 }
@@ -812,10 +812,10 @@ long GPS_unlocked_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
 	case COMBO_IOC_TRIGGER_WMT_ASSERT:
 		/* Trigger FW assert for debug */
-		GPS_INFO_FUNC("%s: Host trigger FW assert......, reason:%lu\n", __func__, arg);
+		GPS_DBG_FUNC("%s: Host trigger FW assert......, reason:%lu\n", __func__, arg);
 		retval = mtk_wcn_wmt_assert(WMTDRV_TYPE_GPS, arg);
 		if (retval == MTK_WCN_BOOL_TRUE) {
-			GPS_INFO_FUNC("Host trigger FW assert succeed\n");
+			GPS_DBG_FUNC("Host trigger FW assert succeed\n");
 			retval = 0;
 		} else {
 			GPS_ERR_FUNC("Host trigger FW assert Failed\n");
@@ -840,7 +840,7 @@ long GPS_unlocked_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		GPS_DBG_FUNC("rstflag(%d), retval(%d)\n", rstflag, retval);
 		break;
 	case COMBO_IOC_TAKE_GPS_WAKELOCK:
-		GPS_INFO_FUNC("Ioctl to take gps wakelock\n");
+		GPS_DBG_FUNC("Ioctl to take gps wakelock\n");
 		gps_hold_wake_lock(1);
 		if (wake_lock_acquired == 1)
 			retval = 0;
@@ -848,7 +848,7 @@ long GPS_unlocked_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 			retval = -EAGAIN;
 		break;
 	case COMBO_IOC_GIVE_GPS_WAKELOCK:
-		GPS_INFO_FUNC("Ioctl to give gps wakelock\n");
+		GPS_DBG_FUNC("Ioctl to give gps wakelock\n");
 		gps_hold_wake_lock(0);
 		if (wake_lock_acquired == 0)
 			retval = 0;
@@ -857,24 +857,24 @@ long GPS_unlocked_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		break;
 #ifdef GPS_FWCTL_IOCTL_SUPPORT
 	case COMBO_IOC_GPS_FWCTL:
-		GPS_INFO_FUNC("COMBO_IOC_GPS_FWCTL\n");
+		GPS_DBG_FUNC("COMBO_IOC_GPS_FWCTL\n");
 		retval = GPS_fwctl((struct gps_fwctl_data *)arg);
 		break;
 #endif
 
 #ifdef GPS_HW_SUSPEND_SUPPORT
 	case COMBO_IOC_GPS_HW_SUSPEND:
-		GPS_INFO_FUNC("COMBO_IOC_GPS_HW_SUSPEND\n");
+		GPS_DBG_FUNC("COMBO_IOC_GPS_HW_SUSPEND\n");
 		retval = GPS_hw_suspend();
 		break;
 	case COMBO_IOC_GPS_HW_RESUME:
-		GPS_INFO_FUNC("COMBO_IOC_GPS_HW_RESUME\n");
+		GPS_DBG_FUNC("COMBO_IOC_GPS_HW_RESUME\n");
 		retval = GPS_hw_resume();
 		break;
 #endif /* GPS_HW_SUSPEND_SUPPORT */
 
 	case COMBO_IOC_GPS_LISTEN_RST_EVT:
-		GPS_INFO_FUNC("COMBO_IOC_GPS_LISTEN_RST_EVT\n");
+		GPS_DBG_FUNC("COMBO_IOC_GPS_LISTEN_RST_EVT\n");
 		retval = GPS_listen_wmt_rst();
 		break;
 
@@ -920,7 +920,7 @@ static void gps_cdev_rst_cb(ENUM_WMTDRV_TYPE_T src,
 		if ((src == WMTDRV_TYPE_WMT) && (dst == WMTDRV_TYPE_GPS) && (type == WMTMSG_TYPE_RESET)) {
 			switch (rst_msg) {
 			case WMTRSTMSG_RESET_START:
-				GPS_INFO_FUNC("Whole chip reset start!\n");
+				GPS_DBG_FUNC("Whole chip reset start!\n");
 				rstflag = 1;
 #ifdef GPS_FWCTL_SUPPORT
 				/* down(&fwctl_mtx); */
@@ -932,9 +932,9 @@ static void gps_cdev_rst_cb(ENUM_WMTDRV_TYPE_T src,
 			case WMTRSTMSG_RESET_END:
 			case WMTRSTMSG_RESET_END_FAIL:
 				if (rst_msg == WMTRSTMSG_RESET_END)
-					GPS_INFO_FUNC("Whole chip reset end!\n");
+					GPS_DBG_FUNC("Whole chip reset end!\n");
 				else
-					GPS_INFO_FUNC("Whole chip reset fail!\n");
+					GPS_DBG_FUNC("Whole chip reset fail!\n");
 				rstflag = 2;
 
 				GPS_ctrl_status_change_to(GPS_RESET_DONE);

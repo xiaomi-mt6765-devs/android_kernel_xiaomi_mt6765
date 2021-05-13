@@ -87,7 +87,7 @@ EXPORT_SYMBOL(gWifiRsvMemSize);
 
 int reserve_memory_consys_fn(struct reserved_mem *rmem)
 {
-	pr_info(DFT_TAG "[W]%s: name: %s,base: 0x%llx,size: 0x%llx\n",
+	pr_debug(DFT_TAG "[W]%s: name: %s,base: 0x%llx,size: 0x%llx\n",
 		__func__, rmem->name, (unsigned long long)rmem->base,
 		(unsigned long long)rmem->size);
 	gConEmiPhyBase = rmem->base;
@@ -100,7 +100,7 @@ RESERVEDMEM_OF_DECLARE(reserve_memory_test, "mediatek,consys-reserve-memory",
 
 int reserve_memory_wifi_fn(struct reserved_mem *rmem)
 {
-	pr_info(DFT_TAG "[W]%s: name: %s,base: 0x%llx,size: 0x%llx\n",
+	pr_debug(DFT_TAG "[W]%s: name: %s,base: 0x%llx,size: 0x%llx\n",
 		__func__, rmem->name, (unsigned long long)rmem->base,
 		(unsigned long long)rmem->size);
 	gWifiRsvMemPhyBase = rmem->base;
@@ -359,7 +359,7 @@ EXPORT_SYMBOL(connectivity_arch_setup_dma_ops);
 #ifndef CONFIG_MTK_GPIO
 void __weak gpio_dump_regs_range(int start, int end)
 {
-	pr_info(DFT_TAG "[W]%s: is not define!\n", __func__);
+	pr_debug(DFT_TAG "[W]%s: is not define!\n", __func__);
 }
 #endif
 #ifndef CONFIG_MTK_GPIO
@@ -380,11 +380,11 @@ void connectivity_export_dump_thread_state(const char *name)
 	struct thread_info *ti;
 
 	if (name == NULL || strlen(name) > 255) {
-		pr_info("invalid name:%p or thread name too long\n", name);
+		pr_debug("invalid name:%p or thread name too long\n", name);
 		return;
 	}
 
-	pr_info("start to show debug info of %s\n", name);
+	pr_debug("start to show debug info of %s\n", name);
 
 	rcu_read_lock();
 	for_each_process(p) {
@@ -399,11 +399,11 @@ void connectivity_export_dump_thread_state(const char *name)
 		ti = task_thread_info(curr);
 		if (state)
 			state = __ffs(state) + 1;
-		pr_info("%d:%-15.15s %c", p->pid, p->comm,
+		pr_debug("%d:%-15.15s %c", p->pid, p->comm,
 			state < sizeof(stat_nam) - 1 ? stat_nam[state] : '?');
-		pr_info("cpu=%d on_cpu=%d ", cpu, p->on_cpu);
+		pr_debug("cpu=%d on_cpu=%d ", cpu, p->on_cpu);
 		show_stack(p, NULL);
-		pr_info("CPU%d curr=%d:%-15.15s preempt_count=0x%x", cpu,
+		pr_debug("CPU%d curr=%d:%-15.15s preempt_count=0x%x", cpu,
 			curr->pid, curr->comm, ti->preempt_count);
 
 		if (state == TASK_RUNNING && curr != p)

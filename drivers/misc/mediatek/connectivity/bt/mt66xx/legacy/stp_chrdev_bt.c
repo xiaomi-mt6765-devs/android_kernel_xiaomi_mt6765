@@ -33,13 +33,15 @@ MODULE_LICENSE("Dual BSD/GPL");
 static UINT32 gDbgLevel = BT_LOG_INFO;
 
 #define BT_LOG_PRT_DBG(fmt, arg...)	\
-	do { if (gDbgLevel >= BT_LOG_DBG) pr_info(PFX "%s: " fmt, __func__, ##arg); } while (0)
+	do { if (gDbgLevel >= BT_LOG_DBG) pr_debug(PFX "%s: " fmt, __func__, ##arg); } while (0)
+#define BT_LOG_PRT_DBG_RATELIMITED(fmt, arg...)	\
+	do { if (gDbgLevel >= BT_LOG_DBG) pr_debug_ratelimited(PFX "%s: " fmt, __func__, ##arg); } while (0)
 #define BT_LOG_PRT_INFO(fmt, arg...)	\
 	do { if (gDbgLevel >= BT_LOG_INFO) pr_info(PFX "%s: " fmt, __func__, ##arg); } while (0)
 #define BT_LOG_PRT_WARN(fmt, arg...)	\
-	do { if (gDbgLevel >= BT_LOG_WARN) pr_info(PFX "%s: " fmt, __func__, ##arg); } while (0)
+	do { if (gDbgLevel >= BT_LOG_WARN) pr_warn(PFX "%s: " fmt, __func__, ##arg); } while (0)
 #define BT_LOG_PRT_ERR(fmt, arg...)	\
-	do { if (gDbgLevel >= BT_LOG_ERR) pr_info(PFX "%s: " fmt, __func__, ##arg); } while (0)
+	do { if (gDbgLevel >= BT_LOG_ERR) pr_err(PFX "%s: " fmt, __func__, ##arg); } while (0)
 #define BT_LOG_PRT_INFO_RATELIMITED(fmt, arg...)	\
 	do { if (gDbgLevel >= BT_LOG_ERR) pr_info_ratelimited(PFX "%s: " fmt, __func__, ##arg); } while (0)
 
@@ -121,7 +123,7 @@ static size_t bt_report_hw_error(char *buf, size_t count, loff_t *f_pos)
 	size_t bytes_rest, bytes_read;
 
 	if (*f_pos == 0)
-		BT_LOG_PRT_INFO("Send Hardware Error event to stack to restart Bluetooth\n");
+		BT_LOG_PRT_DBG("Send Hardware Error event to stack to restart Bluetooth\n");
 
 	bytes_rest = sizeof(HCI_EVT_HW_ERROR) - *f_pos;
 	bytes_read = count < bytes_rest ? count : bytes_rest;
@@ -154,16 +156,16 @@ static VOID bt_cdev_rst_cb(ENUM_WMTDRV_TYPE_T src,
 #ifdef CONFIG_MTK_CONNSYS_DEDICATED_LOG_PATH
 			bt_state_notify(OFF);
 #endif
-			BT_LOG_PRT_INFO("Whole chip reset start!\n");
+			BT_LOG_PRT_DBG("Whole chip reset start!\n");
 			rstflag = 1;
 			break;
 
 		case WMTRSTMSG_RESET_END:
 		case WMTRSTMSG_RESET_END_FAIL:
 			if (rst_msg == WMTRSTMSG_RESET_END)
-				BT_LOG_PRT_INFO("Whole chip reset end!\n");
+				BT_LOG_PRT_DBG("Whole chip reset end!\n");
 			else
-				BT_LOG_PRT_INFO("Whole chip reset fail!\n");
+				BT_LOG_PRT_DBG("Whole chip reset fail!\n");
 			rd_offset = 0;
 			rstflag = 2;
 			flag = 1;
@@ -248,7 +250,7 @@ static ssize_t __bt_write(const PUINT8 buffer, size_t count)
 		/* Device cannot process data in time, STP queue is full and no space is available for write,
 		 * native program should not call writev with no delay.
 		 */
-		BT_LOG_PRT_INFO_RATELIMITED("write count %zd, sent bytes %d, no space is available!\n", count, retval);
+		BT_LOG_PRT_DBG_RATELIMITED("write count %zd, sent bytes %d, no space is available!\n", count, retval);
 		retval = -EAGAIN;
 	} else
 		BT_LOG_PRT_DBG("write count %zd, sent bytes %d\n", count, retval);
@@ -459,12 +461,12 @@ long BT_unlocked_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 	case COMBO_IOCTL_FW_ASSERT:
 		/* Trigger FW assert for debug */
 		reason = (UINT32)arg & 0xFFFF;
-		BT_LOG_PRT_INFO("Host trigger FW assert......, reason:%d\n", reason);
+		BT_LOG_PRT_DBG("Host trigger FW assert......, reason:%d\n", reason);
 		if (reason == 31) /* HCI command timeout */
-			BT_LOG_PRT_INFO("HCI command timeout OpCode 0x%04x\n", ((UINT32)arg >> 16) & 0xFFFF);
+			BT_LOG_PRT_DBG("HCI command timeout OpCode 0x%04x\n", ((UINT32)arg >> 16) & 0xFFFF);
 
 		if (mtk_wcn_wmt_assert(WMTDRV_TYPE_BT, reason) == MTK_WCN_BOOL_TRUE) {
-			BT_LOG_PRT_INFO("Host trigger FW assert succeed\n");
+			BT_LOG_PRT_DBG("Host trigger FW assert succeed\n");
 			retval = 0;
 		} else {
 			BT_LOG_PRT_ERR("Host trigger FW assert failed\n");
@@ -475,18 +477,18 @@ long BT_unlocked_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		/* BT stack may need to dynamically enable/disable Power Saving Mode
 		 * in some scenarios for performance, e.g. A2DP chopping.
 		 */
-		BT_LOG_PRT_INFO("BT stack change PSM setting: %lu\n", arg);
+		BT_LOG_PRT_DBG("BT stack change PSM setting: %lu\n", arg);
 		retval = mtk_wcn_wmt_psm_ctrl((MTK_WCN_BOOL)arg);
 		break;
 	case COMBO_IOCTL_BT_IC_HW_VER:
 		ver = mtk_wcn_wmt_ic_info_get(WMTCHIN_HWVER);
-		BT_LOG_PRT_INFO("HW ver: 0x%x\n", ver);
+		BT_LOG_PRT_DBG("HW ver: 0x%x\n", ver);
 		if (copy_to_user((UINT32 __user *)arg, &ver, sizeof(ver)))
 			retval = -EFAULT;
 		break;
 	case COMBO_IOCTL_BT_IC_FW_VER:
 		ver = mtk_wcn_wmt_ic_info_get(WMTCHIN_FWVER);
-		BT_LOG_PRT_INFO("FW ver: 0x%x\n", ver);
+		BT_LOG_PRT_DBG("FW ver: 0x%x\n", ver);
 		if (copy_to_user((UINT32 __user *)arg, &ver, sizeof(ver)))
 			retval = -EFAULT;
 		break;
@@ -510,7 +512,7 @@ static int BT_open(struct inode *inode, struct file *file)
 		BT_LOG_PRT_WARN("BT already on!\n");
 		return -EIO;
 	}
-	BT_LOG_PRT_INFO("major %d minor %d (pid %d)\n", imajor(inode), iminor(inode), current->pid);
+	BT_LOG_PRT_DBG("major %d minor %d (pid %d)\n", imajor(inode), iminor(inode), current->pid);
 
 	/* Turn on BT */
 	if (mtk_wcn_wmt_func_on(WMTDRV_TYPE_BT) == MTK_WCN_BOOL_FALSE) {
@@ -518,7 +520,7 @@ static int BT_open(struct inode *inode, struct file *file)
 		return -EIO;
 	}
 
-	BT_LOG_PRT_INFO("WMT turn on BT OK!\n");
+	BT_LOG_PRT_DBG("WMT turn on BT OK!\n");
 
 	if (mtk_wcn_stp_is_ready() == MTK_WCN_BOOL_FALSE) {
 
@@ -529,8 +531,8 @@ static int BT_open(struct inode *inode, struct file *file)
 
 	mtk_wcn_stp_set_bluez(0);
 
-	BT_LOG_PRT_INFO("Now it's in MTK Bluetooth Mode\n");
-	BT_LOG_PRT_INFO("STP is ready!\n");
+	BT_LOG_PRT_DBG("Now it's in MTK Bluetooth Mode\n");
+	BT_LOG_PRT_DBG("STP is ready!\n");
 
 	BT_LOG_PRT_DBG("Register BT event callback!\n");
 	mtk_wcn_stp_register_event_cb(BT_TASK_INDX, BT_event_cb);
@@ -554,7 +556,7 @@ static int BT_open(struct inode *inode, struct file *file)
 
 static int BT_close(struct inode *inode, struct file *file)
 {
-	BT_LOG_PRT_INFO("major %d minor %d (pid %d)\n", imajor(inode), iminor(inode), current->pid);
+	BT_LOG_PRT_DBG("major %d minor %d (pid %d)\n", imajor(inode), iminor(inode), current->pid);
 
 #ifdef CONFIG_MTK_CONNSYS_DEDICATED_LOG_PATH
 	bt_state_notify(OFF);
@@ -572,7 +574,7 @@ static int BT_close(struct inode *inode, struct file *file)
 		return -EIO;	/* Mostly, native program will not check this return value. */
 	}
 
-	BT_LOG_PRT_INFO("WMT turn off BT OK!\n");
+	BT_LOG_PRT_DBG("WMT turn off BT OK!\n");
 	return 0;
 }
 
@@ -626,7 +628,7 @@ static int BT_init(void)
 		goto error;
 #endif
 
-	BT_LOG_PRT_INFO("%s driver(major %d) installed\n", BT_DRIVER_NAME, BT_major);
+	BT_LOG_PRT_DBG("%s driver(major %d) installed\n", BT_DRIVER_NAME, BT_major);
 
 #ifdef CONFIG_MTK_CONNSYS_DEDICATED_LOG_PATH
 	fw_log_bt_init();
@@ -680,7 +682,7 @@ static void BT_exit(void)
 	cdev_del(&BT_cdev);
 	unregister_chrdev_region(dev, BT_devs);
 
-	BT_LOG_PRT_INFO("%s driver removed\n", BT_DRIVER_NAME);
+	BT_LOG_PRT_DBG("%s driver removed\n", BT_DRIVER_NAME);
 }
 
 #ifdef MTK_WCN_REMOVE_KERNEL_MODULE

@@ -44,12 +44,12 @@ static unsigned int gConnAdpDbgLvl = CONNADP_LOG_INFO;
 #define CONNADP_LOUD_FUNC(fmt, arg...) \
 do { \
 	if (gConnAdpDbgLvl >= CONNADP_LOG_LOUD) \
-		pr_info("[L]%s:"  fmt, __func__, ##arg); \
+		pr_debug("[L]%s:"  fmt, __func__, ##arg); \
 } while (0)
 #define CONNADP_DBG_FUNC(fmt, arg...) \
 do { \
 	if (gConnAdpDbgLvl >= CONNADP_LOG_DBG) \
-		pr_info("[D]%s:"  fmt, __func__, ##arg); \
+		pr_debug("[D]%s:"  fmt, __func__, ##arg); \
 } while (0)
 #define CONNADP_INFO_FUNC(fmt, arg...)  \
 do { \
@@ -59,12 +59,12 @@ do { \
 #define CONNADP_WARN_FUNC(fmt, arg...) \
 do { \
 	if (gConnAdpDbgLvl >= CONNADP_LOG_WARN) \
-		pr_info("[W]%s:"  fmt, __func__, ##arg); \
+		pr_warn("[W]%s:"  fmt, __func__, ##arg); \
 } while (0)
 #define CONNADP_ERR_FUNC(fmt, arg...) \
 do { \
 	if (gConnAdpDbgLvl >= CONNADP_LOG_ERR) \
-		pr_info("[E]%s(%d):"  fmt, __func__, __LINE__, ##arg); \
+		pr_err("[E]%s(%d):"  fmt, __func__, __LINE__, ##arg); \
 } while (0)
 
 
@@ -95,14 +95,14 @@ void wmt_export_platform_bridge_register(struct wmt_platform_bridge *cb)
 #ifdef DUMP_CLOCK_FAIL_CALLBACK
 	register_pg_callback(&wmt_clk_subsys_handle);
 #endif
-	CONNADP_INFO_FUNC("\n");
+	CONNADP_DBG_FUNC("\n");
 }
 EXPORT_SYMBOL(wmt_export_platform_bridge_register);
 
 void wmt_export_platform_bridge_unregister(void)
 {
 	memset(&bridge, 0, sizeof(struct wmt_platform_bridge));
-	CONNADP_INFO_FUNC("\n");
+	CONNADP_DBG_FUNC("\n");
 }
 EXPORT_SYMBOL(wmt_export_platform_bridge_unregister);
 
@@ -204,7 +204,7 @@ static void mtk_wcn_cmb_sdio_request_eirq(msdc_sdio_irq_handler_t irq_handler,
 	struct device_node *node;
 	int ret = -EINVAL;
 
-	CONNADP_INFO_FUNC("enter\n");
+	CONNADP_DBG_FUNC("enter\n");
 	_mtk_wcn_sdio_irq_flag_set(0);
 	atomic_set(&irq_enable_flag, 1);
 	mtk_wcn_cmb_sdio_eirq_data = data;
@@ -225,7 +225,7 @@ static void mtk_wcn_cmb_sdio_request_eirq(msdc_sdio_irq_handler_t irq_handler,
 	} else
 		CONNADP_WARN_FUNC("can't find connectivity compatible node\n");
 
-	CONNADP_INFO_FUNC("exit\n");
+	CONNADP_DBG_FUNC("exit\n");
 #else
 	CONNADP_ERR_FUNC("not implemented\n");
 #endif

@@ -48,7 +48,12 @@ uint32_t fwDbgLevel = WIFI_FW_LOG_DBG;
 #define WIFI_DBG_FUNC(fmt, arg...)	\
 	do { \
 		if (fwDbgLevel >= WIFI_FW_LOG_DBG) \
-			pr_info(PFX "%s[D]: " fmt, __func__, ##arg); \
+			pr_debug(PFX "%s[D]: " fmt, __func__, ##arg); \
+	} while (0)
+#define WIFI_DBG_FUNC_LIMITED(fmt, arg...)	\
+	do { \
+		if (fwDbgLevel >= WIFI_FW_LOG_DBG) \
+			pr_debug_ratelimited(PFX "%s[L]: " fmt, __func__, ##arg); \
 	} while (0)
 #define WIFI_INFO_FUNC(fmt, arg...)	\
 	do { \
@@ -63,12 +68,12 @@ uint32_t fwDbgLevel = WIFI_FW_LOG_DBG;
 #define WIFI_WARN_FUNC(fmt, arg...)	\
 	do { \
 		if (fwDbgLevel >= WIFI_FW_LOG_WARN) \
-			pr_info(PFX "%s[W]: " fmt, __func__, ##arg); \
+			pr_warn(PFX "%s[W]: " fmt, __func__, ##arg); \
 	} while (0)
 #define WIFI_ERR_FUNC(fmt, arg...)	\
 	do { \
 		if (fwDbgLevel >= WIFI_FW_LOG_ERR) \
-			pr_info(PFX "%s[E]: " fmt, __func__, ##arg); \
+			pr_err(PFX "%s[E]: " fmt, __func__, ##arg); \
 	} while (0)
 
 
@@ -87,7 +92,7 @@ static struct semaphore ioctl_mtx;
 
 void wifi_fwlog_event_func_register(wifi_fwlog_event_func_cb func)
 {
-	WIFI_INFO_FUNC("wifi_fwlog_event_func_register %p\n", func);
+	WIFI_DBG_FUNC("wifi_fwlog_event_func_register %p\n", func);
 	pfFwEventFuncCB = func;
 }
 EXPORT_SYMBOL(wifi_fwlog_event_func_register);
@@ -101,14 +106,14 @@ EXPORT_SYMBOL(wifi_fwlog_onoff_status);
 
 static int fw_log_wifi_open(struct inode *inode, struct file *file)
 {
-	WIFI_INFO_FUNC("major %d minor %d (pid %d)\n", imajor(inode), iminor(inode), current->pid);
+	WIFI_DBG_FUNC("major %d minor %d (pid %d)\n", imajor(inode), iminor(inode), current->pid);
 
 	return 0;
 }
 
 static int fw_log_wifi_release(struct inode *inode, struct file *file)
 {
-	WIFI_INFO_FUNC("major %d minor %d (pid %d)\n", imajor(inode), iminor(inode), current->pid);
+	WIFI_DBG_FUNC("major %d minor %d (pid %d)\n", imajor(inode), iminor(inode), current->pid);
 
 	return 0;
 }
@@ -117,7 +122,7 @@ static ssize_t fw_log_wifi_read(struct file *filp, char __user *buf, size_t len,
 {
 	size_t ret = 0;
 
-	WIFI_INFO_FUNC_LIMITED("fw_log_wifi_read len --> %d\n", (uint32_t) len);
+	WIFI_DBG_FUNC_LIMITED("fw_log_wifi_read len --> %d\n", (uint32_t) len);
 	ret = connsys_log_read_to_user(CONNLOG_TYPE_WIFI, buf, len);
 	return ret;
 }
@@ -141,33 +146,33 @@ static long fw_log_wifi_unlocked_ioctl(struct file *filp, unsigned int cmd, unsi
 	case WIFI_FW_LOG_IOCTL_ON_OFF:{
 		unsigned int log_on_off = (unsigned int) arg;
 
-		WIFI_INFO_FUNC("fw_log_wifi_unlocked_ioctl WIFI_FW_LOG_IOCTL_ON_OFF start\n");
+		WIFI_DBG_FUNC("fw_log_wifi_unlocked_ioctl WIFI_FW_LOG_IOCTL_ON_OFF start\n");
 
 		if (pfFwEventFuncCB) {
-			WIFI_INFO_FUNC("WIFI_FW_LOG_IOCTL_ON_OFF invoke:%d\n", (int)log_on_off);
+			WIFI_DBG_FUNC("WIFI_FW_LOG_IOCTL_ON_OFF invoke:%d\n", (int)log_on_off);
 			pfFwEventFuncCB(WIFI_FW_LOG_CMD_ON_OFF, log_on_off);
 		}
 
-		WIFI_INFO_FUNC("fw_log_wifi_unlocked_ioctl WIFI_FW_LOG_IOCTL_ON_OFF end\n");
+		WIFI_DBG_FUNC("fw_log_wifi_unlocked_ioctl WIFI_FW_LOG_IOCTL_ON_OFF end\n");
 		break;
 	}
 	case WIFI_FW_LOG_IOCTL_SET_LEVEL:{
 		unsigned int log_level = (unsigned int) arg;
 
-		WIFI_INFO_FUNC("fw_log_wifi_unlocked_ioctl WIFI_FW_LOG_IOCTL_SET_LEVEL start\n");
+		WIFI_DBG_FUNC("fw_log_wifi_unlocked_ioctl WIFI_FW_LOG_IOCTL_SET_LEVEL start\n");
 
 		if (pfFwEventFuncCB) {
-			WIFI_INFO_FUNC("WIFI_FW_LOG_IOCTL_SET_LEVEL invoke:%d\n", (int)log_level);
+			WIFI_DBG_FUNC("WIFI_FW_LOG_IOCTL_SET_LEVEL invoke:%d\n", (int)log_level);
 			pfFwEventFuncCB(WIFI_FW_LOG_CMD_SET_LEVEL, log_level);
 		}
 
-		WIFI_INFO_FUNC("fw_log_wifi_unlocked_ioctl WIFI_FW_LOG_IOCTL_SET_LEVEL end\n");
+		WIFI_DBG_FUNC("fw_log_wifi_unlocked_ioctl WIFI_FW_LOG_IOCTL_SET_LEVEL end\n");
 		break;
 	}
 	default:
 		ret = -EPERM;
 	}
-	WIFI_INFO_FUNC("fw_log_wifi_unlocked_ioctl cmd --> %d, ret=%d\n", cmd, ret);
+	WIFI_DBG_FUNC("fw_log_wifi_unlocked_ioctl cmd --> %d, ret=%d\n", cmd, ret);
 	up(&ioctl_mtx);
 	return ret;
 }
@@ -177,7 +182,7 @@ static long fw_log_wifi_compat_ioctl(struct file *filp, unsigned int cmd, unsign
 {
 	long ret = 0;
 
-	WIFI_INFO_FUNC("COMPAT fw_log_wifi_compact_ioctl cmd --> %d\n", cmd);
+	WIFI_DBG_FUNC("COMPAT fw_log_wifi_compact_ioctl cmd --> %d\n", cmd);
 
 	if (!filp->f_op || !filp->f_op->unlocked_ioctl)
 		return -ENOTTY;
@@ -230,7 +235,7 @@ int fw_log_wifi_init(void)
 
 	result = alloc_chrdev_region(&fw_log_wifi_dev->devno, 0, 1, FW_LOG_WIFI_DRIVER_NAME);
 	fw_log_wifi_major = MAJOR(fw_log_wifi_dev->devno);
-	WIFI_INFO_FUNC("alloc_chrdev_region result %d, major %d\n", result, fw_log_wifi_major);
+	WIFI_DBG_FUNC("alloc_chrdev_region result %d, major %d\n", result, fw_log_wifi_major);
 
 	if (result < 0)
 		return result;
@@ -292,7 +297,7 @@ int fw_log_wifi_deinit(void)
 	cdev_del(&fw_log_wifi_dev->cdev);
 	kfree(fw_log_wifi_dev);
 	unregister_chrdev_region(MKDEV(fw_log_wifi_major, 0), 1);
-	WIFI_INFO_FUNC("unregister_chrdev_region major %d\n", fw_log_wifi_major);
+	WIFI_DBG_FUNC("unregister_chrdev_region major %d\n", fw_log_wifi_major);
 
 	/* integrated with common debug utility */
 	connsys_log_deinit(CONNLOG_TYPE_WIFI);
