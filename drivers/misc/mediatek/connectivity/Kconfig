@@ -377,3 +377,10 @@ config WLAN_DRV_BUILD_IN
 	  This will build the wlan driver and the corresponding componenets
 	  into the kernel.
 	  If unsure say n
+
+config MTK_COMBO_ENABLE_DEBUG
+        bool "Enable debugging in connectivity drivers"
+        default n
+        help
+          This will enable debugging for connectivity drivers.
+          If unsure say n

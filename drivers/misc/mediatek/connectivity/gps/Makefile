@@ -9,6 +9,13 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 
+###############################################################################
+# Necessary Check
+
+ifneq ($(CONFIG_MTK_COMBO_ENABLE_DEBUG), y)
+    ldflags-y += -s
+endif
+
 # Force build fail on modpost warning
 KBUILD_MODPOST_FAIL_ON_WARNINGS := y
 ###############################################################################

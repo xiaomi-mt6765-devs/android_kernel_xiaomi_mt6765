@@ -113,7 +113,7 @@ else
 endif
 
 # Disable ASSERT() for user load, enable for others
-ifneq ($(TARGET_BUILD_VARIANT),user)
+ifeq ($(CONFIG_MTK_COMBO_ENABLE_DEBUG), y)
     ccflags-y += -DBUILD_QA_DBG=1
 else
     ccflags-y += -DBUILD_QA_DBG=0
