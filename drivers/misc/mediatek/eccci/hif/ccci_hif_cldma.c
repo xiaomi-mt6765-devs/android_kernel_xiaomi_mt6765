@@ -864,20 +864,20 @@ again:
 
 		/* where are we going */
 		if (retry) {
-				/* ACK interrupt */
+			/* ACK interrupt */
 			cldma_write32(md_ctrl->cldma_ap_pdn_base,
 				CLDMA_AP_L2RISAR0,
 				((1 << queue->index) << l2qe_s_offset));
 			cldma_write32(md_ctrl->cldma_ap_pdn_base,
-			CLDMA_AP_L2RISAR0, (1 << queue->index));
-			/* clear IP busy register wake up cpu case */
+				CLDMA_AP_L2RISAR0, (1 << queue->index));
+				/* clear IP busy register wake up cpu case */
 			cldma_write32(md_ctrl->cldma_ap_pdn_base,
-				CLDMA_AP_CLDMA_IP_BUSY,
-				cldma_read32(md_ctrl->cldma_ap_pdn_base,
-				CLDMA_AP_CLDMA_IP_BUSY));
+					CLDMA_AP_CLDMA_IP_BUSY,
+					cldma_read32(md_ctrl->cldma_ap_pdn_base,
+					CLDMA_AP_CLDMA_IP_BUSY));
 			spin_unlock_irqrestore(
-				&md_ctrl->cldma_timeout_lock,
-				flags);
+					&md_ctrl->cldma_timeout_lock,
+					flags);
 			goto again;
 		}
 	}
