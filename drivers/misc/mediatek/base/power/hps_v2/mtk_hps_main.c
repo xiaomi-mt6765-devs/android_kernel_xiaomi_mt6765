@@ -223,15 +223,15 @@ void hps_ctxt_reset_stas(void)
 void hps_ctxt_print_basic(int toUart)
 {
 	if (toUart) {
-		tag_pr_info("hps_ctxt.init_state: %u\n", hps_ctxt.init_state);
-		tag_pr_info("hps_ctxt.state: %u\n", hps_ctxt.state);
-		tag_pr_info("hps_ctxt.enabled: %u\n", hps_ctxt.enabled);
-		tag_pr_info("hps_ctxt.suspend_enabled: %u\n", hps_ctxt.suspend_enabled);
-		tag_pr_info("hps_ctxt.is_hmp: %u\n", hps_ctxt.is_hmp);
-		tag_pr_info("hps_ctxt.little_cpu_id_min: %u\n", hps_ctxt.little_cpu_id_min);
-		tag_pr_info("hps_ctxt.little_cpu_id_max: %u\n", hps_ctxt.little_cpu_id_max);
-		tag_pr_info("hps_ctxt.big_cpu_id_min: %u\n", hps_ctxt.big_cpu_id_min);
-		tag_pr_info("hps_ctxt.big_cpu_id_max: %u\n", hps_ctxt.big_cpu_id_max);
+		tag_pr_debug("hps_ctxt.init_state: %u\n", hps_ctxt.init_state);
+		tag_pr_debug("hps_ctxt.state: %u\n", hps_ctxt.state);
+		tag_pr_debug("hps_ctxt.enabled: %u\n", hps_ctxt.enabled);
+		tag_pr_debug("hps_ctxt.suspend_enabled: %u\n", hps_ctxt.suspend_enabled);
+		tag_pr_debug("hps_ctxt.is_hmp: %u\n", hps_ctxt.is_hmp);
+		tag_pr_debug("hps_ctxt.little_cpu_id_min: %u\n", hps_ctxt.little_cpu_id_min);
+		tag_pr_debug("hps_ctxt.little_cpu_id_max: %u\n", hps_ctxt.little_cpu_id_max);
+		tag_pr_debug("hps_ctxt.big_cpu_id_min: %u\n", hps_ctxt.big_cpu_id_min);
+		tag_pr_debug("hps_ctxt.big_cpu_id_max: %u\n", hps_ctxt.big_cpu_id_max);
 	} else {
 		tag_pr_debug("hps_ctxt.init_state: %u\n", hps_ctxt.init_state);
 		tag_pr_debug("hps_ctxt.state: %u\n", hps_ctxt.state);
@@ -248,16 +248,16 @@ void hps_ctxt_print_basic(int toUart)
 void hps_ctxt_print_algo_config(int toUart)
 {
 	if (toUart) {
-		tag_pr_info("hps_ctxt.up_threshold: %u\n", hps_ctxt.up_threshold);
-		tag_pr_info("hps_ctxt.up_times: %u\n", hps_ctxt.up_times);
-		tag_pr_info("hps_ctxt.down_threshold: %u\n", hps_ctxt.down_threshold);
-		tag_pr_info("hps_ctxt.down_times: %u\n", hps_ctxt.down_times);
-		tag_pr_info("hps_ctxt.input_boost_enabled: %u\n", hps_ctxt.input_boost_enabled);
-		tag_pr_info("hps_ctxt.input_boost_cpu_num: %u\n", hps_ctxt.input_boost_cpu_num);
-		tag_pr_info("hps_ctxt.rush_boost_enabled: %u\n", hps_ctxt.rush_boost_enabled);
-		tag_pr_info("hps_ctxt.rush_boost_threshold: %u\n", hps_ctxt.rush_boost_threshold);
-		tag_pr_info("hps_ctxt.rush_boost_times: %u\n", hps_ctxt.rush_boost_times);
-		tag_pr_info("hps_ctxt.tlp_times: %u\n", hps_ctxt.tlp_times);
+		tag_pr_debug("hps_ctxt.up_threshold: %u\n", hps_ctxt.up_threshold);
+		tag_pr_debug("hps_ctxt.up_times: %u\n", hps_ctxt.up_times);
+		tag_pr_debug("hps_ctxt.down_threshold: %u\n", hps_ctxt.down_threshold);
+		tag_pr_debug("hps_ctxt.down_times: %u\n", hps_ctxt.down_times);
+		tag_pr_debug("hps_ctxt.input_boost_enabled: %u\n", hps_ctxt.input_boost_enabled);
+		tag_pr_debug("hps_ctxt.input_boost_cpu_num: %u\n", hps_ctxt.input_boost_cpu_num);
+		tag_pr_debug("hps_ctxt.rush_boost_enabled: %u\n", hps_ctxt.rush_boost_enabled);
+		tag_pr_debug("hps_ctxt.rush_boost_threshold: %u\n", hps_ctxt.rush_boost_threshold);
+		tag_pr_debug("hps_ctxt.rush_boost_times: %u\n", hps_ctxt.rush_boost_times);
+		tag_pr_debug("hps_ctxt.tlp_times: %u\n", hps_ctxt.tlp_times);
 	} else {
 		tag_pr_debug("hps_ctxt.up_threshold: %u\n", hps_ctxt.up_threshold);
 		tag_pr_debug("hps_ctxt.up_times: %u\n", hps_ctxt.up_times);
@@ -275,23 +275,23 @@ void hps_ctxt_print_algo_config(int toUart)
 void hps_ctxt_print_algo_bound(int toUart)
 {
 	if (toUart) {
-		tag_pr_info("hps_ctxt.little_num_base_perf_serv: %u\n",
+		tag_pr_debug("hps_ctxt.little_num_base_perf_serv: %u\n",
 			    hps_ctxt.little_num_base_perf_serv);
-		tag_pr_info("hps_ctxt.little_num_limit_thermal: %u\n",
+		tag_pr_debug("hps_ctxt.little_num_limit_thermal: %u\n",
 			    hps_ctxt.little_num_limit_thermal);
-		tag_pr_info("hps_ctxt.little_num_limit_low_battery: %u\n",
+		tag_pr_debug("hps_ctxt.little_num_limit_low_battery: %u\n",
 			    hps_ctxt.little_num_limit_low_battery);
-		tag_pr_info("hps_ctxt.little_num_limit_ultra_power_saving: %u\n",
+		tag_pr_debug("hps_ctxt.little_num_limit_ultra_power_saving: %u\n",
 			    hps_ctxt.little_num_limit_ultra_power_saving);
-		tag_pr_info("hps_ctxt.little_num_limit_power_serv: %u\n",
+		tag_pr_debug("hps_ctxt.little_num_limit_power_serv: %u\n",
 			    hps_ctxt.little_num_limit_power_serv);
-		tag_pr_info("hps_ctxt.big_num_base_perf_serv: %u\n", hps_ctxt.big_num_base_perf_serv);
-		tag_pr_info("hps_ctxt.big_num_limit_thermal: %u\n", hps_ctxt.big_num_limit_thermal);
-		tag_pr_info("hps_ctxt.big_num_limit_low_battery: %u\n",
+		tag_pr_debug("hps_ctxt.big_num_base_perf_serv: %u\n", hps_ctxt.big_num_base_perf_serv);
+		tag_pr_debug("hps_ctxt.big_num_limit_thermal: %u\n", hps_ctxt.big_num_limit_thermal);
+		tag_pr_debug("hps_ctxt.big_num_limit_low_battery: %u\n",
 			    hps_ctxt.big_num_limit_low_battery);
-		tag_pr_info("hps_ctxt.big_num_limit_ultra_power_saving: %u\n",
+		tag_pr_debug("hps_ctxt.big_num_limit_ultra_power_saving: %u\n",
 			    hps_ctxt.big_num_limit_ultra_power_saving);
-		tag_pr_info("hps_ctxt.big_num_limit_power_serv: %u\n",
+		tag_pr_debug("hps_ctxt.big_num_limit_power_serv: %u\n",
 			    hps_ctxt.big_num_limit_power_serv);
 	} else {
 		tag_pr_debug("hps_ctxt.little_num_base_perf_serv: %u\n",
@@ -318,10 +318,10 @@ void hps_ctxt_print_algo_bound(int toUart)
 void hps_ctxt_print_algo_stats_cur(int toUart)
 {
 	if (toUart) {
-		tag_pr_info("hps_ctxt.cur_loads: %u\n", hps_ctxt.cur_loads);
-		tag_pr_info("hps_ctxt.cur_tlp: %u\n", hps_ctxt.cur_tlp);
-		tag_pr_info("hps_ctxt.cur_iowait: %u\n", hps_ctxt.cur_iowait);
-		tag_pr_info("hps_ctxt.cur_nr_heavy_task: %u\n", hps_ctxt.cur_nr_heavy_task);
+		tag_pr_debug("hps_ctxt.cur_loads: %u\n", hps_ctxt.cur_loads);
+		tag_pr_debug("hps_ctxt.cur_tlp: %u\n", hps_ctxt.cur_tlp);
+		tag_pr_debug("hps_ctxt.cur_iowait: %u\n", hps_ctxt.cur_iowait);
+		tag_pr_debug("hps_ctxt.cur_nr_heavy_task: %u\n", hps_ctxt.cur_nr_heavy_task);
 	} else {
 		tag_pr_debug("hps_ctxt.cur_loads: %u\n", hps_ctxt.cur_loads);
 		tag_pr_debug("hps_ctxt.cur_tlp: %u\n", hps_ctxt.cur_tlp);
@@ -333,9 +333,9 @@ void hps_ctxt_print_algo_stats_cur(int toUart)
 void hps_ctxt_print_algo_stats_up(int toUart)
 {
 	if (toUart) {
-		tag_pr_info("hps_ctxt.up_loads_sum: %u\n", hps_ctxt.up_loads_sum);
-		tag_pr_info("hps_ctxt.up_loads_count: %u\n", hps_ctxt.up_loads_count);
-		tag_pr_info("hps_ctxt.up_loads_history_index: %u\n", hps_ctxt.up_loads_history_index);
+		tag_pr_debug("hps_ctxt.up_loads_sum: %u\n", hps_ctxt.up_loads_sum);
+		tag_pr_debug("hps_ctxt.up_loads_count: %u\n", hps_ctxt.up_loads_count);
+		tag_pr_debug("hps_ctxt.up_loads_history_index: %u\n", hps_ctxt.up_loads_history_index);
 	} else {
 		tag_pr_debug("hps_ctxt.up_loads_sum: %u\n", hps_ctxt.up_loads_sum);
 		tag_pr_debug("hps_ctxt.up_loads_count: %u\n", hps_ctxt.up_loads_count);
@@ -346,9 +346,9 @@ void hps_ctxt_print_algo_stats_up(int toUart)
 void hps_ctxt_print_algo_stats_down(int toUart)
 {
 	if (toUart) {
-		tag_pr_info("hps_ctxt.down_loads_sum: %u\n", hps_ctxt.down_loads_sum);
-		tag_pr_info("hps_ctxt.down_loads_count: %u\n", hps_ctxt.down_loads_count);
-		tag_pr_info("hps_ctxt.down_loads_history_index: %u\n",
+		tag_pr_debug("hps_ctxt.down_loads_sum: %u\n", hps_ctxt.down_loads_sum);
+		tag_pr_debug("hps_ctxt.down_loads_count: %u\n", hps_ctxt.down_loads_count);
+		tag_pr_debug("hps_ctxt.down_loads_history_index: %u\n",
 			    hps_ctxt.down_loads_history_index);
 	} else {
 		tag_pr_debug("hps_ctxt.down_loads_sum: %u\n", hps_ctxt.down_loads_sum);
@@ -361,11 +361,11 @@ void hps_ctxt_print_algo_stats_down(int toUart)
 void hps_ctxt_print_algo_stats_tlp(int toUart)
 {
 	if (toUart) {
-		tag_pr_info("hps_ctxt.tlp_sum: %u\n", hps_ctxt.tlp_sum);
-		tag_pr_info("hps_ctxt.tlp_count: %u\n", hps_ctxt.tlp_count);
-		tag_pr_info("hps_ctxt.tlp_history_index: %u\n", hps_ctxt.tlp_history_index);
-		tag_pr_info("hps_ctxt.tlp_avg: %u\n", hps_ctxt.tlp_avg);
-		tag_pr_info("hps_ctxt.rush_count: %u\n", hps_ctxt.rush_count);
+		tag_pr_debug("hps_ctxt.tlp_sum: %u\n", hps_ctxt.tlp_sum);
+		tag_pr_debug("hps_ctxt.tlp_count: %u\n", hps_ctxt.tlp_count);
+		tag_pr_debug("hps_ctxt.tlp_history_index: %u\n", hps_ctxt.tlp_history_index);
+		tag_pr_debug("hps_ctxt.tlp_avg: %u\n", hps_ctxt.tlp_avg);
+		tag_pr_debug("hps_ctxt.rush_count: %u\n", hps_ctxt.rush_count);
 	} else {
 		tag_pr_debug("hps_ctxt.tlp_sum: %u\n", hps_ctxt.tlp_sum);
 		tag_pr_debug("hps_ctxt.tlp_count: %u\n", hps_ctxt.tlp_count);
@@ -380,7 +380,7 @@ void hps_ctxt_print_algo_stats_tlp(int toUart)
  */
 static int hps_probe(struct platform_device *pdev)
 {
-	tag_pr_info("%s\n", __func__);
+	tag_pr_debug("%s\n", __func__);
 
 	return 0;
 }
@@ -390,7 +390,7 @@ static int hps_probe(struct platform_device *pdev)
  */
 static int hps_suspend(struct device *dev)
 {
-	tag_pr_info("%s\n", __func__);
+	tag_pr_debug("%s\n", __func__);
 
 	if (!hps_ctxt.suspend_enabled)
 		goto suspend_end;
@@ -404,7 +404,7 @@ suspend_end:
 	hps_ctxt.state = STATE_SUSPEND;
 	if (hps_ctxt.periodical_by == HPS_PERIODICAL_BY_HR_TIMER)
 		hps_del_timer();
-	tag_pr_info("state: %u, enabled: %u, suspend_enabled: %u, rush_boost_enabled: %u\n",
+	tag_pr_debug("state: %u, enabled: %u, suspend_enabled: %u, rush_boost_enabled: %u\n",
 		    hps_ctxt.state, hps_ctxt.enabled,
 		    hps_ctxt.suspend_enabled, hps_ctxt.rush_boost_enabled);
 #if 0
@@ -429,7 +429,7 @@ suspend_end:
  */
 static int hps_resume(struct device *dev)
 {
-	tag_pr_info("%s\n", __func__);
+	tag_pr_debug("%s\n", __func__);
 
 	if (!hps_ctxt.suspend_enabled)
 		goto resume_end;
@@ -450,7 +450,7 @@ resume_end:
 		/*hps_task_wakeup();*/
 		hps_restart_timer();
 	}
-	tag_pr_info("state: %u, enabled: %u, suspend_enabled: %u, rush_boost_enabled: %u\n",
+	tag_pr_debug("state: %u, enabled: %u, suspend_enabled: %u, rush_boost_enabled: %u\n",
 		    hps_ctxt.state, hps_ctxt.enabled,
 		    hps_ctxt.suspend_enabled, hps_ctxt.rush_boost_enabled);
 
@@ -465,7 +465,7 @@ static int hps_freeze(struct device *dev)
 {
 	int cpu;
 
-	tag_pr_info("%s\n", __func__);
+	tag_pr_debug("%s\n", __func__);
 
 	if (!hps_ctxt.suspend_enabled)
 		goto freeze_end;
@@ -484,7 +484,7 @@ static int hps_freeze(struct device *dev)
 
 freeze_end:
 	hps_ctxt.state = STATE_SUSPEND;
-	tag_pr_info("state: %u, enabled: %u, suspend_enabled: %u, rush_boost_enabled: %u\n",
+	tag_pr_debug("state: %u, enabled: %u, suspend_enabled: %u, rush_boost_enabled: %u\n",
 		    hps_ctxt.state, hps_ctxt.enabled,
 		    hps_ctxt.suspend_enabled, hps_ctxt.rush_boost_enabled);
 
@@ -497,7 +497,7 @@ freeze_end:
  */
 static int hps_restore(struct device *dev)
 {
-	tag_pr_info("%s\n", __func__);
+	tag_pr_debug("%s\n", __func__);
 
 	if (!hps_ctxt.suspend_enabled)
 		goto restore_end;
@@ -508,7 +508,7 @@ static int hps_restore(struct device *dev)
 
 restore_end:
 	hps_ctxt.state = STATE_EARLY_SUSPEND;
-	tag_pr_info("state: %u, enabled: %u, suspend_enabled: %u, rush_boost_enabled: %u\n",
+	tag_pr_debug("state: %u, enabled: %u, suspend_enabled: %u, rush_boost_enabled: %u\n",
 		    hps_ctxt.state, hps_ctxt.enabled,
 		    hps_ctxt.suspend_enabled, hps_ctxt.rush_boost_enabled);
 
@@ -523,7 +523,7 @@ static int __init hps_init(void)
 {
 	int r = 0;
 
-	tag_pr_info("%s\n", __func__);
+	tag_pr_debug("%s\n", __func__);
 
 	/* hps_cpu_init() must before hps_core_init() */
 	r = hps_cpu_init();
@@ -563,7 +563,7 @@ static void __exit hps_exit(void)
 {
 	int r = 0;
 
-	tag_pr_info("%s\n", __func__);
+	tag_pr_debug("%s\n", __func__);
 
 	hps_ctxt.init_state = INIT_STATE_NOT_READY;
 

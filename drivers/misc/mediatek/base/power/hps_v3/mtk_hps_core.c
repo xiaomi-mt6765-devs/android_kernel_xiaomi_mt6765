@@ -419,9 +419,9 @@ ACAO_HPS_START:
 	/*Debgu message dump*/
 	for (i = 0 ; i < 8 ; i++) {
 		if (cpumask_test_cpu(i, hps_ctxt.online_core))
-			pr_info("CPU %d ==>1\n", i);
+			pr_debug("CPU %d ==>1\n", i);
 		else
-			pr_info("CPU %d ==>0\n", i);
+			pr_debug("CPU %d ==>0\n", i);
 	}
 
 	if (!cpumask_empty(hps_ctxt.online_core)) {

@@ -182,7 +182,7 @@ static int hps_algo_check_criteria(void)
 			continue;
 		} else {
 			/*
-			 * tag_pr_info("... Cluster%d ... target = %d, ref_base
+			 * tag_pr_debug("... Cluster%d ... target = %d, ref_base
 			 *	= %d, ref_limit = %d\n", i,
 			 *	hps_sys.cluster_info[i].target_core_num,
 			 *	hps_sys.cluster_info[i].ref_base_value,
@@ -194,7 +194,7 @@ static int hps_algo_check_criteria(void)
 	}
 	mutex_unlock(&hps_ctxt.para_lock);
 	if (ret)
-		tag_pr_info("[Info]Condition break!!\n");
+		tag_pr_debug("[Info]Condition break!!\n");
 	return ret;
 }
 
@@ -217,12 +217,12 @@ static int hps_algo_do_cluster_action(unsigned int cluster_id)
 #endif
 		for (cpu = cpu_id_min; cpu <= cpu_id_max; ++cpu) {
 			if (hps_get_break_en() != 0) {
-				tag_pr_info(
+				tag_pr_debug(
 				  "[CPUHP] up CPU%d: hps_get_break_en\n", cpu);
 				return 1;
 			}
 			if (hps_algo_check_criteria() == 1) {
-				tag_pr_info(
+				tag_pr_debug(
 				  "[CPUHP] up CPU%d: hps_algo_check_criteria\n",
 				  cpu);
 				return 1;
@@ -230,7 +230,7 @@ static int hps_algo_do_cluster_action(unsigned int cluster_id)
 			if (!cpu_online(cpu)) {	/* For CPU offline */
 				/*
 				 * if (cpu_up(cpu))
-				 *	tag_pr_info("[Info]CPU %d ++!\n", cpu);
+				 *	tag_pr_debug("[Info]CPU %d ++!\n", cpu);
 				 */
 				if (cpu_up(cpu) == -EBUSY
 				    && hps_sys.action_id == 0xF00) {
@@ -265,13 +265,13 @@ static int hps_algo_do_cluster_action(unsigned int cluster_id)
 #endif
 		for (cpu = cpu_id_max; cpu >= cpu_id_min; --cpu) {
 			if (hps_get_break_en() != 0) {
-				tag_pr_info(
+				tag_pr_debug(
 				  "[CPUHP] down CPU%d: hps_get_break_en\n",
 				  cpu);
 				return 1;
 			}
 			if (hps_algo_check_criteria() == 1) {
-				tag_pr_info(
+				tag_pr_debug(
 				"[CPUHP] down CPU%d: hps_algo_check_criteria\n",
 				  cpu);
 				return 1;
@@ -279,7 +279,7 @@ static int hps_algo_do_cluster_action(unsigned int cluster_id)
 			if (cpu_online(cpu)) {
 				/*
 				 * if (cpu_down(cpu))
-				 *	tag_pr_info("[Info]CPU %d --!\n", cpu);
+				 *	tag_pr_debug("[Info]CPU %d --!\n", cpu);
 				 */
 				cpu_down(cpu);
 				--online_cores;

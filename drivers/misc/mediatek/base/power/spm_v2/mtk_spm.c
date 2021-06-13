@@ -776,7 +776,7 @@ int spm_fw_count;
 /*Reserved memory by device tree!*/
 int reserve_memory_spm_fn(struct reserved_mem *rmem)
 {
-	pr_info(" name: %s, base: 0x%llx, size: 0x%llx\n", rmem->name,
+	pr_debug(" name: %s, base: 0x%llx, size: 0x%llx\n", rmem->name,
 			   (unsigned long long)rmem->base, (unsigned long long)rmem->size);
 	WARN_ON(rmem->size < PCM_FIRMWARE_SIZE * DYNA_LOAD_PCM_MAX);
 

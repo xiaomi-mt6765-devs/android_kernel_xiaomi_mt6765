@@ -40,7 +40,7 @@ static ktime_t ktime;
 static int _hps_timer_callback(unsigned long data)
 {
 	int ret;
-	/*tag_pr_info("_hps_timer_callback\n"); */
+	/*tag_pr_debug("_hps_timer_callback\n"); */
 	if (hps_ctxt.tsk_struct_ptr) {
 		ret = wake_up_process(hps_ctxt.tsk_struct_ptr);
 		if (!ret)
@@ -282,7 +282,7 @@ HPS_WAIT_EVENT:
 
 	}			/* while(1) */
 
-	tag_pr_info("leave %s, cnt:%08d\n", __func__, cnt++);
+	tag_pr_debug("leave %s, cnt:%08d\n", __func__, cnt++);
 	return 0;
 }
 
@@ -302,11 +302,11 @@ int hps_task_start(void)
 		set_user_nice(hps_ctxt.tsk_struct_ptr, HPS_TASK_NORMAL_PRIORITY);
 		get_task_struct(hps_ctxt.tsk_struct_ptr);
 		wake_up_process(hps_ctxt.tsk_struct_ptr);
-		tag_pr_info("%s success, ptr: %p, pid: %d\n",
+		tag_pr_debug("%s success, ptr: %p, pid: %d\n",
 			    __func__, hps_ctxt.tsk_struct_ptr,
 			    hps_ctxt.tsk_struct_ptr->pid);
 	} else {
-		tag_pr_info("hps task already exist, ptr: %p, pid: %d\n",
+		tag_pr_debug("hps task already exist, ptr: %p, pid: %d\n",
 			    hps_ctxt.tsk_struct_ptr,
 			    hps_ctxt.tsk_struct_ptr->pid);
 	}
@@ -361,7 +361,7 @@ static void ppm_limit_callback(struct ppm_client_req req)
 
 	for (i = 0; i < p->cluster_num; i++) {
 		/*
-		 * tag_pr_info("ppm_limit_callback -> cluster%d: has_advise_core = %d, [%d, %d]\n",
+		 * tag_pr_debug("ppm_limit_callback -> cluster%d: has_advise_core = %d, [%d, %d]\n",
 		 *	i, p->cpu_limit[i].has_advise_core,
 		 *	p->cpu_limit[i].min_cpu_core, p->cpu_limit[i].max_cpu_core);
 		 */
@@ -389,7 +389,7 @@ int hps_core_init(void)
 {
 	int r = 0;
 
-	tag_pr_info("%s\n", __func__);
+	tag_pr_debug("%s\n", __func__);
 	if (hps_ctxt.periodical_by == HPS_PERIODICAL_BY_TIMER) {
 		/*init timer */
 		init_timer(&hps_ctxt.tmr_list);
@@ -425,7 +425,7 @@ int hps_core_deinit(void)
 {
 	int r = 0;
 
-	tag_pr_info("%s\n", __func__);
+	tag_pr_debug("%s\n", __func__);
 	if (hps_ctxt.periodical_by == HPS_PERIODICAL_BY_TIMER) {
 		/*deinit timer */
 		del_timer_sync(&hps_ctxt.tmr_list);

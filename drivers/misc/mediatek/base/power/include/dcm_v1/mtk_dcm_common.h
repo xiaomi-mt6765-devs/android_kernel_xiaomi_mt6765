@@ -24,14 +24,14 @@
 	pr_err(TAG fmt, ##args)
 #define dcm_pr_warn(fmt, args...)			\
 	pr_warn(TAG fmt, ##args)
-#define dcm_pr_info_limit(fmt, args...)			\
-	pr_info_ratelimited(TAG fmt, ##args)
-#define dcm_pr_info(fmt, args...)			\
-	pr_info(TAG fmt, ##args)
+#define dcm_pr_debug_limit(fmt, args...)			\
+	pr_debug_ratelimited(TAG fmt, ##args)
+#define dcm_pr_debug(fmt, args...)			\
+	pr_debug(TAG fmt, ##args)
 #define dcm_pr_dbg(fmt, args...)			\
 	do {						\
 		if (dcm_debug)				\
-			pr_info(TAG fmt, ##args);	\
+			pr_debug(TAG fmt, ##args);	\
 	} while (0)
 
 /** macro **/

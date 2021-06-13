@@ -138,7 +138,7 @@ int hps_cpu_init(void)
 	/* char str1[32]; */
 	struct cpumask cpu_mask;
 
-	tag_pr_info("%s\n", __func__);
+	tag_pr_debug("%s\n", __func__);
 
 	for (i = setup_max_cpus; i < num_possible_cpus(); i++) {
 #ifdef CONFIG_ARM64
@@ -152,7 +152,7 @@ int hps_cpu_init(void)
 
 	/* ===============New algo. definition ========================= */
 	hps_sys.cluster_num = (unsigned int)arch_get_nr_clusters();
-	tag_pr_info("[New algo.] hps_sys.cluster_num %d\n", hps_sys.cluster_num);
+	tag_pr_debug("[New algo.] hps_sys.cluster_num %d\n", hps_sys.cluster_num);
 
 	/* init cluster info of hps_sys */
 	hps_sys.cluster_info =
@@ -212,7 +212,7 @@ int hps_cpu_deinit(void)
 {
 	int r = 0;
 
-	tag_pr_info("%s\n", __func__);
+	tag_pr_debug("%s\n", __func__);
 
 	return r;
 }

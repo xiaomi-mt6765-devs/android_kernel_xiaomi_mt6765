@@ -263,7 +263,7 @@ int hps_ops_init(void)
 		hps_sys.hps_sys_ops[i].func_id = 0xF00 + i;
 		hps_sys.hps_sys_ops[i].enabled = 1;
 		hps_sys.hps_sys_ops[i].hps_sys_func_ptr = *hps_func[i];
-		tag_pr_info("%d: func_id %d, enabled %d\n", i, hps_sys.hps_sys_ops[i].func_id,
+		tag_pr_debug("%d: func_id %d, enabled %d\n", i, hps_sys.hps_sys_ops[i].func_id,
 			    hps_sys.hps_sys_ops[i].enabled);
 	}
 

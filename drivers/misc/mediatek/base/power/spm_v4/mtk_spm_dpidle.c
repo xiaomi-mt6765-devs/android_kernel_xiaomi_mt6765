@@ -297,7 +297,7 @@ static unsigned int spm_output_wake_reason(
 	if (log_cond & DEEPIDLE_LOG_FULL) {
 		wr = __spm_output_wake_reason(
 				wakesta, pcmdesc, false, "dpidle");
-		pr_info("oper_cond = %x\n", operation_cond);
+		pr_debug("oper_cond = %x\n", operation_cond);
 
 		if (log_cond & DEEPIDLE_LOG_RESOURCE_USAGE)
 			spm_resource_req_dump();
