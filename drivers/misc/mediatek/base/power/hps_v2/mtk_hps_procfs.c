@@ -84,7 +84,7 @@ static int hps_sanitize_var(unsigned int *hpsvar, unsigned int newv)
 		if (newv > 0)
 			rc = 0;
 	} else {
-		tag_pr_info("Unknown hps procfs node\n");
+		tag_pr_debug("Unknown hps procfs node\n");
 		rc = -EINVAL;
 	}
 
@@ -264,13 +264,13 @@ static ssize_t hps_num_base_perf_serv_proc_write(struct file *file,
 	    && (sscanf(desc, "%u %u", &little_num_base_perf_serv, &big_num_base_perf_serv) == 2)) {
 		if (little_num_base_perf_serv > num_possible_little_cpus()
 		    || little_num_base_perf_serv < 1) {
-			tag_pr_info("%s, bad argument(%u, %u)\n", __func__,
+			tag_pr_debug("%s, bad argument(%u, %u)\n", __func__,
 				    little_num_base_perf_serv, big_num_base_perf_serv);
 			return -EINVAL;
 		}
 
 		if (big_num_base_perf_serv > num_possible_big_cpus()) {
-			tag_pr_info("%s, bad argument(%u, %u)\n", __func__,
+			tag_pr_debug("%s, bad argument(%u, %u)\n", __func__,
 				    little_num_base_perf_serv, big_num_base_perf_serv);
 			return -EINVAL;
 		}
@@ -310,7 +310,7 @@ static ssize_t hps_num_base_perf_serv_proc_write(struct file *file,
 		   && !kstrtouint(desc, 0, &little_num_base_perf_serv)) {
 		if (little_num_base_perf_serv > num_possible_little_cpus()
 		    || little_num_base_perf_serv < 1) {
-			tag_pr_info("%s, bad argument(%u)\n", __func__,
+			tag_pr_debug("%s, bad argument(%u)\n", __func__,
 				    little_num_base_perf_serv);
 			return -EINVAL;
 		}
@@ -334,7 +334,7 @@ static ssize_t hps_num_base_perf_serv_proc_write(struct file *file,
 		return count;
 	}
 
-	tag_pr_info("%s, bad argument\n", __func__);
+	tag_pr_debug("%s, bad argument\n", __func__);
 
 	return -EINVAL;
 }
@@ -373,13 +373,13 @@ static ssize_t hps_num_limit_thermal_proc_write(struct file *file,
 	    && (sscanf(desc, "%u %u", &little_num_limit_thermal, &big_num_limit_thermal) == 2)) {
 		if (little_num_limit_thermal > num_possible_little_cpus()
 		    || little_num_limit_thermal < 1) {
-			tag_pr_info("%s, bad argument(%u, %u)\n", __func__,
+			tag_pr_debug("%s, bad argument(%u, %u)\n", __func__,
 				    little_num_limit_thermal, big_num_limit_thermal);
 			return -EINVAL;
 		}
 
 		if (big_num_limit_thermal > num_possible_big_cpus()) {
-			tag_pr_info("%s, bad argument(%u, %u)\n", __func__,
+			tag_pr_debug("%s, bad argument(%u, %u)\n", __func__,
 				    little_num_limit_thermal, big_num_limit_thermal);
 			return -EINVAL;
 		}
@@ -400,7 +400,7 @@ static ssize_t hps_num_limit_thermal_proc_write(struct file *file,
 		   && !kstrtouint(desc, 0, &little_num_limit_thermal)) {
 		if (little_num_limit_thermal > num_possible_little_cpus()
 		    || little_num_limit_thermal < 1) {
-			tag_pr_info("%s, bad argument(%u)\n", __func__,
+			tag_pr_debug("%s, bad argument(%u)\n", __func__,
 				    little_num_limit_thermal);
 			return -EINVAL;
 		}
@@ -416,7 +416,7 @@ static ssize_t hps_num_limit_thermal_proc_write(struct file *file,
 		return count;
 	}
 
-	tag_pr_info("%s, bad argument\n", __func__);
+	tag_pr_debug("%s, bad argument\n", __func__);
 
 	return -EINVAL;
 }
@@ -457,13 +457,13 @@ static ssize_t hps_num_limit_low_battery_proc_write(struct file *file,
 		       &big_num_limit_low_battery) == 2)) {
 		if (little_num_limit_low_battery > num_possible_little_cpus()
 		    || little_num_limit_low_battery < 1) {
-			tag_pr_info("%s, bad argument(%u, %u)\n", __func__,
+			tag_pr_debug("%s, bad argument(%u, %u)\n", __func__,
 				    little_num_limit_low_battery, big_num_limit_low_battery);
 			return -EINVAL;
 		}
 
 		if (big_num_limit_low_battery > num_possible_big_cpus()) {
-			tag_pr_info("%s, bad argument(%u, %u)\n", __func__,
+			tag_pr_debug("%s, bad argument(%u, %u)\n", __func__,
 				    little_num_limit_low_battery, big_num_limit_low_battery);
 			return -EINVAL;
 		}
@@ -484,7 +484,7 @@ static ssize_t hps_num_limit_low_battery_proc_write(struct file *file,
 		   && !kstrtouint(desc, 0, &little_num_limit_low_battery)) {
 		if (little_num_limit_low_battery > num_possible_little_cpus()
 		    || little_num_limit_low_battery < 1) {
-			tag_pr_info("%s, bad argument(%u)\n", __func__,
+			tag_pr_debug("%s, bad argument(%u)\n", __func__,
 				    little_num_limit_low_battery);
 			return -EINVAL;
 		}
@@ -500,7 +500,7 @@ static ssize_t hps_num_limit_low_battery_proc_write(struct file *file,
 		return count;
 	}
 
-	tag_pr_info("%s, bad argument\n", __func__);
+	tag_pr_debug("%s, bad argument\n", __func__);
 
 	return -EINVAL;
 }
@@ -545,14 +545,14 @@ static ssize_t hps_num_limit_ultra_power_saving_proc_write(struct file *file,
 		    &big_num_limit_ultra_power_saving) == 2)) {
 		if (little_num_limit_ultra_power_saving >
 		    num_possible_little_cpus() || little_num_limit_ultra_power_saving < 1) {
-			tag_pr_info
+			tag_pr_debug
 			    ("%s, bad argument(%u, %u)\n", __func__,
 			     little_num_limit_ultra_power_saving, big_num_limit_ultra_power_saving);
 			return -EINVAL;
 		}
 
 		if (big_num_limit_ultra_power_saving > num_possible_big_cpus()) {
-			tag_pr_info
+			tag_pr_debug
 			    ("%s, bad argument(%u, %u)\n", __func__,
 			     little_num_limit_ultra_power_saving, big_num_limit_ultra_power_saving);
 			return -EINVAL;
@@ -574,7 +574,7 @@ static ssize_t hps_num_limit_ultra_power_saving_proc_write(struct file *file,
 		   && !kstrtouint(desc, 0, &little_num_limit_ultra_power_saving)) {
 		if (little_num_limit_ultra_power_saving > num_possible_little_cpus()
 		    || little_num_limit_ultra_power_saving < 1) {
-			tag_pr_info("%s, bad argument(%u)\n", __func__,
+			tag_pr_debug("%s, bad argument(%u)\n", __func__,
 				    little_num_limit_ultra_power_saving);
 			return -EINVAL;
 		}
@@ -590,7 +590,7 @@ static ssize_t hps_num_limit_ultra_power_saving_proc_write(struct file *file,
 		return count;
 	}
 
-	tag_pr_info("%s, bad argument\n", __func__);
+	tag_pr_debug("%s, bad argument\n", __func__);
 
 	return -EINVAL;
 }
@@ -631,13 +631,13 @@ static ssize_t hps_num_limit_power_serv_proc_write(struct file *file,
 	    (sscanf(desc, "%u %u", &little_num_limit_power_serv, &big_num_limit_power_serv) == 2)) {
 		if (little_num_limit_power_serv > num_possible_little_cpus()
 		    || little_num_limit_power_serv < 1) {
-			tag_pr_info("%s, bad argument(%u, %u)\n", __func__,
+			tag_pr_debug("%s, bad argument(%u, %u)\n", __func__,
 				    little_num_limit_power_serv, big_num_limit_power_serv);
 			return -EINVAL;
 		}
 
 		if (big_num_limit_power_serv > num_possible_big_cpus()) {
-			tag_pr_info("%s, bad argument(%u, %u)\n", __func__,
+			tag_pr_debug("%s, bad argument(%u, %u)\n", __func__,
 				    little_num_limit_power_serv, big_num_limit_power_serv);
 			return -EINVAL;
 		}
@@ -658,7 +658,7 @@ static ssize_t hps_num_limit_power_serv_proc_write(struct file *file,
 		   && !kstrtouint(desc, 0, &little_num_limit_power_serv)) {
 		if (little_num_limit_power_serv > num_possible_little_cpus()
 		    || little_num_limit_power_serv < 1) {
-			tag_pr_info("%s, bad argument(%u)\n", __func__,
+			tag_pr_debug("%s, bad argument(%u)\n", __func__,
 				    little_num_limit_power_serv);
 			return -EINVAL;
 		}
@@ -674,7 +674,7 @@ static ssize_t hps_num_limit_power_serv_proc_write(struct file *file,
 		return count;
 	}
 
-	tag_pr_info("%s, bad argument\n", __func__);
+	tag_pr_debug("%s, bad argument\n", __func__);
 
 
 	return -EINVAL;
@@ -723,7 +723,7 @@ int hps_procfs_init(void)
 		PROC_ENTRY(power_mode),
 	};
 
-	tag_pr_info("%s\n", __func__);
+	tag_pr_debug("%s\n", __func__);
 
 	hps_dir = proc_mkdir("hps", NULL);
 	if (hps_dir == NULL) {

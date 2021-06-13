@@ -551,19 +551,19 @@ static ssize_t golden_test_proc_write(struct file *file,
 						REMAP_SIZE_MASK + 1);
 
 				if (!table[br.table_pos].va)
-					pr_info("Power_gs: va(0x%x, 0x%x)\n"
+					pr_debug("Power_gs: va(0x%x, 0x%x)\n"
 						, base, REMAP_SIZE_MASK + 1);
 
 				if (br.table_pos < br.table_size)
 					br.table_pos++;
 				else
-					pr_info("Power_gs: base_remap full\n");
+					pr_debug("Power_gs: base_remap full\n");
 			}
 		} else {
 			if (!pmd.addr_array)
-				pr_info("Power_gs: pmd init fail\n");
+				pr_debug("Power_gs: pmd init fail\n");
 			else
-				pr_info("Power_gs: pmd array is full\n");
+				pr_debug("Power_gs: pmd array is full\n");
 		}
 	}
 	/* XXX: 63 = sizeof(cmd) - 1 */

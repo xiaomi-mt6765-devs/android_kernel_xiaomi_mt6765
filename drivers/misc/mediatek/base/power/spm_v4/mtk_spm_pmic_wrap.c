@@ -35,7 +35,7 @@
 #define spm_pwrap_warn(fmt, args...)	\
 	pr_warn(TAG"[WARN]"fmt, ##args)
 #define spm_pwrap_info(fmt, args...)	\
-	pr_warn(TAG""fmt, ##args)	/* pr_info(TAG""fmt, ##args) */
+	pr_warn(TAG""fmt, ##args)	/* pr_debug(TAG""fmt, ##args) */
 #define spm_pwrap_debug(fmt, args...)	\
 	pr_debug(TAG""fmt, ##args)
 
