@@ -568,14 +568,14 @@ extern bool spm_get_dfd_wakeup_src(void);
 	 (!!(resume) << 6) |			\
 	 ((event) & 0x3f))
 
-#define spm_emerg(fmt, args...)		pr_info("[SPM] " fmt, ##args)
-#define spm_alert(fmt, args...)		pr_info("[SPM] " fmt, ##args)
-#define spm_crit(fmt, args...)		pr_info("[SPM] " fmt, ##args)
-#define spm_err(fmt, args...)		pr_info("[SPM] " fmt, ##args)
-#define spm_warn(fmt, args...)		pr_info("[SPM] " fmt, ##args)
+#define spm_emerg(fmt, args...)		pr_debug("[SPM] " fmt, ##args)
+#define spm_alert(fmt, args...)		pr_debug("[SPM] " fmt, ##args)
+#define spm_crit(fmt, args...)		pr_debug("[SPM] " fmt, ##args)
+#define spm_err(fmt, args...)		pr_debug("[SPM] " fmt, ##args)
+#define spm_warn(fmt, args...)		pr_debug("[SPM] " fmt, ##args)
 #define spm_notice(fmt, args...)	pr_notice("[SPM] " fmt, ##args)
-#define spm_info(fmt, args...)		pr_info("[SPM] " fmt, ##args)
-#define spm_debug(fmt, args...)		pr_info("[SPM] " fmt, ##args)	/* pr_debug show nothing */
+#define spm_info(fmt, args...)		pr_debug("[SPM] " fmt, ##args)
+#define spm_debug(fmt, args...)		pr_debug("[SPM] " fmt, ##args)	/* pr_debug show nothing */
 
 /* just use in suspend flow for important log due to console suspend */
 #define spm_crit2(fmt, args...)		\

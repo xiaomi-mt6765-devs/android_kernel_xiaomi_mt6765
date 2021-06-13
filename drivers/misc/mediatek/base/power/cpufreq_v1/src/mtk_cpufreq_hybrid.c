@@ -138,7 +138,7 @@ int Ripi_cpu_dvfs_thread(void *data)
 	unsigned long long tf_sum, t_diff, avg_f;
 	int j;
 
-	/* tag_pr_info("CPU DVFS received thread\n"); */
+	/* tag_pr_debug("CPU DVFS received thread\n"); */
 	cpufreq_act.data = (void *)cpufreq_buf;
 	ret = sspm_ipi_recv_registration_ex(IPI_ID_CPU_DVFS,
 						&cpudvfs_lock, &cpufreq_act);
@@ -151,14 +151,14 @@ int Ripi_cpu_dvfs_thread(void *data)
 		} while (!kthread_should_stop());
 		return (-1);
 	}
-	/* tag_pr_info("sspm_ipi_recv_registration */
+	/* tag_pr_debug("sspm_ipi_recv_registration */
 	/*IPI_ID_CPU_DVFS pass!!(%d)\n", ret); */
 
 	/* an endless loop in which we are doing our work */
 	do {
-		/* tag_pr_info("sspm_ipi_recv_wait IPI_ID_CPU_DVFS\n"); */
+		/* tag_pr_debug("sspm_ipi_recv_wait IPI_ID_CPU_DVFS\n"); */
 		sspm_ipi_recv_wait(IPI_ID_CPU_DVFS);
-		/* tag_pr_info("Info: CPU DVFS thread received ID=%d,*/
+		/* tag_pr_debug("Info: CPU DVFS thread received ID=%d,*/
 		/* i=%d\n", cpufreq_act.id, i); */
 		spin_lock_irqsave(&cpudvfs_lock, flags);
 		memcpy(pwdata, cpufreq_buf, sizeof(pwdata));
@@ -974,7 +974,7 @@ void __init cpuhvfs_pvt_tbl_create(void)
 #endif
 
 	recordRef = ioremap_nocache(DBG_REPO_TBL_S, PVT_TBL_SIZE);
-	tag_pr_info("DVFS - @(Record)%s----->(%p)\n", __func__, recordRef);
+	tag_pr_debug("DVFS - @(Record)%s----->(%p)\n", __func__, recordRef);
 	memset_io((u8 *)recordRef, 0x00, PVT_TBL_SIZE);
 
 	recordTbl = xrecordTbl[lv];
@@ -1067,7 +1067,7 @@ void __init cpuhvfs_pvt_tbl_create(void)
 
 #ifdef CCI_MAP_TBL_SUPPORT
 	record_CCI_Ref = ioremap_nocache(DBG_REPO_CCI_TBL_S, PVT_CCI_TBL_SIZE);
-	tag_pr_info("DVFS - @(Record)%s----->(%p)\n", __func__, record_CCI_Ref);
+	tag_pr_debug("DVFS - @(Record)%s----->(%p)\n", __func__, record_CCI_Ref);
 	memset_io((u8 *)record_CCI_Ref, 0x00, PVT_CCI_TBL_SIZE);
 
 	record_CCI_Tbl = xrecord_CCI_Tbl[lv];

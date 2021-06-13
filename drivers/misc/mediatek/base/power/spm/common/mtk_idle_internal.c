@@ -297,7 +297,7 @@ int mtk_idle_enter(
 	#if defined(CONFIG_SERIAL_8250_MT6577)
 	if (!(idle_flag & MTK_IDLE_LOG_DUMP_LP_GS)) {
 		if (mtk8250_request_to_sleep()) {
-			pr_info_ratelimited("Power/swap %s Fail to request uart sleep\n",
+			pr_debug_ratelimited("Power/swap %s Fail to request uart sleep\n",
 				__func__);
 			goto RESTORE_UART;
 		}
@@ -387,14 +387,14 @@ int mtk_idle_notifier_register(struct notifier_block *n)
 	symname = kallsyms_lookup((unsigned long)n->notifier_call,
 			NULL, NULL, NULL, namebuf);
 	if (symname) {
-		pr_info("Power/swap [mt_idle_ntf] <%02d>%08lx (%s)\n",
+		pr_debug("Power/swap [mt_idle_ntf] <%02d>%08lx (%s)\n",
 			index++, (unsigned long)n->notifier_call, symname);
 	} else {
-		pr_info("Power/swap [mt_idle_ntf] <%02d>%08lx\n",
+		pr_debug("Power/swap [mt_idle_ntf] <%02d>%08lx\n",
 			index++, (unsigned long)n->notifier_call);
 	}
 	#else
-	pr_info("Power/swap [mt_idle_ntf] <%02d>%08lx\n",
+	pr_debug("Power/swap [mt_idle_ntf] <%02d>%08lx\n",
 			index++, (unsigned long)n->notifier_call);
 	#endif
 

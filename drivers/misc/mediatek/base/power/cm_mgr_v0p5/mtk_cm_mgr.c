@@ -181,11 +181,11 @@ static int cm_mgr_fb_notifier_callback(struct notifier_block *self,
 
 	switch (blank) {
 	case FB_BLANK_UNBLANK:
-		pr_info("#@# %s(%d) SCREEN ON\n", __func__, __LINE__);
+		pr_debug("#@# %s(%d) SCREEN ON\n", __func__, __LINE__);
 		cm_mgr_blank_status = 0;
 		break;
 	case FB_BLANK_POWERDOWN:
-		pr_info("#@# %s(%d) SCREEN OFF\n", __func__, __LINE__);
+		pr_debug("#@# %s(%d) SCREEN OFF\n", __func__, __LINE__);
 		cm_mgr_blank_status = 1;
 		/* unreq */
 		vcore_dram_opp = CM_MGR_EMI_OPP;
@@ -974,24 +974,24 @@ static ssize_t dbg_cm_mgr_proc_write(struct file *file,
 			err = request_firmware(&fw, CPU_FW_FILE,
 						&cm_mgr_device);
 			if (err)
-				pr_info("Failed to load %s, err = %d.\n",
+				pr_debug("Failed to load %s, err = %d.\n",
 					CPU_FW_FILE, err);
 		} while (err == -EAGAIN && j < 5);
 
 		if (err)
-			pr_info("Failed to load %s, err = %d.\n",
+			pr_debug("Failed to load %s, err = %d.\n",
 				CPU_FW_FILE, err);
 
 		if (!err) {
-			pr_info("request_firmware() %s, size 0x%x\n",
+			pr_debug("request_firmware() %s, size 0x%x\n",
 				CPU_FW_FILE, (int)fw->size);
 			update++;
 
 			copy_size = sizeof(vcore_power_gain_lp4);
-			pr_info("offset 0x%x, copy_size 0x%x\n",
+			pr_debug("offset 0x%x, copy_size 0x%x\n",
 				offset, copy_size);
 			if (fw->size < (copy_size + offset)) {
-				pr_info(
+				pr_debug(
 					"oversize vcore_power_gain_lp4 0x%x, 0x%x",
 					(int)fw->size, copy_size + offset);
 				goto out_fw;
@@ -1000,10 +1000,10 @@ static ssize_t dbg_cm_mgr_proc_write(struct file *file,
 
 			offset += copy_size;
 			copy_size = sizeof(vcore_power_gain_lp3);
-			pr_info("offset 0x%x, copy_size 0x%x\n",
+			pr_debug("offset 0x%x, copy_size 0x%x\n",
 				offset, copy_size);
 			if (fw->size < (copy_size + offset)) {
-				pr_info(
+				pr_debug(
 					"oversize vcore_power_gain_lp3 0x%x, 0x%x",
 					(int)fw->size, copy_size + offset);
 				goto out_fw;
@@ -1014,10 +1014,10 @@ static ssize_t dbg_cm_mgr_proc_write(struct file *file,
 #ifndef ATF_SECURE_SMC_PER_CPU_STALL_RATIO
 			offset += copy_size;
 			copy_size = sizeof(cpu_power_gain_up_low_1);
-			pr_info("offset 0x%x, copy_size 0x%x\n",
+			pr_debug("offset 0x%x, copy_size 0x%x\n",
 				offset, copy_size);
 			if (fw->size < (copy_size + offset)) {
-				pr_info(
+				pr_debug(
 					"oversize cpu_power_gain_up_low_1 0x%x, 0x%x",
 					(int)fw->size, copy_size + offset);
 				goto out_fw;
@@ -1027,10 +1027,10 @@ static ssize_t dbg_cm_mgr_proc_write(struct file *file,
 
 			offset += copy_size;
 			copy_size = sizeof(cpu_power_gain_down_low_1);
-			pr_info("offset 0x%x, copy_size 0x%x\n",
+			pr_debug("offset 0x%x, copy_size 0x%x\n",
 				offset, copy_size);
 			if (fw->size < (copy_size + offset)) {
-				pr_info(
+				pr_debug(
 					"oversize cpu_power_gain_down_low_1 0x%x, 0x%x",
 					(int)fw->size, copy_size + offset);
 				goto out_fw;
@@ -1040,10 +1040,10 @@ static ssize_t dbg_cm_mgr_proc_write(struct file *file,
 
 			offset += copy_size;
 			copy_size = sizeof(cpu_power_gain_up_high_1);
-			pr_info("offset 0x%x, copy_size 0x%x\n",
+			pr_debug("offset 0x%x, copy_size 0x%x\n",
 				offset, copy_size);
 			if (fw->size < (copy_size + offset)) {
-				pr_info(
+				pr_debug(
 					"oversize cpu_power_gain_up_high_1 0x%x, 0x%x",
 					(int)fw->size, copy_size + offset);
 				goto out_fw;
@@ -1053,10 +1053,10 @@ static ssize_t dbg_cm_mgr_proc_write(struct file *file,
 
 			offset += copy_size;
 			copy_size = sizeof(cpu_power_gain_down_high_1);
-			pr_info("offset 0x%x, copy_size 0x%x\n",
+			pr_debug("offset 0x%x, copy_size 0x%x\n",
 				offset, copy_size);
 			if (fw->size < (copy_size + offset)) {
-				pr_info(
+				pr_debug(
 					"oversize cpu_power_gain_down_high_1 0x%x, 0x%x",
 					(int)fw->size, copy_size + offset);
 				goto out_fw;
@@ -1066,10 +1066,10 @@ static ssize_t dbg_cm_mgr_proc_write(struct file *file,
 
 			offset += copy_size;
 			copy_size = sizeof(cpu_power_gain_up_low_2);
-			pr_info("offset 0x%x, copy_size 0x%x\n",
+			pr_debug("offset 0x%x, copy_size 0x%x\n",
 				offset, copy_size);
 			if (fw->size < (copy_size + offset)) {
-				pr_info(
+				pr_debug(
 					"oversize cpu_power_gain_up_low_2 0x%x, 0x%x",
 					(int)fw->size, copy_size + offset);
 				goto out_fw;
@@ -1079,10 +1079,10 @@ static ssize_t dbg_cm_mgr_proc_write(struct file *file,
 
 			offset += copy_size;
 			copy_size = sizeof(cpu_power_gain_down_low_2);
-			pr_info("offset 0x%x, copy_size 0x%x\n",
+			pr_debug("offset 0x%x, copy_size 0x%x\n",
 				offset, copy_size);
 			if (fw->size < (copy_size + offset)) {
-				pr_info(
+				pr_debug(
 					"oversize cpu_power_gain_down_low_2 0x%x, 0x%x",
 					(int)fw->size, copy_size + offset);
 				goto out_fw;
@@ -1092,10 +1092,10 @@ static ssize_t dbg_cm_mgr_proc_write(struct file *file,
 
 			offset += copy_size;
 			copy_size = sizeof(cpu_power_gain_up_high_2);
-			pr_info("offset 0x%x, copy_size 0x%x\n",
+			pr_debug("offset 0x%x, copy_size 0x%x\n",
 				offset, copy_size);
 			if (fw->size < (copy_size + offset)) {
-				pr_info("oversize cpu_power_gain_up_high_2 0x%x, 0x%x",
+				pr_debug("oversize cpu_power_gain_up_high_2 0x%x, 0x%x",
 					(int)fw->size, copy_size + offset);
 				goto out_fw;
 			}
@@ -1104,10 +1104,10 @@ static ssize_t dbg_cm_mgr_proc_write(struct file *file,
 
 			offset += copy_size;
 			copy_size = sizeof(cpu_power_gain_down_high_2);
-			pr_info("offset 0x%x, copy_size 0x%x\n", offset,
+			pr_debug("offset 0x%x, copy_size 0x%x\n", offset,
 				copy_size);
 			if (fw->size < (copy_size + offset)) {
-				pr_info(
+				pr_debug(
 					"oversize cpu_power_gain_down_high_2 0x%x, 0x%x",
 					(int)fw->size, copy_size + offset);
 				goto out_fw;
@@ -1118,10 +1118,10 @@ static ssize_t dbg_cm_mgr_proc_write(struct file *file,
 
 			offset += copy_size;
 			copy_size = sizeof(_v2f_all);
-			pr_info("offset 0x%x, copy_size 0x%x\n", offset,
+			pr_debug("offset 0x%x, copy_size 0x%x\n", offset,
 				copy_size);
 			if (fw->size < (copy_size + offset)) {
-				pr_info("oversize _v2f_all 0x%x, 0x%x",
+				pr_debug("oversize _v2f_all 0x%x, 0x%x",
 					(int)fw->size, copy_size + offset);
 				goto out_fw;
 			}
@@ -1219,7 +1219,7 @@ int __init cm_mgr_module_init(void)
 	/* register fb notifier to get screen on/off event */
 	r = fb_register_client(&cm_mgr_fb_notifier);
 	if (r) {
-		pr_info("FAILED TO REGISTER FB CLIENT (%d)\n", r);
+		pr_debug("FAILED TO REGISTER FB CLIENT (%d)\n", r);
 		return r;
 	}
 

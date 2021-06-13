@@ -70,11 +70,11 @@
  */
 #define TAG	"[HPS] "
 #define tag_pr_notice(fmt, args...)	pr_notice(TAG fmt, ##args)
-#define tag_pr_info(fmt, args...)	pr_info(TAG fmt, ##args)
+#define tag_pr_debug(fmt, args...)	pr_debug(TAG fmt, ##args)
 #define tag_pr_debug(fmt, args...)	pr_debug(TAG fmt, ##args)
 
 #if EN_ISR_LOG
-#define hps_isr_info(fmt, args...)          tag_pr_info(fmt, ##args)
+#define hps_isr_info(fmt, args...)          tag_pr_debug(fmt, ##args)
 #else
 #define hps_isr_info(fmt, args...)          tag_pr_debug(fmt, ##args)
 #endif
