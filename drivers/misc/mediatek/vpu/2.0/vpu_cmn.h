@@ -505,11 +505,11 @@ void vpu_met_event_leave(int core, int algo_id);
 #else
 #define LOG_DBG(format, args...)
 #endif
-#define LOG_INF(format, args...)    pr_info(VPU_TAG " " format, ##args)
-#define LOG_WRN(format, args...)    pr_info(VPU_TAG "[warn] " format, ##args)
-#define LOG_ERR(format, args...)    pr_info(VPU_TAG "[error] " format, ##args)
+#define LOG_DBG(format, args...)    pr_debug(VPU_TAG " " format, ##args)
+#define LOG_WRN(format, args...)    pr_debug(VPU_TAG "[warn] " format, ##args)
+#define LOG_ERR(format, args...)    pr_debug(VPU_TAG "[error] " format, ##args)
 
-#define PRINT_LINE() pr_info(VPU_TAG " %s (%s:%d)\n", \
+#define PRINT_LINE() pr_debug(VPU_TAG " %s (%s:%d)\n", \
 						__func__,  __FILE__, __LINE__)
 
 #define vpu_print_seq(seq_file, format, args...) \
