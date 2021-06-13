@@ -156,7 +156,7 @@ static void vpu_test_wpp(void)
 
 	/* compare with golden */
 	ret = memcmp(buf_va + img_size, g_datadst_640x360_golden_wpp, img_size);
-	LOG_INF("comparison result:%d", ret);
+	LOG_DBG("comparison result:%d", ret);
 	vpu_save_file("/data/vpu_result_wpp.raw", buf_va + img_size, img_size);
 
 	vpu_free_request(req);
@@ -237,7 +237,7 @@ static void vpu_test_be_true(void)
 	 */
 	memset(buf_va, 0x2, width * height);
 	ret = memcmp(buf_va, buf_va + width * height, width * height);
-	LOG_INF("vpu test: comparison result=%d and param5=%d", ret,
+	LOG_DBG("vpu test: comparison result=%d and param5=%d", ret,
 		sett->param5);
 
 	vpu_free_request(req);
@@ -405,7 +405,7 @@ static int vpu_test_set(void *data, u64 val)
 	struct vpu_algo *algo;
 	struct vpu_request *req;
 
-	LOG_INF("vpu_test_set:val=%llu\n", val);
+	LOG_DBG("vpu_test_set:val=%llu\n", val);
 
 	switch (val) {
 	case 0:
@@ -528,7 +528,7 @@ static int vpu_test_set(void *data, u64 val)
 		vpu_user_test_case3(NULL);
 		break;
 	default:
-		LOG_INF("vpu_test_set error,val=%llu\n", val);
+		LOG_DBG("vpu_test_set error,val=%llu\n", val);
 	}
 
 	test_value = val;
@@ -548,7 +548,7 @@ DEFINE_SIMPLE_ATTRIBUTE(vpu_debug_test_fops, vpu_test_get, vpu_test_set,
 static int vpu_log_level_set(void *data, u64 val)
 {
 	g_vpu_log_level = val & 0xf;
-	LOG_INF("g_vpu_log_level: %d\n", g_vpu_log_level);
+	LOG_DBG("g_vpu_log_level: %d\n", g_vpu_log_level);
 
 	return 0;
 }

@@ -696,9 +696,9 @@ static int vpu_mmap(struct file *flip, struct vm_area_struct *vma)
 	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
 	pfn = vma->vm_pgoff << PAGE_SHIFT;
 
-	LOG_INF("vpu_mmap: vm_pgoff(0x%lx),pfn(0x%x),phy(0x%lx)",
+	LOG_DBG("vpu_mmap: vm_pgoff(0x%lx),pfn(0x%x),phy(0x%lx)",
 			vma->vm_pgoff, pfn, vma->vm_pgoff << PAGE_SHIFT);
-	LOG_INF("vpu_mmap: vm_start(0x%lx), vm_end(0x%lx), length(0x%lx)\n",
+	LOG_DBG("vpu_mmap: vm_start(0x%lx), vm_end(0x%lx), length(0x%lx)\n",
 			vma->vm_start, vma->vm_end, length);
 
 	switch (pfn) {
@@ -777,7 +777,7 @@ static int vpu_probe(struct platform_device *pdev)
 
 	node = pdev->dev.of_node;
 	vpu_device->dev = &pdev->dev;
-	LOG_INF("probe 0, pdev id = %d name = %s\n", pdev->id, pdev->name);
+	LOG_DBG("probe 0, pdev id = %d name = %s\n", pdev->id, pdev->name);
 
 #ifdef MTK_VPU_EMULATOR
 	/* emulator will fill vpu_base and bin_base */
@@ -796,7 +796,7 @@ static int vpu_probe(struct platform_device *pdev)
 			return -ENODEV;
 		}
 
-		LOG_INF("probe 1, phy_addr: 0x%x, phy_size: 0x%x\n",
+		LOG_DBG("probe 1, phy_addr: 0x%x, phy_size: 0x%x\n",
 				phy_addr, phy_size);
 		vpu_device->bin_base = (uint64_t)ioremap_wc(phy_addr, phy_size);
 		vpu_device->bin_pa = phy_addr;
@@ -805,7 +805,7 @@ static int vpu_probe(struct platform_device *pdev)
 #endif
 
 	vpu_device->irq_num = irq_of_parse_and_map(node, 0);
-	LOG_INF("probe2, vpu_base_0x%lx, bin_base_0x%lx, irq_num,pdev: %d_%p\n",
+	LOG_DBG("probe2, vpu_base_0x%lx, bin_base_0x%lx, irq_num,pdev: %d_%p\n",
 		 vpu_device->vpu_base,  vpu_device->bin_base,
 		 vpu_device->irq_num, vpu_device->dev);
 
@@ -848,7 +848,7 @@ out:
 			vpu_unreg_chardev();
 	}
 
-	LOG_INF("probe vpu driver\n");
+	LOG_DBG("probe vpu driver\n");
 	return ret;
 }
 
