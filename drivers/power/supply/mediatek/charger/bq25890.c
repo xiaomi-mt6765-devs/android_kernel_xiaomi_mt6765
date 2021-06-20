@@ -167,7 +167,7 @@ unsigned int charging_value_to_parameter(const unsigned int *parameter,
 	if (val < array_size)
 		return parameter[val];
 
-	pr_info("Can't find the parameter\n");
+	pr_debug("Can't find the parameter\n");
 	return parameter[0];
 }
 
@@ -184,7 +184,7 @@ unsigned int charging_parameter_to_value(const unsigned int *parameter,
 			return i;
 	}
 
-	pr_info("NO register value match\n");
+	pr_debug("NO register value match\n");
 	/* TODO: ASSERT(0);    // not find the value */
 	return 0;
 }
@@ -211,7 +211,7 @@ static unsigned int bmt_find_closest_level(const unsigned int *pList,
 			}
 		}
 
-		pr_info("Can't find closest level\n");
+		pr_debug("Can't find closest level\n");
 		return pList[0];
 	}
 
@@ -221,7 +221,7 @@ static unsigned int bmt_find_closest_level(const unsigned int *pList,
 			return pList[i];
 	}
 
-	pr_info("Can't find closest level\n");
+	pr_debug("Can't find closest level\n");
 	return pList[number - 1];
 }
 
@@ -323,7 +323,7 @@ unsigned int bq25890_read_byte(unsigned char cmd, unsigned char *returnData)
 		ret = i2c_transfer(new_client->adapter, msgs, xfers);
 
 		if (ret == -ENXIO) {
-			pr_info("skipping non-existent adapter %s\n",
+			pr_debug("skipping non-existent adapter %s\n",
 				new_client->adapter->name);
 			break;
 		}
@@ -362,7 +362,7 @@ unsigned int bq25890_write_byte(unsigned char cmd, unsigned char writeData)
 		ret = i2c_transfer(new_client->adapter, msgs, xfers);
 
 		if (ret == -ENXIO) {
-			pr_info("skipping non-existent adapter %s\n",
+			pr_debug("skipping non-existent adapter %s\n",
 				new_client->adapter->name);
 			break;
 		}
@@ -414,7 +414,7 @@ unsigned int bq25890_config_interface(unsigned char RegNum, unsigned char val,
 
 	/* Check */
 	/* bq25890_read_byte(RegNum, &bq25890_reg);
-	 * pr_info("[%s] Check Reg[%x]=0x%x\n", __func__, RegNum, bq25890_reg);
+	 * pr_debug("[%s] Check Reg[%x]=0x%x\n", __func__, RegNum, bq25890_reg);
 	 */
 
 	return ret;
@@ -1125,7 +1125,7 @@ static int bq25890_set_charger_type(struct bq25890_info *info)
 
 	info->psy = power_supply_get_by_name("charger");
 	if (!info->psy) {
-		pr_info("%s: get power supply failed\n", __func__);
+		pr_debug("%s: get power supply failed\n", __func__);
 		return -EINVAL;
 	}
 
@@ -1196,7 +1196,7 @@ static int bq25890_enable_charging(struct charger_device *chg_dev, bool en)
 	} else {
 		bq25890_chg_en(en);
 		if (charging_get_error_state())
-			pr_info("under test mode: disable charging\n");
+			pr_debug("under test mode: disable charging\n");
 		/* bq25890_set_en_hiz(0x1); */
 	}
 
@@ -1294,7 +1294,7 @@ static int bq25890_set_cv_voltage(struct charger_device *chg_dev, u32 cv)
 	register_value =
 	    charging_parameter_to_value(VBAT_CV_VTH, ARRAY_SIZE(VBAT_CV_VTH),
 					set_cv_voltage);
-	pr_info("%s: register_value=0x%x %d %d\n", __func__,
+	pr_debug("%s: register_value=0x%x %d %d\n", __func__,
 		register_value, cv, set_cv_voltage);
 	bq25890_set_vreg(register_value);
 
@@ -1351,7 +1351,7 @@ static int bq25890_set_vindpm_voltage(struct charger_device *chg_dev,
 	 */
 	ret = bq25890_get_is_power_path_enable(chg_dev, &is_power_path_enable);
 	if (ret == 0 && !is_power_path_enable) {
-		pr_info("%s: power path is disable, skip setting vindpm = %d\n",
+		pr_debug("%s: power path is disable, skip setting vindpm = %d\n",
 			__func__, vindpm);
 		return 0;
 	}
@@ -1503,7 +1503,7 @@ static int bq25890_set_ta_current_pattern(struct charger_device *chg_dev,
 		pr_debug("mtk_ta_increase() off 6");
 		msleep(50);
 
-		pr_info("mtk_ta_increase() end\n");
+		pr_debug("mtk_ta_increase() end\n");
 
 		bq25890_set_ichg(0x8);	/* 512mA */
 		msleep(200);
@@ -1559,7 +1559,7 @@ static int bq25890_set_ta_current_pattern(struct charger_device *chg_dev,
 		pr_debug("mtk_ta_decrease() off 6");
 		msleep(50);
 
-		pr_info("mtk_ta_decrease() end\n");
+		pr_debug("mtk_ta_decrease() end\n");
 
 		bq25890_set_ichg(0x8);	/* 512mA */
 	}
@@ -1622,7 +1622,7 @@ static int bq25890_set_ta20_current_pattern(struct charger_device *chg_dev,
 			cptime[j][0] = PEOFFTIME;
 			cptime[j][1] = dtime(j);
 			if (cptime[j][1] < 30 || cptime[j][1] > 65) {
-				pr_info("%s fail1: idx:%d target:%d actual:%d\n",
+				pr_debug("%s fail1: idx:%d target:%d actual:%d\n",
 					__func__, i, PEOFFTIME, cptime[j][1]);
 				return -EIO;
 			}
@@ -1633,7 +1633,7 @@ static int bq25890_set_ta20_current_pattern(struct charger_device *chg_dev,
 			cptime[j][0] = PEONTIME;
 			cptime[j][1] = dtime(j);
 			if (cptime[j][1] < 90 || cptime[j][1] > 115) {
-				pr_info("%s fail2: idx:%d target:%d actual:%d\n",
+				pr_debug("%s fail2: idx:%d target:%d actual:%d\n",
 					__func__, i, PEOFFTIME, cptime[j][1]);
 				return -EIO;
 			}
@@ -1646,7 +1646,7 @@ static int bq25890_set_ta20_current_pattern(struct charger_device *chg_dev,
 			cptime[j][0] = PEONTIME;
 			cptime[j][1] = dtime(j);
 			if (cptime[j][1] < 90 || cptime[j][1] > 115) {
-				pr_info("%s fail3: idx:%d target:%d actual:%d\n",
+				pr_debug("%s fail3: idx:%d target:%d actual:%d\n",
 					__func__, i, PEOFFTIME, cptime[j][1]);
 				return -EIO;
 			}
@@ -1657,7 +1657,7 @@ static int bq25890_set_ta20_current_pattern(struct charger_device *chg_dev,
 			cptime[j][0] = PEOFFTIME;
 			cptime[j][1] = dtime(j);
 			if (cptime[j][1] < 30 || cptime[j][1] > 65) {
-				pr_info("%s fail4: idx:%d target:%d actual:%d\n",
+				pr_debug("%s fail4: idx:%d target:%d actual:%d\n",
 					__func__, i, PEOFFTIME, cptime[j][1]);
 				return -EIO;
 			}
@@ -1671,7 +1671,7 @@ static int bq25890_set_ta20_current_pattern(struct charger_device *chg_dev,
 	cptime[j][0] = 160;
 	cptime[j][1] = dtime(j);
 	if (cptime[j][1] < 150 || cptime[j][1] > 240) {
-		pr_info("%s fail5: idx:%d target:%d actual:%d\n",
+		pr_debug("%s fail5: idx:%d target:%d actual:%d\n",
 			__func__, i, PEOFFTIME, cptime[j][1]);
 		return -EIO;
 	}
@@ -1681,13 +1681,13 @@ static int bq25890_set_ta20_current_pattern(struct charger_device *chg_dev,
 	msleep(30);
 	bq25890_set_iinlim(0xc);
 
-	pr_info("[%s]:chr_vol:%d bit:%d time:%3d %3d %3d %3d %3d %3d %3d %3d %3d %3d %3d!!\n",
+	pr_debug("[%s]:chr_vol:%d bit:%d time:%3d %3d %3d %3d %3d %3d %3d %3d %3d %3d %3d!!\n",
 		__func__, chr_vol, value, cptime[1][0], cptime[2][0],
 		cptime[3][0], cptime[4][0], cptime[5][0], cptime[6][0],
 		cptime[7][0], cptime[8][0], cptime[9][0], cptime[10][0],
 		cptime[11][0]);
 
-	pr_info("[%s]:chr_vol:%d bit:%d time:%3d %3d %3d %3d %3d %3d %3d %3d %3d %3d %3d!!\n",
+	pr_debug("[%s]:chr_vol:%d bit:%d time:%3d %3d %3d %3d %3d %3d %3d %3d %3d %3d %3d!!\n",
 		__func__, chr_vol, value, cptime[1][1], cptime[2][1],
 		cptime[3][1], cptime[4][1], cptime[5][1], cptime[6][1],
 		cptime[7][1], cptime[8][1], cptime[9][1], cptime[10][1],
@@ -1727,7 +1727,7 @@ static int bq25890_dump_register(struct charger_device *chg_dev)
 	vbus = bq25890_get_vbus();
 	vdpm = bq25890_get_vdpm_state();
 	fault = bq25890_get_chrg_fault_state();
-	pr_info("[%s]Ibat=%d, Ilim=%d, Vbus=%d, err=%d, Ichg=%d, Vbat=%d, ChrStat=%d, CHGEN=%d, VDPM=%d\n",
+	pr_debug("[%s]Ibat=%d, Ilim=%d, Vbus=%d, err=%d, Ichg=%d, Vbat=%d, ChrStat=%d, CHGEN=%d, VDPM=%d\n",
 		__func__, ichg_reg * 64, iinlim * 50 + 100, vbus * 100 + 2600,
 		fault, ichg * 50, vbat * 20 + 2304, chrg_state, chr_en, vdpm);
 
@@ -1746,7 +1746,7 @@ static void bq25890_chrdet_dwork(struct work_struct *work)
 
 	pg_stat = bq25890_get_pg_state();
 	if (pg_stat) {
-		pr_info("%s: force charger type detection\n", __func__);
+		pr_debug("%s: force charger type detection\n", __func__);
 		/* Force dpdm will become 0 after detecting is finished */
 		bq25890_set_force_dpdm(1);
 	}
@@ -1759,7 +1759,7 @@ static irqreturn_t bq25890_irq_handler(int irq, void *data)
 	bool en = false;
 	struct bq25890_info *info = (struct bq25890_info *)data;
 
-	pr_info("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 
 	/* Skip irq if in OTG mode */
 	bq25890_is_otg_en(&en);
@@ -1780,7 +1780,7 @@ static irqreturn_t bq25890_irq_handler(int irq, void *data)
 		Charger_Detect_Init();
 #endif
 		info->chg_type = CHARGER_UNKNOWN;
-		pr_info("%s: plugout\n", __func__);
+		pr_debug("%s: plugout\n", __func__);
 	}
 	if (info->chg_type != org_chg_type)
 		bq25890_set_charger_type(info);
@@ -1798,18 +1798,18 @@ static int bq25890_register_irq(struct bq25890_info *info)
 	if (np)
 		info->irq = irq_of_parse_and_map(np, 0);
 	else {
-		pr_info("%s: cannot get node\n", __func__);
+		pr_debug("%s: cannot get node\n", __func__);
 		ret = -ENODEV;
 		goto err_nodev;
 	}
-	pr_info("%s: irq = %d\n", __func__, info->irq);
+	pr_debug("%s: irq = %d\n", __func__, info->irq);
 
 	/* Request threaded IRQ */
 	ret = devm_request_threaded_irq(info->dev, info->irq, NULL,
 		bq25890_irq_handler, IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
 		info->eint_name, info);
 	if (ret < 0) {
-		pr_info("%s: request thread irq failed\n", __func__);
+		pr_debug("%s: request thread irq failed\n", __func__);
 		goto err_request_irq;
 	}
 
@@ -1826,28 +1826,28 @@ static int bq25890_parse_dt(struct bq25890_info *info, struct device *dev)
 {
 	struct device_node *np = dev->of_node;
 
-	pr_info("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 
 	if (!np) {
-		pr_info("%s: no of node\n", __func__);
+		pr_debug("%s: no of node\n", __func__);
 		return -ENODEV;
 	}
 
 	if (of_property_read_string(np, "charger_name",
 				    &info->chg_dev_name) < 0) {
 		info->chg_dev_name = "primary_chg";
-		pr_info("%s: no charger name\n", __func__);
+		pr_debug("%s: no charger name\n", __func__);
 	}
 
 	if (of_property_read_string(np, "alias_name",
 				    &(info->chg_props.alias_name)) < 0) {
 		info->chg_props.alias_name = "bq25890";
-		pr_info("%s: no alias name\n", __func__);
+		pr_debug("%s: no alias name\n", __func__);
 	}
 
 	if (of_property_read_string(np, "eint_name", &info->eint_name) < 0) {
 		info->eint_name = "chr_stat";
-		pr_info("%s: no eint name\n", __func__);
+		pr_debug("%s: no eint name\n", __func__);
 	}
 
 	return 0;
@@ -1858,7 +1858,7 @@ static int bq25890_do_event(struct charger_device *chg_dev, u32 event, u32 args)
 	if (chg_dev == NULL)
 		return -EINVAL;
 
-	pr_info("%s: event = %d\n", __func__, event);
+	pr_debug("%s: event = %d\n", __func__, event);
 	switch (event) {
 	case EVENT_EOC:
 		charger_dev_notify(chg_dev, CHARGER_DEV_NOTIFY_EOC);
@@ -1930,7 +1930,7 @@ static int bq25890_driver_probe(struct i2c_client *client,
 	int ret = 0;
 	struct bq25890_info *info = NULL;
 
-	pr_info("[%s]\n", __func__);
+	pr_debug("[%s]\n", __func__);
 
 	info = devm_kzalloc(&client->dev, sizeof(struct bq25890_info),
 			    GFP_KERNEL);
@@ -1948,7 +1948,7 @@ static int bq25890_driver_probe(struct i2c_client *client,
 	info->chg_dev = charger_device_register(info->chg_dev_name,
 		&client->dev, info, &bq25890_chg_ops, &info->chg_props);
 	if (IS_ERR_OR_NULL(info->chg_dev)) {
-		pr_info("%s: register charger device failed\n", __func__);
+		pr_debug("%s: register charger device failed\n", __func__);
 		ret = PTR_ERR(info->chg_dev);
 		return ret;
 	}
@@ -1972,7 +1972,7 @@ unsigned char g_reg_value_bq25890;
 static ssize_t show_bq25890_access(struct device *dev,
 				   struct device_attribute *attr, char *buf)
 {
-	pr_info("[%s] 0x%x\n", __func__, g_reg_value_bq25890);
+	pr_debug("[%s] 0x%x\n", __func__, g_reg_value_bq25890);
 	return sprintf(buf, "0x%x\n", g_reg_value_bq25890);
 }
 
@@ -1994,44 +1994,44 @@ static ssize_t store_bq25890_access(struct device *dev,
 		if (size > 3) {
 			addr = strsep(&pvalue, " ");
 			if (addr == NULL) {
-				pr_info("[%s] format error\n", __func__);
+				pr_debug("[%s] format error\n", __func__);
 				return -EINVAL;
 			}
 			ret = kstrtou32(addr, 16, &reg_address);
 			if (ret) {
-				pr_info("[%s] format error, ret = %d\n",
+				pr_debug("[%s] format error, ret = %d\n",
 					__func__, ret);
 				return ret;
 			}
 
 			if (pvalue == NULL) {
-				pr_info("[%s] format error\n", __func__);
+				pr_debug("[%s] format error\n", __func__);
 				return -EINVAL;
 			}
 			ret = kstrtou32(pvalue, 16, &reg_value);
 			if (ret) {
-				pr_info("[%s] format error, ret = %d\n",
+				pr_debug("[%s] format error, ret = %d\n",
 					__func__, ret);
 				return ret;
 			}
 
-			pr_info("[%s] write bq25890 reg 0x%x with value 0x%x\n",
+			pr_debug("[%s] write bq25890 reg 0x%x with value 0x%x\n",
 				__func__, reg_address, reg_value);
 			ret = bq25890_config_interface(reg_address, reg_value,
 						       0xFF, 0x0);
 		} else {
 			ret = kstrtou32(pvalue, 16, &reg_address);
 			if (ret) {
-				pr_info("[%s] format error, ret = %d\n",
+				pr_debug("[%s] format error, ret = %d\n",
 					__func__, ret);
 				return ret;
 			}
 			ret = bq25890_read_interface(reg_address,
 						     &g_reg_value_bq25890,
 						     0xFF, 0x0);
-			pr_info("[%s] read bq25890 reg 0x%x with value 0x%x\n",
+			pr_debug("[%s] read bq25890 reg 0x%x with value 0x%x\n",
 				__func__, reg_address, g_reg_value_bq25890);
-			pr_info("[%s] Please use \"cat bq25890_access\" to get value\n",
+			pr_debug("[%s] Please use \"cat bq25890_access\" to get value\n",
 				__func__);
 		}
 	}
@@ -2045,7 +2045,7 @@ static int bq25890_user_space_probe(struct platform_device *dev)
 {
 	int ret_device_file = 0;
 
-	pr_info("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 
 	ret_device_file = device_create_file(&(dev->dev),
 					     &dev_attr_bq25890_access);
@@ -2093,28 +2093,28 @@ static int __init bq25890_init(void)
 
 	/* i2c registeration using DTS instead of boardinfo*/
 #ifdef CONFIG_OF
-	pr_info("[%s] init start with i2c DTS", __func__);
+	pr_debug("[%s] init start with i2c DTS", __func__);
 #else
-	pr_info("[%s] init start. ch=%d\n", __func__, bq25890_BUSNUM);
+	pr_debug("[%s] init start. ch=%d\n", __func__, bq25890_BUSNUM);
 	i2c_register_board_info(bq25890_BUSNUM, &i2c_bq25890, 1);
 #endif
 	if (i2c_add_driver(&bq25890_driver) != 0) {
-		pr_info("[%s] failed to register bq25890 i2c driver\n",
+		pr_debug("[%s] failed to register bq25890 i2c driver\n",
 			__func__);
 	} else {
-		pr_info("[%s] Success to register bq25890 i2c driver\n",
+		pr_debug("[%s] Success to register bq25890 i2c driver\n",
 			__func__);
 	}
 
 	/* bq25890 user space access interface */
 	ret = platform_device_register(&bq25890_user_space_device);
 	if (ret) {
-		pr_info("[%s] Unable to device register(%d)\n", __func__, ret);
+		pr_debug("[%s] Unable to device register(%d)\n", __func__, ret);
 		return ret;
 	}
 	ret = platform_driver_register(&bq25890_user_space_driver);
 	if (ret) {
-		pr_info("[%s] Unable to register driver(%d)\n", __func__, ret);
+		pr_debug("[%s] Unable to register driver(%d)\n", __func__, ret);
 		return ret;
 	}
 

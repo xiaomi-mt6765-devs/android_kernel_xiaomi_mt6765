@@ -2113,7 +2113,7 @@ void fg_bat_plugout_int_handler_gm25(void)
 	bool is_bat_exist;
 
 	is_bat_exist = pmic_is_battery_exist();
-	pr_info("%s: bat_exist: %d\n", __func__, is_bat_exist);
+	pr_debug("%s: bat_exist: %d\n", __func__, is_bat_exist);
 
 	if (fg_interrupt_check() == false)
 		return;
