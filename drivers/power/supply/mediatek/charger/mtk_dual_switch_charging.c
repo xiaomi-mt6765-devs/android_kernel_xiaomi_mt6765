@@ -687,7 +687,7 @@ static int mtk_dual_switch_charging_do_charging(struct charger_manager *info,
 {
 	struct dual_switch_charging_alg_data *swchgalg = info->algorithm_data;
 
-	pr_info("[%s] en:%d %s\n", __func__, en, info->algorithm_name);
+	pr_debug("[%s] en:%d %s\n", __func__, en, info->algorithm_name);
 	if (en) {
 		swchgalg->disable_charging = false;
 		swchgalg->state = CHR_CC;
@@ -776,7 +776,7 @@ static int mtk_dual_switch_chr_cc(struct charger_manager *info)
 		if (info->sw_jeita.pre_sm != TEMP_T2_TO_T3
 		    && info->sw_jeita.sm == TEMP_T2_TO_T3) {
 			/* set to CC state to reset chg2's ichg */
-			pr_info("back to normal temp, reset state\n");
+			pr_debug("back to normal temp, reset state\n");
 			swchgalg->state = CHR_CC;
 		}
 	}
@@ -865,7 +865,7 @@ static int mtk_dual_switch_charging_run(struct charger_manager *info)
 	int ret = 10;
 	bool chg2_en = false;
 
-	pr_info("%s [%d]\n", __func__, swchgalg->state);
+	pr_debug("%s [%d]\n", __func__, swchgalg->state);
 
 	if (mtk_pdc_check_charger(info) == false &&
 	    mtk_is_TA_support_pd_pps(info) == false) {
@@ -976,15 +976,15 @@ int dual_charger_dev_event(struct notifier_block *nb, unsigned long event,
 	switch (event) {
 	case CHARGER_DEV_NOTIFY_RECHG:
 		charger_manager_notifier(info, CHARGER_NOTIFY_START_CHARGING);
-		pr_info("%s: recharge\n", __func__);
+		pr_debug("%s: recharge\n", __func__);
 		break;
 	case CHARGER_DEV_NOTIFY_SAFETY_TIMEOUT:
 		info->safety_timeout = true;
-		pr_info("%s: safety timer timeout\n", __func__);
+		pr_debug("%s: safety timer timeout\n", __func__);
 		break;
 	case CHARGER_DEV_NOTIFY_VBUS_OVP:
 		info->vbusov_stat = data->vbusov_stat;
-		pr_info("%s: vbus ovp = %d\n", __func__, info->vbusov_stat);
+		pr_debug("%s: vbus ovp = %d\n", __func__, info->vbusov_stat);
 		break;
 	default:
 		return NOTIFY_DONE;
