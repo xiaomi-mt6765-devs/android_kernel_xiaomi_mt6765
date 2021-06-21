@@ -318,7 +318,7 @@ static void mtkfb_ion_init(void)
 		ion_client = ion_client_create(g_ion_device, "display");
 
 	if (!ion_client) {
-		pr_info("create ion client failed!\n");
+		pr_debug("create ion client failed!\n");
 		return;
 	}
 
@@ -344,16 +344,16 @@ static struct ion_handle *mtkfb_ion_import_handle(struct ion_client *client,
 	}
 
 	if (!ion_client) {
-		pr_info("invalid ion client!\n");
+		pr_debug("invalid ion client!\n");
 		return handle;
 	}
 	if (fd == MTK_FB_INVALID_ION_FD) {
-		pr_info("invalid ion fd!\n");
+		pr_debug("invalid ion fd!\n");
 		return handle;
 	}
 	handle = ion_import_dma_buf_fd(client, fd);
 	if (IS_ERR(handle)) {
-		pr_info("import ion handle failed!\n");
+		pr_debug("import ion handle failed!\n");
 		return NULL;
 	}
 	mm_data.mm_cmd = ION_MM_CONFIG_BUFFER;
@@ -364,7 +364,7 @@ static struct ion_handle *mtkfb_ion_import_handle(struct ion_client *client,
 
 	if (ion_kernel_ioctl(ion_client, ION_CMD_MULTIMEDIA,
 		(unsigned long)&mm_data))
-		pr_info("configure ion buffer failed!\n");
+		pr_debug("configure ion buffer failed!\n");
 
 	MTKFB_FENCE_LOG("import ion handle fd=%d,hnd=0x%p\n",
 		fd, handle);
@@ -376,7 +376,7 @@ static void mtkfb_ion_free_handle(struct ion_client *client,
 	struct ion_handle *handle)
 {
 	if (!ion_client) {
-		pr_info("invalid ion client!\n");
+		pr_debug("invalid ion client!\n");
 		return;
 	}
 	if (!handle)
@@ -394,7 +394,7 @@ static size_t mtkfb_ion_phys_mmu_addr(struct ion_client *client,
 	ion_phys_addr_t phy_addr = 0;
 
 	if (!ion_client) {
-		pr_info("invalid ion client!\n");
+		pr_debug("invalid ion client!\n");
 		return 0;
 	}
 	if (!handle)
@@ -424,7 +424,7 @@ static void mtkfb_ion_cache_flush(struct ion_client *client,
 	sys_data.cache_sync_param.sync_type = ION_CACHE_FLUSH_BY_RANGE;
 
 	if (ion_kernel_ioctl(client, ION_CMD_SYSTEM, (unsigned long)&sys_data))
-		pr_info("ion cache flush failed!\n");
+		pr_debug("ion cache flush failed!\n");
 
 	ion_unmap_kernel(client, handle);
 }
@@ -490,7 +490,7 @@ unsigned int mtkfb_query_buf_va(unsigned int session_id, unsigned int layer_id,
 	session_info = _get_session_sync_info(session_id);
 	layer_info = &(session_info->session_layer_info[layer_id]);
 	if (layer_id != layer_info->layer_id) {
-		pr_info("wrong layer id %d(rt), %d(in)!\n",
+		pr_debug("wrong layer id %d(rt), %d(in)!\n",
 			layer_info->layer_id, layer_id);
 		return 0;
 	}
@@ -505,7 +505,7 @@ unsigned int mtkfb_query_buf_va(unsigned int session_id, unsigned int layer_id,
 	mutex_unlock(&layer_info->sync_lock);
 	if (va == 0x0) {
 		/* FIXME: non-ion buffer need cache sync here? */
-		pr_info(
+		pr_debug(
 			"cannot find this buf, layer=%d, idx=%d, fence_idx=%d, timeline_idx=%d, cur_idx=%d!\n",
 			layer_id, idx, layer_info->fence_idx,
 			layer_info->timeline_idx, layer_info->cur_idx);
@@ -526,7 +526,7 @@ unsigned int mtkfb_query_release_idx(unsigned int session_id,
 		&(session_info->session_layer_info[layer_id]);
 
 	if (layer_id != layer_info->layer_id) {
-		pr_info("wrong layer id %d(rt), %d(in)!\n",
+		pr_debug("wrong layer id %d(rt), %d(in)!\n",
 			layer_info->layer_id, layer_id);
 		return 0;
 	}
@@ -761,7 +761,7 @@ unsigned int mtkfb_query_frm_seq_by_addr(unsigned int session_id,
 	layer_info = &(session_info->session_layer_info[layer_id]);
 
 	if (layer_id != layer_info->layer_id) {
-		pr_info("wrong layer id %d(rt), %d(in)!\n",
+		pr_debug("wrong layer id %d(rt), %d(in)!\n",
 			layer_info->layer_id, layer_id);
 		return 0;
 	}
@@ -1095,7 +1095,7 @@ static int disp_sync_convert_input_to_fence_layer_info_v2(
 	unsigned int fence_id, int layer_en, unsigned long mva)
 {
 	if (!dst) {
-		pr_info("%s error!\n", __func__);
+		pr_debug("%s error!\n", __func__);
 		return -1;
 	}
 
