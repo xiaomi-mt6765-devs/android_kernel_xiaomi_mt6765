@@ -186,7 +186,7 @@ static void sched_mon_msg(char *buf, int out)
 	if (out & TO_FTRACE)
 		trace_sched_mon_msg(buf);
 	if (out & TO_KERNEL_LOG)
-		pr_info("%s\n", buf);
+		pr_debug("%s\n", buf);
 	if (out & TO_DEFERRED)
 		printk_deferred("%s\n", buf);
 }
@@ -1005,14 +1005,14 @@ void MT_trace_check_preempt_dur(void)
 		t_dur = current->preempt_dur;
 
 		if (t_dur > WARN_PREEMPT_DUR && e->last_ts > 0) {
-			pr_info("[PREEMPT DURATION WARN] dur:%llu ms (s:%lld.%06lu,e:%lld.%06lu)\n",
+			pr_debug("[PREEMPT DURATION WARN] dur:%llu ms (s:%lld.%06lu,e:%lld.%06lu)\n",
 				msec_high(t_dur),
 				sec_high(e->last_ts), sec_low(e->last_ts),
 				sec_high(e->last_te), sec_low(e->last_te));
 
 			if (b_isr->last_ts > e->last_ts) {
 				t_dur_isr = b_isr->last_te - b_isr->cur_ts;
-				pr_info("IRQ occurrs in this duration, IRQ[%d:%s] dur %llu (s:%lld.%06lu,e:%lld.%06lu)\n",
+				pr_debug("IRQ occurrs in this duration, IRQ[%d:%s] dur %llu (s:%lld.%06lu,e:%lld.%06lu)\n",
 					(int)b_isr->last_event,
 					isr_name(b_isr->last_event),
 					t_dur_isr,
@@ -1282,7 +1282,7 @@ static ssize_t mt_sched_monitor_write(struct file *filp, const char *ubuf,
 		mt_dump_irq_off_traces(TO_KERNEL_LOG);
 #endif
 	mt_sched_monitor_switch(val);
-	pr_info(" to %lu\n", val);
+	pr_debug(" to %lu\n", val);
 	return cnt;
 }
 
@@ -1415,7 +1415,7 @@ static ssize_t mt_sched_monitor_##param##_write(			\
 		return ret;						\
 									\
 	warn_dur = val;							\
-	pr_info(" to %lu\n", val);               \
+	pr_debug(" to %lu\n", val);               \
 									\
 	return cnt;							\
 									\
@@ -1574,7 +1574,7 @@ static int __init init_mtsched_mon(void)
 			sched_mon_dir[sched_mon_file[i].dir],
 			sched_mon_file[i].proc_fops);
 		if (!pe) {
-			pr_info("create [%s] failed\n", sched_mon_file[i].name);
+			pr_debug("create [%s] failed\n", sched_mon_file[i].name);
 			return -ENOMEM;
 		}
 	}

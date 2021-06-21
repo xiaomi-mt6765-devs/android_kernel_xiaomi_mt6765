@@ -23,7 +23,7 @@
 #define MTK_MEMCFG_MEMBLOCK_PHY 0x1
 #define MTK_MEMCFG_MEMBLOCK_DEBUG 0x2
 
-#define MTK_MEMCFG_LOG_AND_PRINTK(fmt, arg...) pr_info(fmt, ##arg)
+#define MTK_MEMCFG_LOG_AND_PRINTK(fmt, arg...) pr_debug(fmt, ##arg)
 
 #ifdef CONFIG_MTK_MEMCFG
 

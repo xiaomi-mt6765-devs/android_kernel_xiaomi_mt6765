@@ -164,13 +164,13 @@ static int pd_tcp_notifier_call(struct notifier_block *nb,
 #if 0 /* vconn is from vsys on mt6763 */
 		if (noti->swap_state.new_role) {
 			if (!vconn_on) {
-				pr_info("%s set vconn enable\n", __func__);
+				pr_debug("%s set vconn enable\n", __func__);
 				gpio_set_value(vconn_gpio, 1);
 				vconn_on = 1;
 			}
 		} else {
 			if (vconn_on) {
-				pr_info("%s set vconn disable\n", __func__);
+				pr_debug("%s set vconn disable\n", __func__);
 				gpio_set_value(vconn_gpio, 0);
 				vconn_on = 0;
 			}
@@ -192,7 +192,7 @@ static int pd_tcp_notifier_call(struct notifier_block *nb,
 			pd_sink_type = SINK_TYPE_PD_TRY;
 		else if (noti->vbus_state.type == TCP_VBUS_CTRL_REQUEST)
 			pd_sink_type = SINK_TYPE_REQUEST;
-		pr_info("%s sink vbus %dmv %dma type(%d)\n", __func__,
+		pr_debug("%s sink vbus %dmv %dma type(%d)\n", __func__,
 			pd_sink_voltage_new, pd_sink_current_new, pd_sink_type);
 		mutex_unlock(&param_lock);
 
@@ -242,25 +242,25 @@ static int pd_tcp_notifier_call(struct notifier_block *nb,
 		if (noti->typec_state.old_state == TYPEC_UNATTACHED &&
 			noti->typec_state.new_state == TYPEC_ATTACHED_AUDIO) {
 			/* AUDIO plug in */
-			pr_info("%s audio plug in\n", __func__);
+			pr_debug("%s audio plug in\n", __func__);
 
 		} else if (noti->typec_state.old_state == TYPEC_ATTACHED_AUDIO
 			&& noti->typec_state.new_state == TYPEC_UNATTACHED) {
 			/* AUDIO plug out */
-			pr_info("%s audio plug out\n", __func__);
+			pr_debug("%s audio plug out\n", __func__);
 		}
 		break;
 	case TCP_NOTIFY_PD_STATE:
-		pr_info("%s pd state = %d\n",
+		pr_debug("%s pd state = %d\n",
 			__func__, noti->pd_state.connected);
 		break;
 #ifdef CONFIG_TYPEC_NOTIFY_ATTACHWAIT_SNK
 	case TCP_NOTIFY_ATTACHWAIT_SNK:
-		pr_info("%s attach wait sink\n", __func__);
+		pr_debug("%s attach wait sink\n", __func__);
 		break;
 #endif /* CONFIG_TYPEC_NOTIFY_ATTACHWAIT_SNK */
 	case TCP_NOTIFY_EXT_DISCHARGE:
-		pr_info("%s ext discharge = %d\n", __func__, noti->en_state.en);
+		pr_debug("%s ext discharge = %d\n", __func__, noti->en_state.en);
 #if CONFIG_MTK_GAUGE_VERSION == 30
 		charger_dev_enable_discharge(primary_charger,
 			noti->en_state.en);
@@ -273,25 +273,25 @@ static int pd_tcp_notifier_call(struct notifier_block *nb,
 
 		if (tcpc_kpoc) {
 			if (noti->wd_status.water_detected == true) {
-				pr_info("Water is detected in KPOC, disable HV charging\n");
+				pr_debug("Water is detected in KPOC, disable HV charging\n");
 				charger_manager_enable_high_voltage_charging(
 					chg_consumer, false);
 			} else {
-				pr_info("Water is removed in KPOC, enable HV charging\n");
+				pr_debug("Water is removed in KPOC, enable HV charging\n");
 				charger_manager_enable_high_voltage_charging(
 					chg_consumer, true);
 			}
 		}
 		break;
 	case TCP_NOTIFY_CABLE_TYPE:
-		pr_info("%s cable type = %d\n", __func__,
+		pr_debug("%s cable type = %d\n", __func__,
 			noti->cable_type.type);
 		break;
 	case TCP_NOTIFY_PLUG_OUT:
-		pr_info("%s typec plug out\n", __func__);
+		pr_debug("%s typec plug out\n", __func__);
 
 		if (tcpc_kpoc) {
-			pr_info("[%s] typec cable plug out, power off\n",
+			pr_debug("[%s] typec cable plug out, power off\n",
 				__func__);
 			kernel_power_off();
 		}
@@ -307,7 +307,7 @@ static int rt_pd_manager_probe(struct platform_device *pdev)
 	int ret = 0;
 	struct device_node *node = pdev->dev.of_node;
 
-	pr_info("%s (%s)\n", __func__, RT_PD_MANAGER_VERSION);
+	pr_debug("%s (%s)\n", __func__, RT_PD_MANAGER_VERSION);
 	if (node == NULL) {
 		pr_err("%s devicd of node not exist\n", __func__);
 		return -ENODEV;
@@ -317,7 +317,7 @@ static int rt_pd_manager_probe(struct platform_device *pdev)
 	if (ret == KERNEL_POWER_OFF_CHARGING_BOOT ||
 	    ret == LOW_POWER_OFF_CHARGING_BOOT)
 		tcpc_kpoc = true;
-	pr_info("%s KPOC(%d)\n", __func__, tcpc_kpoc);
+	pr_debug("%s KPOC(%d)\n", __func__, tcpc_kpoc);
 
 
 	/* Get charger device */
@@ -349,7 +349,7 @@ static int rt_pd_manager_probe(struct platform_device *pdev)
 		return -EINVAL;
 	}
 #endif
-	pr_info("%s Vconn gpio = %d\n", __func__, vconn_gpio);
+	pr_debug("%s Vconn gpio = %d\n", __func__, vconn_gpio);
 	ret = gpio_request_one(vconn_gpio, GPIOF_OUT_INIT_LOW,
 		"pd,vconn_source");
 	if (ret < 0) {
@@ -386,7 +386,7 @@ static int rt_pd_manager_probe(struct platform_device *pdev)
 #endif /* CONFIG_MTK_PUMP_EXPRESS_PLUS_30_SUPPORT */
 #endif /* This part is for GM20 */
 
-	pr_info("%s OK!!\n", __func__);
+	pr_debug("%s OK!!\n", __func__);
 	return ret;
 }
 

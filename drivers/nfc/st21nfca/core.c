@@ -331,7 +331,7 @@ static int st21nfca_hci_start_poll(struct nfc_hci_dev *hdev,
 	u8 param[19];
 	struct sk_buff *datarate_skb;
 
-	pr_info(DRIVER_DESC ": %s protocols 0x%x 0x%x\n",
+	pr_debug(DRIVER_DESC ": %s protocols 0x%x 0x%x\n",
 		__func__, im_protocols, tm_protocols);
 
 	r = nfc_hci_send_event(hdev, NFC_HCI_RF_READER_A_GATE,
@@ -775,7 +775,7 @@ static int st21nfca_hci_im_transceive(struct nfc_hci_dev *hdev,
 {
 	struct st21nfca_hci_info *info = nfc_hci_get_clientdata(hdev);
 
-	pr_info(DRIVER_DESC ": %s for gate=%d len=%d\n", __func__,
+	pr_debug(DRIVER_DESC ": %s for gate=%d len=%d\n", __func__,
 		target->hci_reader_gate, skb->len);
 
 	switch (target->hci_reader_gate) {

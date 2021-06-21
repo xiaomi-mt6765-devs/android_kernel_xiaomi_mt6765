@@ -408,7 +408,7 @@ static int disp_probe_1(void)
 	unsigned long va;
 	unsigned int irq;
 
-	pr_info("disp driver(1) disp_probe_1 begin\n");
+	pr_debug("disp driver(1) disp_probe_1 begin\n");
 
 #if (defined(CONFIG_MTK_TEE_GP_SUPPORT) || \
 	defined(CONFIG_TRUSTONIC_TEE_SUPPORT)) && \
@@ -419,7 +419,7 @@ static int disp_probe_1(void)
 	disp_misc_dev.parent = NULL;
 	ret = misc_register(&disp_misc_dev);
 	if (ret) {
-		pr_info("disp: fail to create mtk_disp node\n");
+		pr_debug("disp: fail to create mtk_disp node\n");
 		return (unsigned long)(ERR_PTR(ret));
 	}
 #endif
@@ -536,7 +536,7 @@ static int disp_probe_1(void)
 	ddp_path_init();
 	disp_m4u_init();
 
-	pr_info("disp driver(1) disp_probe_1 end\n");
+	pr_debug("disp driver(1) disp_probe_1 end\n");
 	/* NOT_REFERENCED(class_dev); */
 	return ret;
 }
@@ -554,7 +554,7 @@ static int disp_probe(struct platform_device *pdev)
 	if (disp_probe_cnt != 0)
 		return 0;
 
-	pr_info("disp driver(1) disp_probe begin\n");
+	pr_debug("disp driver(1) disp_probe begin\n");
 
 	/* save pdev for disp_probe_1 */
 	memcpy(&mydev, pdev, sizeof(mydev));
@@ -566,7 +566,7 @@ static int disp_probe(struct platform_device *pdev)
 
 	disp_probe_cnt++;
 
-	pr_info("disp driver(1) disp_probe end\n");
+	pr_debug("disp driver(1) disp_probe end\n");
 
 	disp_probe_1();
 
@@ -656,7 +656,7 @@ static int __init disp_late(void)
 	/* for rt5081 */
 	ret = display_bias_regulator_init();
 	if (ret < 0)
-		pr_info("get dsv_pos fail, ret = %d\n", ret);
+		pr_debug("get dsv_pos fail, ret = %d\n", ret);
 
 	display_bias_enable();
 

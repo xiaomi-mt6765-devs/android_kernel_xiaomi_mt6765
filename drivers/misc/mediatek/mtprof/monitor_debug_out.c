@@ -60,13 +60,13 @@ void mt_show_last_irq_counts(void)
 
 	spin_lock_irqsave(&mt_irq_count_lock, flags);
 	for (cpu = 0; cpu < num_possible_cpus(); cpu++) {
-		pr_info("Last irq counts record at [%llu] ns\n",
+		pr_debug("Last irq counts record at [%llu] ns\n",
 			per_cpu(save_irq_count_time, cpu));
-		pr_info("CPU%d state:%s\n",
+		pr_debug("CPU%d state:%s\n",
 			cpu, cpu_online(cpu) ? "online" : "offline");
 		for (irq = 0; irq < nr_irqs && irq < MAX_NR_IRQS; irq++) {
 			if (per_cpu(irq_count_mon, cpu).irqs[irq] != 0)
-				pr_info("[%3d] = %8d\n", irq,
+				pr_debug("[%3d] = %8d\n", irq,
 					per_cpu(irq_count_mon, cpu).irqs[irq]);
 		}
 	}
@@ -75,7 +75,7 @@ void mt_show_last_irq_counts(void)
 	for (cpu = 0; cpu < num_possible_cpus(); cpu++) {
 		for (irq = 0; irq < NR_IPI; irq++) {
 			if (per_cpu(ipi_count_mon, cpu).ipis[irq] != 0)
-				pr_info("(CPU#%d)IPI[%3d] = %8d\n", cpu, irq,
+				pr_debug("(CPU#%d)IPI[%3d] = %8d\n", cpu, irq,
 				       per_cpu(ipi_count_mon, cpu).ipis[irq]);
 		}
 	}
@@ -92,24 +92,24 @@ void mt_show_current_irq_counts(void)
 	t_cur = sched_clock();
 	spin_lock_irqsave(&mt_irq_count_lock, flags);
 
-	pr_info("=========================================\nIRQ Status:\n");
+	pr_debug("=========================================\nIRQ Status:\n");
 	for (cpu = 0; cpu < num_possible_cpus(); cpu++) {
 		t_diff = t_cur - per_cpu(save_irq_count_time, cpu);
-		pr_info
+		pr_debug
 		("Cur irq cnts record %llu ns.(last at %llu,diff:+%llu ns)\n",
 		t_cur,
 		per_cpu(save_irq_count_time, cpu),
 		usec_high(t_diff));
-		pr_info("CPU%d state:%s\n",
+		pr_debug("CPU%d state:%s\n",
 			cpu, cpu_online(cpu) ? "online" : "offline");
 		for (irq = 0; irq < nr_irqs && irq < MAX_NR_IRQS; irq++) {
 			count = kstat_irqs_cpu(irq, cpu);
 			if (count != 0) {
-				pr_info(" IRQ[%3d:%14s]=%8d,",
+				pr_debug(" IRQ[%3d:%14s]=%8d,",
 				irq,
 				isr_name(irq),
 				count);
-				pr_info(" (+%d times in %lld us)\n",
+				pr_debug(" (+%d times in %lld us)\n",
 				count - per_cpu(irq_count_mon, cpu).irqs[irq],
 				usec_high(t_diff));
 			}
@@ -117,13 +117,13 @@ void mt_show_current_irq_counts(void)
 	}
 #ifdef CONFIG_SMP
 	for (cpu = 0; cpu < num_possible_cpus(); cpu++) {
-		pr_info("Local IRQ on CPU#%d:\n", cpu);
+		pr_debug("Local IRQ on CPU#%d:\n", cpu);
 		for (irq = 0; irq < NR_IPI; irq++) {
 			count = __get_irq_stat(cpu, ipi_irqs[irq]);
 			if (count != 0) {
-				pr_info(" IRQ[%2d:  IPI] = %8d,",
+				pr_debug(" IRQ[%2d:  IPI] = %8d,",
 				irq, count);
-				pr_info(" (+%d times in %lld us)\n",
+				pr_debug(" (+%d times in %lld us)\n",
 				count - per_cpu(ipi_count_mon, cpu).ipis[irq],
 				usec_high(t_diff));
 			}
@@ -138,9 +138,9 @@ void mt_show_timer_info(void)
 	int cpu;
 
 	for_each_possible_cpu(cpu) {
-		pr_info("[TimerISR#%d] last timer ISR",
+		pr_debug("[TimerISR#%d] last timer ISR",
 			cpu);
-		pr_info(" start:%llu ns, end:%llu ns\n",
+		pr_debug(" start:%llu ns, end:%llu ns\n",
 			per_cpu(local_timer_ts, cpu),
 			per_cpu(local_timer_te, cpu));
 	}
@@ -255,135 +255,135 @@ void mt_dump_sched_traces(void)
 	for_each_possible_cpu(cpu) {
 		get_sched_block_events(b_isr, b_sq, b_tk, b_hrt, b_sft);
 		get_sched_stop_events(e_pmpt, e_irq);
-		pr_info("==CPU[%d]==\n", cpu);
+		pr_debug("==CPU[%d]==\n", cpu);
 		if (b_isr->cur_event == 0) {
-			pr_info("[ISR]last_irq:%d,dur:%llu",
+			pr_debug("[ISR]last_irq:%d,dur:%llu",
 				(int)b_isr->last_event,
 				b_isr->last_te - b_isr->last_ts);
-			pr_info(" ns(s:%llu, e:%llu)\n\n",
+			pr_debug(" ns(s:%llu, e:%llu)\n\n",
 				b_isr->last_ts, b_isr->last_te);
 		} else {
-			pr_info("[InISR]Current irq:%d,",
+			pr_debug("[InISR]Current irq:%d,",
 				(int)b_isr->cur_event);
-			pr_info(" Start:%llu(elapsed: %llu ns),",
+			pr_debug(" Start:%llu(elapsed: %llu ns),",
 				b_isr->cur_ts, sched_clock() - b_isr->cur_ts);
-			pr_info(" last irq#:%d,last_start:%llu,",
+			pr_debug(" last irq#:%d,last_start:%llu,",
 				(int)b_isr->last_event,
 				b_isr->last_ts);
-			pr_info(" last_end:%llu\n\n",
+			pr_debug(" last_end:%llu\n\n",
 				b_isr->last_te);
 		}
 
 		if (b_sq->cur_event == 0) {
-			pr_info("[Softirq]last#:%d,dur:%llu",
+			pr_debug("[Softirq]last#:%d,dur:%llu",
 				(int)b_sq->last_event,
 				b_sq->last_te - b_sq->last_ts);
-			pr_info(" ns(s:%llu,e:%llu)\n\n",
+			pr_debug(" ns(s:%llu,e:%llu)\n\n",
 				b_sq->last_ts, b_sq->last_te);
 		} else {
-			pr_info("[InSoftirq]Current sirq#:%d,",
+			pr_debug("[InSoftirq]Current sirq#:%d,",
 				(int)b_sq->cur_event);
-			pr_info(" Start:%llu(elapsed:%llu ns),",
+			pr_debug(" Start:%llu(elapsed:%llu ns),",
 				b_sq->cur_ts, sched_clock() - b_sq->cur_ts);
-			pr_info(" last sirq#:%d(dur:%llu ns),",
+			pr_debug(" last sirq#:%d(dur:%llu ns),",
 				(int)b_sq->last_event,
 				b_sq->last_te - b_sq->last_ts);
-			pr_info(" last_start:%llu,last_end:%llu\n\n",
+			pr_debug(" last_start:%llu,last_end:%llu\n\n",
 				b_sq->last_ts, b_sq->last_te);
 		}
 
 		if (b_tk->cur_event == 0) {
-			pr_info("[Tasklet]Occurs %d times in last SIRQ dur\n",
+			pr_debug("[Tasklet]Occurs %d times in last SIRQ dur\n",
 				(int)b_tk->last_count);
-			pr_info(" last fn:%pS, dur:%llu ns(s:%llu,e:%llu)\n\n",
+			pr_debug(" last fn:%pS, dur:%llu ns(s:%llu,e:%llu)\n\n",
 				(void *)b_tk->last_event,
 				b_tk->last_te - b_tk->last_ts,
 				b_tk->last_ts, b_tk->last_te);
 		} else {
-			pr_info("[In Tasklet]\n Occurs:cur:%d,",
+			pr_debug("[In Tasklet]\n Occurs:cur:%d,",
 				(int)b_tk->cur_count);
-			pr_info(" last:%d\n Cur:%pS,",
+			pr_debug(" last:%d\n Cur:%pS,",
 				(int)b_tk->last_count,
 				(void *)b_tk->cur_event);
-			pr_info(" Start:%llu(elapsed: %llu ns),",
+			pr_debug(" Start:%llu(elapsed: %llu ns),",
 				b_tk->cur_ts, sched_clock() - b_tk->cur_ts);
-			pr_info(" last#:%pS(dur:%llu ns),",
+			pr_debug(" last#:%pS(dur:%llu ns),",
 				(void *)b_tk->last_event,
 				b_tk->last_te - b_tk->last_ts);
-			pr_info(" last_start:%llu, last_end:%llu\n\n",
+			pr_debug(" last_start:%llu, last_end:%llu\n\n",
 				b_tk->last_ts, b_tk->last_te);
 		}
 
 		if (b_hrt->cur_event == 0) {
-			pr_info("[HRTimer]\n Occurs");
-			pr_info(" %d times in lasat ISR duration\n",
+			pr_debug("[HRTimer]\n Occurs");
+			pr_debug(" %d times in lasat ISR duration\n",
 				(int)b_hrt->last_count);
-			pr_info(" last fn:%pS,dur:%llu ns(s:%llu, e:%llu)\n\n",
+			pr_debug(" last fn:%pS,dur:%llu ns(s:%llu, e:%llu)\n\n",
 				(void *)b_hrt->last_event,
 				b_hrt->last_te - b_hrt->last_ts,
 				b_hrt->last_ts, b_hrt->last_te);
 		} else {
-			pr_info("[In HRTimer]\n Occurs: cur:%d,",
+			pr_debug("[In HRTimer]\n Occurs: cur:%d,",
 				(int)b_tk->cur_count);
-			pr_info(" last:%d\n Current:%pS, ",
+			pr_debug(" last:%d\n Current:%pS, ",
 				(int)b_tk->last_count,
 				(void *)b_hrt->cur_event);
-			pr_info(" Start:%llu(elapsed: %llu ns),",
+			pr_debug(" Start:%llu(elapsed: %llu ns),",
 				b_hrt->cur_ts, sched_clock() - b_hrt->cur_ts);
-			pr_info(" last#:%pS(dur:%llu ns), ",
+			pr_debug(" last#:%pS(dur:%llu ns), ",
 				(void *)b_hrt->last_event,
 				b_hrt->last_te - b_hrt->last_ts);
-			pr_info(" last_start:%llu, last_end:%llu\n\n",
+			pr_debug(" last_start:%llu, last_end:%llu\n\n",
 				b_hrt->last_ts, b_hrt->last_te);
 		}
 
 		if (b_sft->cur_event == 0) {
-			pr_info("[SoftTimer]\n Occurs");
-			pr_info(" %d times in last SoftIRQ duration\n",
+			pr_debug("[SoftTimer]\n Occurs");
+			pr_debug(" %d times in last SoftIRQ duration\n",
 				(int)b_sft->last_count);
 
-			pr_info(" last fn:%pS,dur:%llu ns(s:%llu, e:%llu)\n\n",
+			pr_debug(" last fn:%pS,dur:%llu ns(s:%llu, e:%llu)\n\n",
 				(void *)b_sft->last_event,
 				b_sft->last_te - b_sft->last_ts,
 				b_sft->last_ts, b_sft->last_te);
 		} else {
-			pr_info("[In SoftTimer]\n Occurs: cur:%d,",
+			pr_debug("[In SoftTimer]\n Occurs: cur:%d,",
 				(int)b_sft->cur_count);
-			pr_info(" last:%d\n Current:%pS,",
+			pr_debug(" last:%d\n Current:%pS,",
 				(int)b_sft->last_count,
 				(void *)b_sft->cur_event);
-			pr_info(" Start:%llu(elapsed: %llu ns),",
+			pr_debug(" Start:%llu(elapsed: %llu ns),",
 				b_sft->cur_ts, sched_clock() - b_sft->cur_ts);
-			pr_info(" last#:%pS(dur:%llu ns),",
+			pr_debug(" last#:%pS(dur:%llu ns),",
 				(void *)b_sft->last_event,
 				b_sft->last_te - b_sft->last_ts);
-			pr_info(" last_start:%llu, last_end:%llu\n\n",
+			pr_debug(" last_start:%llu, last_end:%llu\n\n",
 				b_sft->last_ts, b_sft->last_te);
 		}
 
 /****  Dump Stop Events ****/
 		if (e_irq->cur_ts == 0) {
-			pr_info("[IRQ disable] last duration:");
-			pr_info(" %llu ns (s: %llu, e: %llu)\n\n",
+			pr_debug("[IRQ disable] last duration:");
+			pr_debug(" %llu ns (s: %llu, e: %llu)\n\n",
 				e_irq->last_te - e_irq->last_ts,
 				e_irq->last_ts, e_irq->last_te);
 		} else {
-			pr_info("[IRQ disable] cur_ts:%llu(elapsed:%llu ns),",
+			pr_debug("[IRQ disable] cur_ts:%llu(elapsed:%llu ns),",
 				e_irq->cur_ts, sched_clock() - e_irq->cur_ts);
-			pr_info(" last duration:%llu ns(s: %llu, e: %llu)\n\n",
+			pr_debug(" last duration:%llu ns(s: %llu, e: %llu)\n\n",
 				e_irq->last_te - e_irq->last_ts, e_irq->last_ts,
 				e_irq->last_te);
 		}
 		if (e_pmpt->cur_ts == 0) {
-			pr_info("[Preempt disable] last duration:");
-			pr_info(" %llu ns(s: %llu, e: %llu)\n\n",
+			pr_debug("[Preempt disable] last duration:");
+			pr_debug(" %llu ns(s: %llu, e: %llu)\n\n",
 				e_pmpt->last_te - e_pmpt->last_ts,
 				e_pmpt->last_ts, e_pmpt->last_te);
 		} else {
-			pr_info("[Preempt disable] cur_ts:%llu(elapsed:%llu ns)",
+			pr_debug("[Preempt disable] cur_ts:%llu(elapsed:%llu ns)",
 				e_pmpt->cur_ts,
 				sched_clock() - e_pmpt->cur_ts);
-			pr_info("last duration:%llu ns(s: %llu, e: %llu)\n\n",
+			pr_debug("last duration:%llu ns(s: %llu, e: %llu)\n\n",
 				e_pmpt->last_te - e_pmpt->last_ts,
 				e_pmpt->last_ts, e_pmpt->last_te);
 		}
