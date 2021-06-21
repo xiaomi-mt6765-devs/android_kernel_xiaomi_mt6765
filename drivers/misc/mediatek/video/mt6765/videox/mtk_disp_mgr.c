@@ -332,7 +332,7 @@ int _ioctl_prepare_present_fence(unsigned long arg)
 
 	if (copy_from_user(&pnt_fence, (void __user *)arg,
 			sizeof(struct disp_present_fence))) {
-		pr_info("[FB Driver]: copy_from_user failed! line:%d\n",
+		pr_debug("[FB Driver]: copy_from_user failed! line:%d\n",
 			__LINE__);
 		return -EFAULT;
 	}
@@ -368,7 +368,7 @@ int _ioctl_prepare_present_fence(unsigned long arg)
 	pnt_fence.present_fence_index = data.value;
 	if (copy_to_user(argp, &pnt_fence,
 		sizeof(pnt_fence))) {
-		pr_info("[FB Driver]: copy_to_user failed! line:%d\n",
+		pr_debug("[FB Driver]: copy_to_user failed! line:%d\n",
 			__LINE__);
 		ret = -EFAULT;
 	}
@@ -421,7 +421,7 @@ int _ioctl_prepare_buffer(unsigned long arg, enum PREPARE_FENCE_TYPE type)
 	struct mtkfb_fence_buf_info *buf, *buf2;
 
 	if (copy_from_user(&info, (void __user *)arg, sizeof(info))) {
-		pr_info("[FB Driver]: copy_from_user failed! line:%d\n",
+		pr_debug("[FB Driver]: copy_from_user failed! line:%d\n",
 			__LINE__);
 		return -EFAULT;
 	}
@@ -464,7 +464,7 @@ int _ioctl_prepare_buffer(unsigned long arg, enum PREPARE_FENCE_TYPE type)
 		info.index = 0;
 	}
 	if (copy_to_user(argp, &info, sizeof(info))) {
-		pr_info("[FB Driver]: copy_to_user failed! line:%d\n",
+		pr_debug("[FB Driver]: copy_to_user failed! line:%d\n",
 			__LINE__);
 		ret = -EFAULT;
 	}
@@ -992,7 +992,7 @@ long _frame_config(unsigned long arg)
 		kzalloc(sizeof(struct disp_frame_cfg_t), GFP_KERNEL);
 
 	if (frame_cfg == NULL) {
-		pr_info("error: kzalloc %zu memory fail!\n",
+		pr_debug("error: kzalloc %zu memory fail!\n",
 			sizeof(*frame_cfg));
 		return -EFAULT;
 	}

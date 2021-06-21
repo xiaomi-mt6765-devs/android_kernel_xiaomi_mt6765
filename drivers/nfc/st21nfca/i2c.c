@@ -290,7 +290,7 @@ static int check_crc(u8 *buf, int buflen)
 		       ": CRC error 0x%x != 0x%x 0x%x\n", crc, buf[buflen - 1],
 		       buf[buflen - 2]);
 
-		pr_info(DRIVER_DESC ": %s : BAD CRC\n", __func__);
+		pr_debug(DRIVER_DESC ": %s : BAD CRC\n", __func__);
 		print_hex_dump(KERN_DEBUG, "crc: ", DUMP_PREFIX_NONE,
 			       16, 2, buf, buflen, false);
 		return -EPERM;

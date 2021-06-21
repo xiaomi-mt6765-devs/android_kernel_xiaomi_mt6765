@@ -160,7 +160,7 @@ int disp_mva_map_kernel(enum DISP_MODULE_ENUM module, unsigned int mva,
 		mtk_iommu_iova_to_va(&(disp_dev->iommu_pdev->dev),
 					      mva, map_va, size);
 	else
-		pr_info("disp_mva_map_kernel is null\n");
+		pr_debug("disp_mva_map_kernel is null\n");
 #elif defined(CONFIG_MTK_M4U)
 	if (m4u_mva_map_kernel(mva, size, map_va, map_size) != 0) {
 		DDPERR("error to map kernel va: mva=0x%x, size=%d\n",
@@ -356,7 +356,7 @@ int disp_hal_allocate_framebuffer(phys_addr_t pa_start, phys_addr_t pa_end,
 	int ret = 0;
 
 	*va = (unsigned long)ioremap_nocache(pa_start, pa_end - pa_start + 1);
-	pr_info("disphal_allocate_fb, pa_start=0x%pa, pa_end=0x%pa, va=0x%lx\n",
+	pr_debug("disphal_allocate_fb, pa_start=0x%pa, pa_end=0x%pa, va=0x%lx\n",
 		&pa_start, &pa_end, *va);
 
 	if (disp_helper_get_option(DISP_OPT_USE_M4U)) {

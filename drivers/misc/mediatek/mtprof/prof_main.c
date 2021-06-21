@@ -71,13 +71,13 @@ static ssize_t mt_log_write(struct file *filp,
 		return cnt;
 	}
 	t1 = sched_clock();
-	pr_info("printk debug log: start time: %lld.\n", t1);
+	pr_debug("printk debug log: start time: %lld.\n", t1);
 	print_num = 0;
 	for (;;) {
 		t2 = sched_clock();
 		if (t2 - t1 > second * 1000000000)
 			break;
-		pr_info("printk debug log: the %ld line, time: %lld.\n",
+		pr_debug("printk debug log: the %ld line, time: %lld.\n",
 			print_num++, t2);
 		switch (level) {
 		case 0:
@@ -115,7 +115,7 @@ static ssize_t mt_log_write(struct file *filp,
 		}
 	}
 
-	pr_info("mt log total write %ld line in %lld second.\n",
+	pr_debug("mt log total write %ld line in %lld second.\n",
 		print_num, second);
 	return cnt;
 }
@@ -160,7 +160,7 @@ static ssize_t mt_pid_write(struct file *filp, const char *ubuf,
 	if (reboot_pid > 1) {
 		tsk = find_task_by_vpid(reboot_pid);
 		if (tsk != NULL)
-			pr_info("Reboot Process(%s:%d).\n",
+			pr_debug("Reboot Process(%s:%d).\n",
 				tsk->comm, tsk->pid);
 	}
 

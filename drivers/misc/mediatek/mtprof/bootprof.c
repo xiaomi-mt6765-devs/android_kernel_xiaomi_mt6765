@@ -66,11 +66,11 @@ void log_boot(char *str)
 	if (!enabled)
 		return;
 	ts = sched_clock();
-	pr_info("BOOTPROF:%10lld.%06ld:%s\n", msec_high(ts), msec_low(ts), str);
+	pr_debug("BOOTPROF:%10lld.%06ld:%s\n", msec_high(ts), msec_low(ts), str);
 
 	mutex_lock(&bootprof_lock);
 	if (log_count >= (LOGS_PER_BUF * BUF_COUNT)) {
-		pr_info("[BOOTPROF] not enuough bootprof buffer\n");
+		pr_debug("[BOOTPROF] not enuough bootprof buffer\n");
 		goto out;
 	} else if (log_count && !(log_count % LOGS_PER_BUF)) {
 		bootprof[log_count / LOGS_PER_BUF] =
@@ -78,7 +78,7 @@ void log_boot(char *str)
 				GFP_ATOMIC | __GFP_NORETRY | __GFP_NOWARN);
 	}
 	if (!bootprof[log_count / LOGS_PER_BUF]) {
-		pr_info("no memory for bootprof\n");
+		pr_debug("no memory for bootprof\n");
 		goto out;
 	}
 	p = &bootprof[log_count / LOGS_PER_BUF][log_count % LOGS_PER_BUF];
@@ -179,7 +179,7 @@ static void mt_bootprof_switch(int on)
 	if (enabled ^ on) {
 		unsigned long long ts = sched_clock();
 
-		pr_info("BOOTPROF:%10lld.%06ld: %s\n",
+		pr_debug("BOOTPROF:%10lld.%06ld: %s\n",
 		       msec_high(ts), msec_low(ts), on ? "ON" : "OFF");
 
 		if (on) {
