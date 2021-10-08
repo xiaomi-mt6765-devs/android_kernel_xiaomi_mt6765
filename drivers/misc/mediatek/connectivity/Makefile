@@ -42,6 +42,8 @@ endif
     export WLAN_CHIP_ID=6765
     export MTK_ANDROID_WMT=y
     export ADAPTOR_OPTS=$(MTK_COMBO_CHIP)
+    export WIFI_IP_SET=1
+    export WIFI_ECO_VER=1
 
     # Do build-in for Makefile checking
     # export CONFIG_WLAN_DRV_BUILD_IN=y
