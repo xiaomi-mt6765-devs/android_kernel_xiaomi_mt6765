@@ -275,7 +275,7 @@ void atm_ctrl_cmd_from_user(void *nl_data, struct tad_nl_msg_t *ret_msg)
 		break;
 
 	default:
-		tsta_warn("bad TA_DAEMON_CTRL_CMD_FROM_USER 0x%x\n",
+		pr_err("bad TA_DAEMON_CTRL_CMD_FROM_USER 0x%x\n",
 							msg->tad_cmd);
 		break;
 	}
@@ -347,7 +347,7 @@ static void ta_nl_data_handler(struct sk_buff *skb)
 
 	tad_msg = (struct tad_nl_msg_t *)data;
 	if (tad_msg->tad_ret_data_len >= TAD_NL_MSG_MAX_LEN) {
-		tsta_warn("[ta_nl_data_handler] tad_msg->=ad_ret_data_len=%d\n",
+		tsta_dprintk("[ta_nl_data_handler] tad_msg->=ad_ret_data_len=%d\n",
 		tad_msg->tad_ret_data_len);
 		return;
 	}
@@ -421,7 +421,7 @@ struct file *file, const char __user *buffer, size_t count, loff_t *data)
 		return count;
 	}
 
-	tsta_warn("tscpu_write_log bad argument\n");
+	pr_err("tscpu_write_log bad argument\n");
 
 
 	return -EINVAL;
@@ -529,7 +529,7 @@ static int __init ta_init(void)
 	tsta_dprintk("netlink_kernel_create protol= %d\n", NETLINK_TAD);
 
 	if (daemo_nl_sk == NULL) {
-		tsta_warn("[ta_init] netlink_kernel_create error\n");
+		pr_err("[ta_init] netlink_kernel_create error\n");
 		return -1;
 	}
 
