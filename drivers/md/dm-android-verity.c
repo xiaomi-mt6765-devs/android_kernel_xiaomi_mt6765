@@ -45,7 +45,6 @@
 static char verifiedbootstate[VERITY_COMMANDLINE_PARAM_LENGTH];
 static char veritymode[VERITY_COMMANDLINE_PARAM_LENGTH];
 static char veritykeyid[VERITY_DEFAULT_KEY_ID_LENGTH];
-static char buildvariant[BUILD_VARIANT];
 
 static bool target_added;
 static bool verity_enabled = true;
@@ -89,14 +88,6 @@ static int __init verity_keyid_param(char *line)
 
 __setup("veritykeyid=", verity_keyid_param);
 
-static int __init verity_buildvariant(char *line)
-{
-	strlcpy(buildvariant, line, sizeof(buildvariant));
-	return 1;
-}
-
-__setup("buildvariant=", verity_buildvariant);
-
 static inline bool default_verity_key_id(void)
 {
 	return veritykeyid[0] != '\0';
@@ -104,16 +95,12 @@ static inline bool default_verity_key_id(void)
 
 static inline bool is_eng(void)
 {
-	static const char typeeng[]  = "eng";
-
-	return !strncmp(buildvariant, typeeng, sizeof(typeeng));
+	return 1;
 }
 
 static inline bool is_userdebug(void)
 {
-	static const char typeuserdebug[]  = "userdebug";
-
-	return !strncmp(buildvariant, typeuserdebug, sizeof(typeuserdebug));
+	return 0;
 }
 
 static inline bool is_unlocked(void)
