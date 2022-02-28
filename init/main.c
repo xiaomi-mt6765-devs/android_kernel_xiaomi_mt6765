@@ -386,6 +386,7 @@ static void __init setup_command_line(char *command_line)
 	char skip_initramfs[] = "skip!initramfs";
 	skip_initramfs[4] = '_';
 	remove_flag(command_line, skip_initramfs);
+	remove_flag(boot_command_line, skip_initramfs);
 
 	saved_command_line =
 		memblock_virt_alloc(strlen(boot_command_line) + 1, 0);
