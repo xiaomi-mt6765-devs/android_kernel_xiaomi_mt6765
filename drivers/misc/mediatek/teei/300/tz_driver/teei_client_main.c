@@ -100,7 +100,7 @@
 #include "bootprof.h"
 #endif
 
-#if (CONFIG_MICROTRUST_TZ_DRIVER_MTK_BOOTPROF || CONFIG_MTPROF)
+#if (CONFIG_MTPROF)
 #define TEEI_BOOT_FOOTPRINT(str) log_boot(str)
 #else
 #define TEEI_BOOT_FOOTPRINT(str) IMSG_PRINTK("%s\n", str)
