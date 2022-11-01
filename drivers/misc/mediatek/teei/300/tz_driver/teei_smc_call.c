@@ -33,7 +33,6 @@
 #include "teei_capi.h"
 #include <teei_secure_api.h>
 
-#define IMSG_TAG "[tz_driver]"
 #include <imsg_log.h>
 
 struct semaphore capi_mutex;
