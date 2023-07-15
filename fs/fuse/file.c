@@ -202,7 +202,7 @@ int fuse_open_common(struct inode *inode, struct file *file, bool isdir)
 {
 	struct fuse_conn *fc = get_fuse_conn(inode);
 	int err;
-	bool is_wb_truncate = (file->f_flags & O_TRUNC) &&
+	bool lock_inode = (file->f_flags & O_TRUNC) &&
 			  fc->atomic_o_trunc &&
 			  fc->writeback_cache;
 
@@ -210,20 +210,16 @@ int fuse_open_common(struct inode *inode, struct file *file, bool isdir)
 	if (err)
 		return err;
 
-	if (is_wb_truncate) {
+	if (lock_inode)
 		inode_lock(inode);
-		fuse_set_nowrite(inode);
-	}
 
 	err = fuse_do_open(fc, get_node_id(inode), file, isdir);
 
 	if (!err)
 		fuse_finish_open(inode, file);
 
-	if (is_wb_truncate) {
-		fuse_release_nowrite(inode);
+	if (lock_inode)
 		inode_unlock(inode);
-	}
 
 	return err;
 }
@@ -846,9 +842,9 @@ struct fuse_fill_data {
 	unsigned nr_pages;
 };
 
-static int fuse_readpages_fill(void *_data, struct page *page)
+static int fuse_readpages_fill(struct file *_data, struct page *page)
 {
-	struct fuse_fill_data *data = _data;
+	struct fuse_fill_data *data = (struct fuse_fill_data *)_data;
 	struct fuse_req *req = data->req;
 	struct inode *inode = data->inode;
 	struct fuse_conn *fc = get_fuse_conn(inode);
@@ -1699,7 +1695,6 @@ static int fuse_writepage(struct page *page, struct writeback_control *wbc)
 		WARN_ON(wbc->sync_mode == WB_SYNC_ALL);
 
 		redirty_page_for_writepage(wbc, page);
-		unlock_page(page);
 		return 0;
 	}
 

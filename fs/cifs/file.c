@@ -253,12 +253,6 @@ cifs_nt_open(char *full_path, struct inode *inode, struct cifs_sb_info *cifs_sb,
 		rc = cifs_get_inode_info(&inode, full_path, buf, inode->i_sb,
 					 xid, fid);
 
-	if (rc) {
-		server->ops->close(xid, tcon, fid);
-		if (rc == -ESTALE)
-			rc = -EOPENSTALE;
-	}
-
 out:
 	kfree(buf);
 	return rc;
@@ -279,13 +273,6 @@ cifs_has_mand_locks(struct cifsInodeInfo *cinode)
 	}
 	up_read(&cinode->lock_sem);
 	return has_locks;
-}
-
-void
-cifs_down_write(struct rw_semaphore *sem)
-{
-	while (!down_write_trylock(sem))
-		msleep(10);
 }
 
 struct cifsFileInfo *
@@ -466,7 +453,7 @@ void _cifsFileInfo_put(struct cifsFileInfo *cifs_file, bool wait_oplock_handler)
 	 * Delete any outstanding lock records. We'll lose them when the file
 	 * is closed anyway.
 	 */
-	cifs_down_write(&cifsi->lock_sem);
+	down_write(&cifsi->lock_sem);
 	list_for_each_entry_safe(li, tmp, &cifs_file->llist->locks, llist) {
 		list_del(&li->llist);
 		cifs_del_lock_waiters(li);
@@ -1027,7 +1014,7 @@ static void
 cifs_lock_add(struct cifsFileInfo *cfile, struct cifsLockInfo *lock)
 {
 	struct cifsInodeInfo *cinode = CIFS_I(d_inode(cfile->dentry));
-	cifs_down_write(&cinode->lock_sem);
+	down_write(&cinode->lock_sem);
 	list_add_tail(&lock->llist, &cfile->llist->locks);
 	up_write(&cinode->lock_sem);
 }
@@ -1049,7 +1036,7 @@ cifs_lock_add_if(struct cifsFileInfo *cfile, struct cifsLockInfo *lock,
 
 try_again:
 	exist = false;
-	cifs_down_write(&cinode->lock_sem);
+	down_write(&cinode->lock_sem);
 
 	exist = cifs_find_lock_conflict(cfile, lock->offset, lock->length,
 					lock->type, &conf_lock, CIFS_LOCK_OP);
@@ -1071,7 +1058,7 @@ try_again:
 					(lock->blist.next == &lock->blist));
 		if (!rc)
 			goto try_again;
-		cifs_down_write(&cinode->lock_sem);
+		down_write(&cinode->lock_sem);
 		list_del_init(&lock->blist);
 	}
 
@@ -1124,7 +1111,7 @@ cifs_posix_lock_set(struct file *file, struct file_lock *flock)
 		return rc;
 
 try_again:
-	cifs_down_write(&cinode->lock_sem);
+	down_write(&cinode->lock_sem);
 	if (!cinode->can_cache_brlcks) {
 		up_write(&cinode->lock_sem);
 		return rc;
@@ -1328,7 +1315,7 @@ cifs_push_locks(struct cifsFileInfo *cfile)
 	int rc = 0;
 
 	/* we are going to update can_cache_brlcks here - need a write access */
-	cifs_down_write(&cinode->lock_sem);
+	down_write(&cinode->lock_sem);
 	if (!cinode->can_cache_brlcks) {
 		up_write(&cinode->lock_sem);
 		return rc;
@@ -1517,7 +1504,7 @@ cifs_unlock_range(struct cifsFileInfo *cfile, struct file_lock *flock,
 	if (!buf)
 		return -ENOMEM;
 
-	cifs_down_write(&cinode->lock_sem);
+	down_write(&cinode->lock_sem);
 	for (i = 0; i < 2; i++) {
 		cur = buf;
 		num = 0;
