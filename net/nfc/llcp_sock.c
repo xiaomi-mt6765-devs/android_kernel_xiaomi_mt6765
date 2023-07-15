@@ -1032,13 +1032,10 @@ static int llcp_sock_create(struct net *net, struct socket *sock,
 	    sock->type != SOCK_RAW)
 		return -ESOCKTNOSUPPORT;
 
-	if (sock->type == SOCK_RAW) {
-		if (!capable(CAP_NET_RAW))
-			return -EPERM;
+	if (sock->type == SOCK_RAW)
 		sock->ops = &llcp_rawsock_ops;
-	} else {
+	else
 		sock->ops = &llcp_sock_ops;
-	}
 
 	sk = nfc_llcp_sock_alloc(sock, sock->type, GFP_ATOMIC, kern);
 	if (sk == NULL)
