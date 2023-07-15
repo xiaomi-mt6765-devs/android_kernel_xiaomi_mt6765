@@ -703,12 +703,6 @@
 #define BANDB_ZZ_PROG1_USB_PID	0xBA02
 
 /*
- * Echelon USB Serial Interface
- */
-#define ECHELON_VID		0x0920
-#define ECHELON_U20_PID		0x7500
-
-/*
  * Intrepid Control Systems (http://www.intrepidcs.com/) ValueCAN and NeoVI
  */
 #define INTREPID_VID		0x093C
