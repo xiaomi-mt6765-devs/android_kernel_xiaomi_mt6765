@@ -797,4 +797,4 @@
 	cd_level = /bits/ 8 <MSDC_CD_HIGH>;
 };
 
-#include <certus/cust.dtsi>
+#include <mediatek/certus/cust.dtsi>
