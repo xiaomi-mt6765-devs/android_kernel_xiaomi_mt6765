@@ -77,6 +77,9 @@ include/config
 include/generated
 arch/*/include/generated
 out/
+AnyKernel/
+clang/
+libufdt/
 
 # stgit generated dirs
 patches-*
