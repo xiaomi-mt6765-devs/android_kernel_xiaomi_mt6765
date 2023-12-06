@@ -569,7 +569,7 @@ static int android_init_functions(struct android_usb_function **functions,
 		pr_notice("[USB]%s: f->dev_name = %s, f->name = %s\n", __func__,
 			f->dev_name, f->name);
 		f->dev = device_create(android_class, dev->dev,
-				MKDEV(0, index), f, f->dev_name);
+				MKDEV(0, index), f, "%s", f->dev_name);
 		if (IS_ERR(f->dev)) {
 			pr_info("%s: Failed to create dev %s", __func__,
 							f->dev_name);

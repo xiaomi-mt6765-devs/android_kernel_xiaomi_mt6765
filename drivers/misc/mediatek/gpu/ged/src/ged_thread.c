@@ -57,7 +57,7 @@ GED_ERROR ged_thread_create(GED_THREAD_HANDLE *phThread, const char* szThreadNam
 
 	psThreadData->pFunc = pFunc;
 	psThreadData->pvData = pvData;
-    psThreadData->psThread = kthread_run(ged_thread_run, psThreadData, szThreadName);
+    psThreadData->psThread = kthread_run(ged_thread_run, psThreadData, "%s", szThreadName);
 
 	if (IS_ERR(psThreadData->psThread))
 	{
