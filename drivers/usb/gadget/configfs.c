@@ -40,7 +40,7 @@ struct device *create_function_device(char *name)
 {
 	if (android_device && !IS_ERR(android_device))
 		return device_create(android_class, android_device,
-			MKDEV(0, index++), NULL, name);
+			MKDEV(0, index++), NULL, "%s", name);
 	else
 		return ERR_PTR(-EINVAL);
 }

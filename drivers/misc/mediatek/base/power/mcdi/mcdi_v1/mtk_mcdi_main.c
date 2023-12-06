@@ -174,7 +174,7 @@ static void mcdi_stress_start(void)
 		snprintf(name, sizeof(name), "mcdi_stress_task%d", i);
 
 		mcdi_stress_tsk[i] =
-			kthread_create(mcdi_stress_task, NULL, name);
+			kthread_create(mcdi_stress_task, NULL, "%s", name);
 
 		if (!IS_ERR(mcdi_stress_tsk[i])) {
 			kthread_bind(mcdi_stress_tsk[i], i);
