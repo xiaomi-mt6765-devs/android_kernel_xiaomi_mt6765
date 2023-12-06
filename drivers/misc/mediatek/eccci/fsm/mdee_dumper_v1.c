@@ -479,7 +479,7 @@ static void mdee_dumper_info_prepare_v1(struct ccci_fsm_ee *mdee)
 		if (md_id == MD_SYS3) {
 			snprintf(debug_info->assert.file_name,
 				sizeof(debug_info->assert.file_name),
-				ex_info->content.c2k_assert.filename);
+				"%s", ex_info->content.c2k_assert.filename);
 			debug_info->assert.line_num =
 				ex_info->content.c2k_assert.linenumber;
 			debug_info->assert.parameters[0] =
@@ -491,7 +491,7 @@ static void mdee_dumper_info_prepare_v1(struct ccci_fsm_ee *mdee)
 		} else {
 			snprintf(debug_info->assert.file_name,
 				sizeof(debug_info->assert.file_name),
-				ex_info->content.assert.filename);
+				"%s", ex_info->content.assert.filename);
 			debug_info->assert.line_num =
 				ex_info->content.assert.linenumber;
 			debug_info->assert.parameters[0] =
@@ -541,13 +541,13 @@ static void mdee_dumper_info_prepare_v1(struct ccci_fsm_ee *mdee)
 		if (md_id == MD_SYS3) {
 			snprintf(debug_info->assert.file_name,
 				sizeof(debug_info->assert.file_name),
-				ex_info->content.c2k_assert.filename);
+				"%s", ex_info->content.c2k_assert.filename);
 			debug_info->assert.line_num =
 				ex_info->content.c2k_assert.linenumber;
 		} else {
 			snprintf(debug_info->assert.file_name,
 				sizeof(debug_info->assert.file_name),
-				ex_info->content.assert.filename);
+				"%s", ex_info->content.assert.filename);
 			debug_info->assert.line_num =
 				ex_info->content.assert.linenumber;
 		}
@@ -558,12 +558,12 @@ static void mdee_dumper_info_prepare_v1(struct ccci_fsm_ee *mdee)
 		if (md_id == MD_SYS3) {
 			snprintf(debug_info->dsp_assert.file_name,
 				sizeof(debug_info->dsp_assert.file_name),
-				ex_info->content.c2k_assert.filename);
+				"%s", ex_info->content.c2k_assert.filename);
 			debug_info->dsp_assert.line_num =
 				ex_info->content.c2k_assert.linenumber;
 			snprintf(debug_info->dsp_assert.execution_unit,
 				sizeof(debug_info->dsp_assert.execution_unit),
-				ex_info->envinfo.execution_unit);
+				"%s", ex_info->envinfo.execution_unit);
 			debug_info->dsp_assert.parameters[0] =
 				ex_info->content.c2k_assert.parameters[0];
 			debug_info->dsp_assert.parameters[1] =
@@ -574,12 +574,12 @@ static void mdee_dumper_info_prepare_v1(struct ccci_fsm_ee *mdee)
 		} else {
 			snprintf(debug_info->dsp_assert.file_name,
 				sizeof(debug_info->dsp_assert.file_name),
-				ex_info->content.assert.filename);
+				"%s", ex_info->content.assert.filename);
 			debug_info->dsp_assert.line_num =
 				ex_info->content.assert.linenumber;
 			snprintf(debug_info->dsp_assert.execution_unit,
 				sizeof(debug_info->dsp_assert.execution_unit),
-				ex_info->envinfo.execution_unit);
+				"%s", ex_info->envinfo.execution_unit);
 			debug_info->dsp_assert.parameters[0] =
 				ex_info->content.assert.parameters[0];
 			debug_info->dsp_assert.parameters[1] =
@@ -593,7 +593,7 @@ static void mdee_dumper_info_prepare_v1(struct ccci_fsm_ee *mdee)
 		debug_info->name = "MD DMD Exception";
 		snprintf(debug_info->dsp_exception.execution_unit,
 			sizeof(debug_info->dsp_exception.execution_unit),
-			ex_info->envinfo.execution_unit);
+			"%s", ex_info->envinfo.execution_unit);
 		debug_info->dsp_exception.code1 =
 			ex_info->content.fatalerr.error_code.code1;
 		break;
@@ -602,7 +602,7 @@ static void mdee_dumper_info_prepare_v1(struct ccci_fsm_ee *mdee)
 		debug_info->name = "MD DMD FATAL ERROR";
 		snprintf(debug_info->dsp_fatal_err.execution_unit,
 			sizeof(debug_info->dsp_fatal_err.execution_unit),
-			ex_info->envinfo.execution_unit);
+			"%s", ex_info->envinfo.execution_unit);
 		debug_info->dsp_fatal_err.err_code[0] =
 			ex_info->content.fatalerr.error_code.code1;
 		debug_info->dsp_fatal_err.err_code[1] =

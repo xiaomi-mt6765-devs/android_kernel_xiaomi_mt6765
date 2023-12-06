@@ -1979,7 +1979,7 @@ static void kernel_reportAPI(const enum AE_DEFECT_ATTR attr, const int db_opt,
 	if (oops != NULL) {
 		do_gettimeofday(&tv);
 		rtc_time_to_tm(tv.tv_sec - sys_tz.tz_minuteswest * 60, &tm);
-		n += snprintf(oops->backtrace, AEE_BACKTRACE_LENGTH, msg);
+		n += snprintf(oops->backtrace, AEE_BACKTRACE_LENGTH, "%s", msg);
 		n += snprintf(oops->backtrace + n, AEE_BACKTRACE_LENGTH - n,
 			"\nTrigger time:[%d-%02d-%02d %02d:%02d:%02d.%03d]\n",
 			tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,

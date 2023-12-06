@@ -2217,7 +2217,7 @@ static void testcase_thread_dispatch(void)
 
 	sprintf(threadName, "cmdqKTHR_%llx", engineFlag1);
 	pKThread1 = kthread_run(_testcase_thread_dispatch,
-		(void *)(&engineFlag1), threadName);
+		(void *)(&engineFlag1), "%s", threadName);
 	if (IS_ERR(pKThread1)) {
 		CMDQ_ERR("create thread failed, thread:%s\n", threadName);
 		return;
@@ -2225,7 +2225,7 @@ static void testcase_thread_dispatch(void)
 
 	sprintf(threadName, "cmdqKTHR_%llx", engineFlag2);
 	pKThread2 = kthread_run(_testcase_thread_dispatch,
-		(void *)(&engineFlag2), threadName);
+		(void *)(&engineFlag2), "%s", threadName);
 	if (IS_ERR(pKThread2)) {
 		CMDQ_ERR("create thread failed, thread:%s\n", threadName);
 		return;
@@ -2296,7 +2296,7 @@ static void testcase_full_thread_array(void)
 	CMDQ_LOG("%s\n", __func__);
 
 	sprintf(threadName, "cmdqKTHR");
-	pKThread = kthread_run(_testcase_full_thread_array, NULL, threadName);
+	pKThread = kthread_run(_testcase_full_thread_array, NULL, "%s", threadName);
 	if (IS_ERR(pKThread)) {
 		/* create thread failed */
 		CMDQ_ERR("create thread failed, thread:%s\n", threadName);

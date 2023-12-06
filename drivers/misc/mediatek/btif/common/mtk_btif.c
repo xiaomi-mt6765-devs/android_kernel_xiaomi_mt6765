@@ -527,7 +527,7 @@ static int btif_chrdev_init(void)
 	BTIF_INFO_FUNC("create class for btif succeed\n");
 
 	p_btif_dev = device_create(p_btif_class,
-				   NULL, btif_dev, 0, p_btif_dev_name);
+				   NULL, btif_dev, 0, "%s", p_btif_dev_name);
 	if (IS_ERR(p_btif_dev)) {
 		BTIF_ERR_FUNC("error happened when doing device_create\n");
 		class_destroy(p_btif_class);

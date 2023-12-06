@@ -487,7 +487,7 @@ void dprec_logger_event_init(struct dprec_logger_event *p, char *name,
 			     mmp_event *mmp_root)
 {
 	if (p) {
-		scnprintf(p->name, ARRAY_SIZE(p->name), name);
+		scnprintf(p->name, ARRAY_SIZE(p->name), "%s", name);
 #ifdef SUPPORT_MMPROFILE /* FIXME: remove when MMP ready */
 		if (mmp_root)
 			p->mmp = mmprofile_register_event(*mmp_root, name);

@@ -1239,7 +1239,7 @@ static void eem_init_ctrl(struct eem_ctrl *ctrl)
 	if (1) {
 		init_waitqueue_head(&ctrl->wq);
 		ctrl->thread = kthread_run(eem_volt_thread_handler,
-			ctrl, ctrl->name);
+			ctrl, "%s", ctrl->name);
 
 		if (IS_ERR(ctrl->thread))
 			eem_error("Create %s thread failed: %ld\n", ctrl->name,

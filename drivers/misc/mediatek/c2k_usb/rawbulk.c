@@ -670,7 +670,7 @@ static __init struct rawbulk_function *rawbulk_alloc_function(int transfer_id)
 	}
 
 	fn->dev = device_create(rawbulk_class, NULL, MKDEV(0,
-				fn->transfer_id), NULL, fn->shortname);
+				fn->transfer_id), NULL, "%s", fn->shortname);
 	if (IS_ERR(fn->dev)) {
 		kfree(fn);
 		return NULL;

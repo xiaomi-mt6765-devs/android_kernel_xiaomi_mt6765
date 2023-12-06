@@ -1105,7 +1105,7 @@ void kick_logger_dump(char *string)
 
 	kick_buf_length +=
 		scnprintf(kick_string_buffer_analysize + kick_buf_length,
-			kick_dump_max_length - kick_buf_length, string);
+			kick_dump_max_length - kick_buf_length, "%s", string);
 }
 
 void kick_logger_dump_reset(void)

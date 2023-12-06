@@ -1560,7 +1560,7 @@ static int smp_test_on_hosts(struct seq_file *m, int thread_num,
 
 			sprintf(thread_name, "msdc_H%d_T%d", i, j);
 			kthread_run(write_read_thread, &wr_data[i][j],
-				thread_name);
+				"%s", thread_name);
 			seq_printf(m, "	start thread: %s, at address: 0x%x\n",
 				 thread_name, wr_data[i][j].start_address);
 		}

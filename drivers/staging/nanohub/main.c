@@ -659,7 +659,7 @@ static int nanohub_create_devices(struct nanohub_data *data)
 
 		nanohub_io_init(io, data, device_create(sensor_class, NULL,
 							MKDEV(major, i),
-							io, names[i]));
+							io, "%s", names[i]));
 		if (IS_ERR(io->dev)) {
 			ret = PTR_ERR(io->dev);
 			pr_err("nanohub: device_create failed for %s; err=%d\n",

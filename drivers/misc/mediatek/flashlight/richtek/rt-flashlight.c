@@ -308,7 +308,7 @@ struct flashlight_device *flashlight_device_register(const char *name,
 	flashlight_dev->dev.class = flashlight_class;
 	flashlight_dev->dev.parent = parent;
 	flashlight_dev->dev.release = flashlight_device_release;
-	dev_set_name(&flashlight_dev->dev, name);
+	dev_set_name(&flashlight_dev->dev, "%s", name);
 	dev_set_drvdata(&flashlight_dev->dev, devdata);
 	/* Copy properties */
 	if (props) {

@@ -203,7 +203,7 @@ static ssize_t proc_generate_wdt_write(struct file *file,
 	for (i = 0; i < nr_cpu_ids; i++) {
 		sprintf(name, "wd-test-%d", i);
 		pr_notice("[WDK]thread name: %s\n", name);
-		wk_tsk[i] = kthread_create(kwdt_thread_test, NULL, name);
+		wk_tsk[i] = kthread_create(kwdt_thread_test, NULL, "%s", name);
 		if (IS_ERR(wk_tsk[i])) {
 			int ret = PTR_ERR(wk_tsk[i]);
 

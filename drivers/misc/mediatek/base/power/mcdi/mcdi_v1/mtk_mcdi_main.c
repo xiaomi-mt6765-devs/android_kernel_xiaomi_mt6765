@@ -177,7 +177,7 @@ static void mcdi_stress_start(void)
 			pr_info("[mcdi]%s task naming fail\n", __func__);
 
 		mcdi_stress_tsk[i] =
-			kthread_create(mcdi_stress_task, NULL, name);
+			kthread_create(mcdi_stress_task, NULL, "%s", name);
 
 		if (!IS_ERR(mcdi_stress_tsk[i])) {
 			kthread_bind(mcdi_stress_tsk[i], i);

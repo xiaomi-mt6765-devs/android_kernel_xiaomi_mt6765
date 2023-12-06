@@ -1535,7 +1535,7 @@ int smi_register(struct platform_driver *drv)
 	}
 
 	smi_dev->device = device_create(smi_dev->class, NULL, smi_dev->dev_no,
-		NULL, smi_dev->name);
+		NULL, "%s", smi_dev->name);
 	if (IS_ERR(smi_dev->device)) {
 		ret = PTR_ERR(smi_dev->device);
 		SMIERR("device_create failed: %d\n", ret);

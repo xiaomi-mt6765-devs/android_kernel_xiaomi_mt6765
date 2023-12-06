@@ -719,7 +719,7 @@ struct charger_device *charger_device_register(const char *name,
 	chg_dev->dev.class = charger_class;
 	chg_dev->dev.parent = parent;
 	chg_dev->dev.release = charger_device_release;
-	dev_set_name(&chg_dev->dev, name);
+	dev_set_name(&chg_dev->dev, "%s", name);
 	dev_set_drvdata(&chg_dev->dev, devdata);
 	head = &chg_dev->evt_nh;
 	srcu_init_notifier_head(head);

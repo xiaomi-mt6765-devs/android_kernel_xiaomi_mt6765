@@ -1406,7 +1406,7 @@ hiden_read:
 		if (!rd->error_occurred)
 			seq_puts(seq_file, "No Error\n");
 		else
-			seq_printf(seq_file, rd->err_msg);
+			seq_printf(seq_file, "%s", rd->err_msg);
 		break;
 	case RT_DBG_REGS:
 		rt_show_regs(rd, seq_file);
@@ -2038,7 +2038,7 @@ struct rt_regmap_device *rt_regmap_device_register_ex
 	rd->dev.release = rt_regmap_device_release;
 	dev_set_drvdata(&rd->dev, drvdata);
 	snprintf(device_name, 32, "rt_regmap_%s", props->name);
-	dev_set_name(&rd->dev, device_name);
+	dev_set_name(&rd->dev, "%s", device_name);
 	memcpy(&rd->props, props, sizeof(struct rt_regmap_properties));
 	rd->props.cache_mode_ori = rd->props.rt_regmap_mode&RT_CACHE_MODE_MASK;
 
