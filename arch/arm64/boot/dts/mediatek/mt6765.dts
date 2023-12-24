@@ -3130,29 +3130,6 @@ firmware_class.path=/vendor/firmware";
 		compatible = "mediatek,mt_soc_pcm_voice_usb_echoref";
 	};
 
-	firmware {
-		android {
-			compatible = "android,firmware";
-
-			vbmeta {
-				compatible = "android,vbmeta";
-				parts = "vbmeta,boot,system,vendor";
-			};
-
-			fstab {
-				compatible = "android,fstab";
-
-				vendor {
-					compatible = "android,vendor";
-					dev = "/dev/block/platform/bootdevice/by-name/vendor";
-					type = "ext4";
-					mnt_flags = "ro";
-					fsmgr_flags = "wait,avb";
-				};
-			};
-		};
-	};
-
 	pmic_clock_buffer_ctrl: pmic_clock_buffer_ctrl {
 		compatible = "mediatek,pmic_clock_buffer";
 		mediatek,clkbuf-quantity = <7>;
