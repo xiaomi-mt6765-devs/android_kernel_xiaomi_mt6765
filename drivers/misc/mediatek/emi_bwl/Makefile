@@ -13,6 +13,6 @@
 
 ifeq ($(CONFIG_MTK_COMMON_EMI), y)
 obj-y += mt8127/
-else ifeq($(CONFIG_MTK_EMI_BWL), y)
+else ifeq ($(CONFIG_MTK_EMI_BWL), y)
 obj-y += $(subst ",,$(CONFIG_MTK_PLATFORM))/
 endif
