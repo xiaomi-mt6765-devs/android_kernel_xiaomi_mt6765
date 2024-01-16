@@ -1,4 +1,4 @@
-subdir-ccflags-y += -Wall
+subdir-ccflags-y += -Werror
 
 # Core
 obj-$(CONFIG_PINCTRL_MTK)       += pinctrl-mtk-common.o
