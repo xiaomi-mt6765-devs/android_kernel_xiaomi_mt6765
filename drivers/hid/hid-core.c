@@ -197,37 +197,16 @@ static unsigned hid_lookup_collection(struct hid_parser *parser, unsigned type)
 }
 
 /*
- * Concatenate usage which defines 16 bits or less with the
- * currently defined usage page to form a 32 bit usage
- */
-
-static void complete_usage(struct hid_parser *parser, unsigned int index)
-{
-	parser->local.usage[index] &= 0xFFFF;
-	parser->local.usage[index] |=
-		(parser->global.usage_page & 0xFFFF) << 16;
-}
-
-/*
  * Add a usage to the temporary parser table.
  */
 
-static int hid_add_usage(struct hid_parser *parser, unsigned usage, u8 size)
+static int hid_add_usage(struct hid_parser *parser, unsigned usage)
 {
 	if (parser->local.usage_index >= HID_MAX_USAGES) {
 		hid_err(parser->device, "usage index exceeded\n");
 		return -1;
 	}
 	parser->local.usage[parser->local.usage_index] = usage;
-
-	/*
-	 * If Usage item only includes usage id, concatenate it with
-	 * currently defined usage page
-	 */
-	if (size <= 2)
-		complete_usage(parser, parser->local.usage_index);
-
-	parser->local.usage_size[parser->local.usage_index] = size;
 	parser->local.collection_index[parser->local.usage_index] =
 		parser->collection_stack_ptr ?
 		parser->collection_stack[parser->collection_stack_ptr - 1] : 0;
@@ -490,7 +469,10 @@ static int hid_parser_local(struct hid_parser *parser, struct hid_item *item)
 			return 0;
 		}
 
-		return hid_add_usage(parser, data, item->size);
+		if (item->size <= 2)
+			data = (parser->global.usage_page << 16) + data;
+
+		return hid_add_usage(parser, data);
 
 	case HID_LOCAL_ITEM_TAG_USAGE_MINIMUM:
 
@@ -498,6 +480,9 @@ static int hid_parser_local(struct hid_parser *parser, struct hid_item *item)
 			dbg_hid("alternative usage ignored\n");
 			return 0;
 		}
+
+		if (item->size <= 2)
+			data = (parser->global.usage_page << 16) + data;
 
 		parser->local.usage_minimum = data;
 		return 0;
@@ -508,6 +493,9 @@ static int hid_parser_local(struct hid_parser *parser, struct hid_item *item)
 			dbg_hid("alternative usage ignored\n");
 			return 0;
 		}
+
+		if (item->size <= 2)
+			data = (parser->global.usage_page << 16) + data;
 
 		count = data - parser->local.usage_minimum;
 		if (count + parser->local.usage_index >= HID_MAX_USAGES) {
@@ -528,7 +516,7 @@ static int hid_parser_local(struct hid_parser *parser, struct hid_item *item)
 		}
 
 		for (n = parser->local.usage_minimum; n <= data; n++)
-			if (hid_add_usage(parser, n, item->size)) {
+			if (hid_add_usage(parser, n)) {
 				dbg_hid("hid_add_usage failed\n");
 				return -1;
 			}
@@ -543,41 +531,6 @@ static int hid_parser_local(struct hid_parser *parser, struct hid_item *item)
 }
 
 /*
- * Concatenate Usage Pages into Usages where relevant:
- * As per specification, 6.2.2.8: "When the parser encounters a main item it
- * concatenates the last declared Usage Page with a Usage to form a complete
- * usage value."
- */
-
-static void hid_concatenate_last_usage_page(struct hid_parser *parser)
-{
-	int i;
-	unsigned int usage_page;
-	unsigned int current_page;
-
-	if (!parser->local.usage_index)
-		return;
-
-	usage_page = parser->global.usage_page;
-
-	/*
-	 * Concatenate usage page again only if last declared Usage Page
-	 * has not been already used in previous usages concatenation
-	 */
-	for (i = parser->local.usage_index - 1; i >= 0; i--) {
-		if (parser->local.usage_size[i] > 2)
-			/* Ignore extended usages */
-			continue;
-
-		current_page = parser->local.usage[i] >> 16;
-		if (current_page == usage_page)
-			break;
-
-		complete_usage(parser, i);
-	}
-}
-
-/*
  * Process a main item.
  */
 
@@ -585,8 +538,6 @@ static int hid_parser_main(struct hid_parser *parser, struct hid_item *item)
 {
 	__u32 data;
 	int ret;
-
-	hid_concatenate_last_usage_page(parser);
 
 	data = item_udata(item);
 
@@ -805,8 +756,6 @@ static int hid_scan_main(struct hid_parser *parser, struct hid_item *item)
 	__u32 data;
 	int i;
 
-	hid_concatenate_last_usage_page(parser);
-
 	data = item_udata(item);
 
 	switch (item->tag) {
@@ -895,6 +844,42 @@ static int hid_scan_report(struct hid_device *hid)
 				hid->group = HID_GROUP_RMI;
 		break;
 	}
+
+	/* fall back to generic driver in case specific driver doesn't exist */
+	switch (hid->group) {
+	case HID_GROUP_MULTITOUCH_WIN_8:
+		/* fall-through */
+	case HID_GROUP_MULTITOUCH:
+		if (!IS_ENABLED(CONFIG_HID_MULTITOUCH)) {
+			hid->group = HID_GROUP_GENERIC;
+			hid_warn(hid, "k4.14 change to %u\n", hid->group);
+		}
+		break;
+	case HID_GROUP_SENSOR_HUB:
+		if (!IS_ENABLED(CONFIG_HID_SENSOR_HUB))
+			hid->group = HID_GROUP_GENERIC;
+		break;
+	case HID_GROUP_RMI:
+		if (!IS_ENABLED(CONFIG_HID_RMI))
+			hid->group = HID_GROUP_GENERIC;
+		break;
+	case HID_GROUP_WACOM:
+		if (!IS_ENABLED(CONFIG_HID_WACOM))
+			hid->group = HID_GROUP_GENERIC;
+		break;
+	case HID_GROUP_LOGITECH_DJ_DEVICE:
+		if (!IS_ENABLED(CONFIG_HID_LOGITECH_DJ))
+			hid->group = HID_GROUP_GENERIC;
+		break;
+	}
+
+	if (hid->vendor == 0x248a && hid->group == HID_GROUP_MULTITOUCH) {
+		hid_warn(hid, "scan_report change to GENERIC %u\n", hid->group);
+		hid->group = HID_GROUP_GENERIC;
+	}
+
+	/* fall back to generic driver in case specific driver doesn't exist */
+	hid_warn(hid, "report vendor %u,group %u\n", hid->vendor, hid->group);
 
 	vfree(parser);
 	return 0;
@@ -2409,7 +2394,7 @@ __ATTRIBUTE_GROUPS(hid_dev);
 
 static int hid_uevent(struct device *dev, struct kobj_uevent_env *env)
 {
-	struct hid_device *hdev = to_hid_device(dev);	
+	struct hid_device *hdev = to_hid_device(dev);
 
 	if (add_uevent_var(env, "HID_ID=%04X:%08X:%08X",
 			hdev->bus, hdev->vendor, hdev->product))

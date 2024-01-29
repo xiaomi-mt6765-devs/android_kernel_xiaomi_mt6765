@@ -1818,7 +1818,6 @@ int serial8250_handle_irq(struct uart_port *port, unsigned int iir)
 	unsigned char status;
 	unsigned long flags;
 	struct uart_8250_port *up = up_to_u8250p(port);
-	bool skip_rx = false;
 
 	if (iir & UART_IIR_NO_INT)
 		return 0;
@@ -1827,20 +1826,17 @@ int serial8250_handle_irq(struct uart_port *port, unsigned int iir)
 
 	status = serial_port_in(port, UART_LSR);
 
-	/*
-	 * If port is stopped and there are no error conditions in the
-	 * FIFO, then don't drain the FIFO, as this may lead to TTY buffer
-	 * overflow. Not servicing, RX FIFO would trigger auto HW flow
-	 * control when FIFO occupancy reaches preset threshold, thus
-	 * halting RX. This only works when auto HW flow control is
-	 * available.
-	 */
-	if (!(status & (UART_LSR_FIFOE | UART_LSR_BRK_ERROR_BITS)) &&
-	    (port->status & (UPSTAT_AUTOCTS | UPSTAT_AUTORTS)) &&
-	    !(port->read_status_mask & UART_LSR_DR))
-		skip_rx = true;
+#ifndef CONFIG_FIQ_DEBUGGER
+#ifdef CONFIG_MTK_ENG_BUILD
+#ifdef CONFIG_MTK_PRINTK_UART_CONSOLE
+	if (uart_console(port) && (serial_port_in(port, UART_LSR) & 0x01))
+		printk_disable_uart = 0;
+#endif
+#endif
+#endif
 
-	if (status & (UART_LSR_DR | UART_LSR_BI) && !skip_rx) {
+	if (status & (UART_LSR_DR | UART_LSR_BI) &&
+	    iir & UART_IIR_RDI) {
 		if (!up->dma || handle_rx_dma(up, iir))
 			status = serial8250_rx_chars(up, status);
 	}
