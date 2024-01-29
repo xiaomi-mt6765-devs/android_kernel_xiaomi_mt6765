@@ -34,6 +34,7 @@
 #include <linux/pm_runtime.h>
 #include <linux/blk-cgroup.h>
 #include <linux/psi.h>
+#include <mt-plat/mtk_blocktag.h> /* MTK PATCH */
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/block.h>
@@ -76,7 +77,7 @@ static void blk_clear_congested(struct request_list *rl, int sync)
 	 * flip its congestion state for events on other blkcgs.
 	 */
 	if (rl == &rl->q->root_rl)
-		clear_wb_congested(rl->q->backing_dev_info.wb.congested, sync);
+		clear_wb_congested(rl->q->backing_dev_info->wb.congested, sync);
 #endif
 }
 
@@ -87,7 +88,7 @@ static void blk_set_congested(struct request_list *rl, int sync)
 #else
 	/* see blk_clear_congested() */
 	if (rl == &rl->q->root_rl)
-		set_wb_congested(rl->q->backing_dev_info.wb.congested, sync);
+		set_wb_congested(rl->q->backing_dev_info->wb.congested, sync);
 #endif
 }
 
@@ -105,22 +106,6 @@ void blk_queue_congestion_threshold(struct request_queue *q)
 		nr = 1;
 	q->nr_congestion_off = nr;
 }
-
-/**
- * blk_get_backing_dev_info - get the address of a queue's backing_dev_info
- * @bdev:	device
- *
- * Locates the passed device's request queue and returns the address of its
- * backing_dev_info.  This function can only be called if @bdev is opened
- * and the return value is never NULL.
- */
-struct backing_dev_info *blk_get_backing_dev_info(struct block_device *bdev)
-{
-	struct request_queue *q = bdev_get_queue(bdev);
-
-	return &q->backing_dev_info;
-}
-EXPORT_SYMBOL(blk_get_backing_dev_info);
 
 void blk_rq_init(struct request_queue *q, struct request *rq)
 {
@@ -587,7 +572,7 @@ void blk_cleanup_queue(struct request_queue *q)
 	blk_flush_integrity();
 
 	/* @q won't process any more request, flush async actions */
-	del_timer_sync(&q->backing_dev_info.laptop_mode_wb_timer);
+	del_timer_sync(&q->backing_dev_info->laptop_mode_wb_timer);
 	blk_sync_queue(q);
 
 	if (q->mq_ops)
@@ -599,7 +584,7 @@ void blk_cleanup_queue(struct request_queue *q)
 		q->queue_lock = &q->__queue_lock;
 	spin_unlock_irq(lock);
 
-	bdi_unregister(&q->backing_dev_info);
+	bdi_unregister(q->backing_dev_info);
 
 	/* @q is and will stay empty, shutdown and put */
 	blk_put_queue(q);
@@ -693,7 +678,6 @@ static void blk_rq_timed_out_timer(unsigned long data)
 struct request_queue *blk_alloc_queue_node(gfp_t gfp_mask, int node_id)
 {
 	struct request_queue *q;
-	int err;
 
 	q = kmem_cache_alloc_node(blk_requestq_cachep,
 				gfp_mask | __GFP_ZERO, node_id);
@@ -708,17 +692,17 @@ struct request_queue *blk_alloc_queue_node(gfp_t gfp_mask, int node_id)
 	if (!q->bio_split)
 		goto fail_id;
 
-	q->backing_dev_info.ra_pages =
+	q->backing_dev_info = bdi_alloc_node(gfp_mask, node_id);
+		if (!(q->backing_dev_info))
+			goto fail_split;
+
+	q->backing_dev_info->ra_pages =
 			(VM_MAX_READAHEAD * 1024) / PAGE_SIZE;
-	q->backing_dev_info.capabilities = BDI_CAP_CGROUP_WRITEBACK;
-	q->backing_dev_info.name = "block";
+	q->backing_dev_info->capabilities = BDI_CAP_CGROUP_WRITEBACK;
+	q->backing_dev_info->name = "block";
 	q->node = node_id;
 
-	err = bdi_init(&q->backing_dev_info);
-	if (err)
-		goto fail_split;
-
-	setup_timer(&q->backing_dev_info.laptop_mode_wb_timer,
+	setup_timer(&q->backing_dev_info->laptop_mode_wb_timer,
 		    laptop_mode_timer_fn, (unsigned long) q);
 	setup_timer(&q->timeout, blk_rq_timed_out_timer, (unsigned long) q);
 	INIT_WORK(&q->timeout_work, NULL);
@@ -772,7 +756,7 @@ struct request_queue *blk_alloc_queue_node(gfp_t gfp_mask, int node_id)
 fail_ref:
 	percpu_ref_exit(&q->q_usage_counter);
 fail_bdi:
-	bdi_destroy(&q->backing_dev_info);
+	bdi_put(q->backing_dev_info);
 fail_split:
 	bioset_free(q->bio_split);
 fail_id:
@@ -1199,7 +1183,7 @@ fail_elvpriv:
 	 * disturb iosched and blkcg but weird is bettern than dead.
 	 */
 	printk_ratelimited(KERN_WARNING "%s: dev %s: request aux data allocation failed, iosched may be disturbed\n",
-			   __func__, dev_name(q->backing_dev_info.dev));
+			   __func__, dev_name(q->backing_dev_info->dev));
 
 	rq->cmd_flags &= ~REQ_ELVPRIV;
 	rq->elv.icq = NULL;
@@ -1355,6 +1339,13 @@ void blk_requeue_request(struct request_queue *q, struct request *rq)
 
 	if (rq->cmd_flags & REQ_QUEUED)
 		blk_queue_end_tag(q, rq);
+
+	/*
+	 * MTK PATCH:
+	 * Remove REQ_DEV_STARTED to make sure future possible abort handler
+	 * works correctly.
+	 */
+	rq->cmd_flags &= ~REQ_DEV_STARTED;
 
 	BUG_ON(blk_queued_rq(rq));
 
@@ -2120,6 +2111,9 @@ blk_qc_t submit_bio(struct bio *bio)
 			count_vm_events(PGPGIN, count);
 		}
 
+#ifdef CONFIG_MTK_BLOCK_TAG
+		mtk_btag_pidlog_submit_bio(bio);
+#endif
 		if (unlikely(block_dump)) {
 			char b[BDEVNAME_SIZE];
 			printk(KERN_DEBUG "%s(%d): %s block %Lu on %s (%u sectors)\n",
@@ -2379,6 +2373,61 @@ void blk_account_io_start(struct request *rq, bool new_io)
 	part_stat_unlock();
 }
 
+/* MTK PATCH */
+#ifdef CONFIG_MTK_BLK_RW_PROFILING
+u32 read_counter[RW_ARRAY_SIZE] = {0};
+u32 write_counter[RW_ARRAY_SIZE] = {0};
+void mtk_trace_block_rq(struct request_queue *q, struct request *rq)
+{
+	/* Record 4KB/8KB/.../512KB/others, currently, others all
+	 * allocate to array[128]
+	 */
+	if (blk_rq_bytes(rq) < FS_RW_UNIT)
+		return;
+	/* Not count discard/unmap cmds */
+	if (req_op(rq) == REQ_OP_DISCARD)
+		return;
+
+	if (rq_data_dir(rq) == WRITE) {
+		if (blk_rq_bytes(rq) > CHECK_SIZE_LIMIT)
+			write_counter[CHECK_SIZE_LIMIT/FS_RW_UNIT]++;
+		else
+			write_counter[(blk_rq_bytes(rq)/FS_RW_UNIT) - 1]++;
+	} else if (rq_data_dir(rq) == READ) {
+		if (blk_rq_bytes(rq) > CHECK_SIZE_LIMIT)
+			read_counter[CHECK_SIZE_LIMIT/FS_RW_UNIT]++;
+		else
+			read_counter[(blk_rq_bytes(rq)/FS_RW_UNIT) - 1]++;
+	}
+
+}
+void mtk_trace_block_rq_get_rw_counter(u32 *temp_buf,
+	enum block_rw_enum operation)
+{
+	int i = 0;
+
+	for (i = 0; i < RW_ARRAY_SIZE; i++) {
+		if (operation == blockread)
+			temp_buf[i] = read_counter[i];
+		else if (operation == blockwrite)
+			temp_buf[i] = write_counter[i];
+		else if (operation == blockrw)
+			temp_buf[i] = read_counter[i] + write_counter[i];
+	}
+}
+
+int mtk_trace_block_rq_get_rw_counter_clr(void)
+{
+	int i;
+
+	for (i = 0; i < RW_ARRAY_SIZE; i++) {
+		write_counter[i] = 0;
+		read_counter[i] = 0;
+	}
+	return 0;
+}
+#endif
+
 /**
  * blk_peek_request - peek at the top of a request queue
  * @q: request queue to peek at
@@ -2481,6 +2530,12 @@ struct request *blk_peek_request(struct request_queue *q)
 			break;
 		}
 	}
+
+/* MTK PATCH */
+#ifdef CONFIG_MTK_BLK_RW_PROFILING
+	if (rq)
+		mtk_trace_block_rq(q, rq);
+#endif
 
 	return rq;
 }
@@ -2749,7 +2804,7 @@ void blk_finish_request(struct request *req, int error)
 	BUG_ON(blk_queued_rq(req));
 
 	if (unlikely(laptop_mode) && req->cmd_type == REQ_TYPE_FS)
-		laptop_io_completion(&req->q->backing_dev_info);
+		laptop_io_completion(req->q->backing_dev_info);
 
 	blk_delete_timer(req);
 
