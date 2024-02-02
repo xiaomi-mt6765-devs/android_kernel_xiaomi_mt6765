@@ -1549,8 +1549,6 @@ static void configfs_composite_unbind(struct usb_gadget *gadget)
 	struct gadget_info		*gi;
 	unsigned long flags;
 
-	pr_info("%s\n", __func__);
-
 	/* the gi->lock is hold by the caller */
 
 	cdev = get_gadget_data(gadget);
@@ -1558,6 +1556,7 @@ static void configfs_composite_unbind(struct usb_gadget *gadget)
 	spin_lock_irqsave(&gi->spinlock, flags);
 	gi->unbind = 1;
 	spin_unlock_irqrestore(&gi->spinlock, flags);
+	
 	kfree(otg_desc[0]);
 	otg_desc[0] = NULL;
 	purge_configs_funcs(gi);
