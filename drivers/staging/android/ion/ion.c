@@ -437,9 +437,9 @@ static int ion_handle_add(struct ion_client *client, struct ion_handle *handle)
 	return 0;
 }
 
-struct ion_handle *__ion_alloc(struct ion_client *client, size_t len,
-			       size_t align, unsigned int heap_id_mask,
-			       unsigned int flags, bool grab_handle)
+struct ion_handle *ion_alloc(struct ion_client *client, size_t len,
+			     size_t align, unsigned int heap_id_mask,
+			     unsigned int flags)
 {
 	struct ion_handle *handle;
 	struct ion_device *dev = client->dev;
@@ -519,8 +519,6 @@ struct ion_handle *__ion_alloc(struct ion_client *client, size_t len,
 	}
 
 	mutex_lock(&client->lock);
-	if (grab_handle)
-		ion_handle_get(handle);
 	ret = ion_handle_add(client, handle);
 	mutex_unlock(&client->lock);
 	if (ret) {
@@ -548,13 +546,6 @@ struct ion_handle *__ion_alloc(struct ion_client *client, size_t len,
 	memcpy(buffer->alloc_dbg, client->dbg_name, ION_MM_DBG_NAME_LEN);
 
 	return handle;
-}
-
-struct ion_handle *ion_alloc(struct ion_client *client, size_t len,
-			     size_t align, unsigned int heap_id_mask,
-			     unsigned int flags)
-{
-	return __ion_alloc(client, len, align, heap_id_mask, flags, false);
 }
 EXPORT_SYMBOL(ion_alloc);
 
