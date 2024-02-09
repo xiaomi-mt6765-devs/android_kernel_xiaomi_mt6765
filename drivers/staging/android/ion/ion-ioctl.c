@@ -165,9 +165,10 @@ long ion_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 				     data.allocation.flags, true);
 		if (IS_ERR(handle))
 			return PTR_ERR(handle);
-		data.allocation.handle = handle->id;
-		cleanup_handle = handle;
 		pass_to_user(handle);
+		data.allocation.handle = handle->id;
+
+		cleanup_handle = handle;
 		break;
 	}
 	case ION_IOC_FREE:
@@ -217,9 +218,12 @@ long ion_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		handle = ion_import_dma_buf_fd(client, data.fd.fd);
 		if (IS_ERR(handle)) {
 			ret = PTR_ERR(handle);
-			IONMSG("ion_import fail: fd=%d, ret=%d\n",
-			       data.fd.fd, ret);
-			return ret;
+		} else {
+			handle = pass_to_user(handle);
+			if (IS_ERR(handle))
+				ret = PTR_ERR(handle);
+			else
+				data.handle.handle = handle->id;
 		}
 		data.handle.handle = handle->id;
 		break;
