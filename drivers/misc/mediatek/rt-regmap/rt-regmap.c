@@ -1892,7 +1892,7 @@ static void rt_create_every_debug(struct rt_regmap_device *rd,
 		rd->props.register_num*sizeof(struct rt_debug_st *),
 								GFP_KERNEL);
 	for (i = 0; i < rd->props.register_num; i++) {
-		snprintf(buf, PAGE_SIZE, "reg0x%02x", (rd->props.rm[i])->addr);
+		snprintf(buf, sizeof(buf), "reg0x%02x", (rd->props.rm[i])->addr);
 		rd->rt_reg_file[i] = devm_kzalloc(&rd->dev,
 						  sizeof(*rd->rt_reg_file[i]),
 						  GFP_KERNEL);
