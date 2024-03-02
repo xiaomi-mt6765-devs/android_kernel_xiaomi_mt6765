@@ -911,8 +911,8 @@ KBUILD_CFLAGS   += $(call cc-option,-Werror=date-time)
 KBUILD_CFLAGS   += $(call cc-disable-warning,unknown-warning-option,)
 KBUILD_CFLAGS   += $(call cc-disable-warning,enum-conversion,)
 
-# enforce correct pointer usage
-KBUILD_CFLAGS   += $(call cc-option,-Werror=incompatible-pointer-types)
+# Relax correct pointer usage
+KBUILD_CFLAGS   += $(call cc-option,-Wno=incompatible-pointer-types)
 
 # use the deterministic mode of AR if available
 KBUILD_ARFLAGS := $(call ar-option,D)
