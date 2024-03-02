@@ -59,7 +59,7 @@ D_h	.req	x14
 
 	.weak memmove
 ENTRY(__memmove)
-ENTRY(memmove)
+WEAK(memmove)
 	cmp	dstin, src
 	b.lo	__memcpy
 	add	tmp1, src, count
