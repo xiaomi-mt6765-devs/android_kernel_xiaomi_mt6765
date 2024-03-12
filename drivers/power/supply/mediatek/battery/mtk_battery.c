@@ -3088,23 +3088,18 @@ static ssize_t store_FG_daemon_log_level(
 		}
 
 		if (val < 10 && val >= 0) {
-			fg_cust_data.daemon_log_level = val;
+			fg_cust_data.daemon_log_level = 0;
 			wakeup_fg_algo_cmd(
 				FG_INTR_KERNEL_CMD,
 				FG_KERNEL_CMD_CHANG_LOGLEVEL,
 				val
 			);
 
-			gm.d_log_level = val;
-			gm.log_level = val;
+			gm.log_level = 0;
 		}
-		if (val >= 7) {
-			gtimer_set_log_level(3);
-			gauge_coulomb_set_log_level(3);
-		} else {
-			gtimer_set_log_level(0);
-			gauge_coulomb_set_log_level(0);
-		}
+
+		gtimer_set_log_level(0);
+		gauge_coulomb_set_log_level(0);
 
 		bm_err(
 			"[FG_daemon_log_level]fg_cust_data.daemon_log_level=%d\n",
