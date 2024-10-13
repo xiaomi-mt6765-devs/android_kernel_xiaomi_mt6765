@@ -38,6 +38,7 @@
 #include <linux/sched/rt.h>
 #include <linux/mm_inline.h>
 #include <trace/events/writeback.h>
+#include <mt-plat/mtk_blocktag.h>
 
 #include "internal.h"
 
@@ -1987,11 +1988,11 @@ void laptop_mode_timer_fn(unsigned long data)
 	 * We want to write everything out, not just down to the dirty
 	 * threshold
 	 */
-	if (!bdi_has_dirty_io(&q->backing_dev_info))
+	if (!bdi_has_dirty_io(q->backing_dev_info))
 		return;
 
 	rcu_read_lock();
-	list_for_each_entry_rcu(wb, &q->backing_dev_info.wb_list, bdi_node)
+	list_for_each_entry_rcu(wb, &q->backing_dev_info->wb_list, bdi_node)
 		if (wb_has_dirty_io(wb))
 			wb_start_writeback(wb, nr_pages, true,
 					   WB_REASON_LAPTOP_TIMER);
@@ -2185,13 +2186,29 @@ retry:
 	while (!done && (index <= end)) {
 		int i;
 
-		nr_pages = pagevec_lookup_range_tag(&pvec, mapping, &index, end,
-				tag);
+		nr_pages = pagevec_lookup_tag(&pvec, mapping, &index, tag,
+			      min(end - index, (pgoff_t)PAGEVEC_SIZE-1) + 1);
 		if (nr_pages == 0)
 			break;
 
 		for (i = 0; i < nr_pages; i++) {
 			struct page *page = pvec.pages[i];
+
+			/*
+			 * At this point, the page may be truncated or
+			 * invalidated (changing page->mapping to NULL), or
+			 * even swizzled back from swapper_space to tmpfs file
+			 * mapping. However, page->index will not change
+			 * because we have a reference on the page.
+			 */
+			if (page->index > end) {
+				/*
+				 * can't be range_cyclic (1st pass) because
+				 * end == -1 in that case.
+				 */
+				done = 1;
+				break;
+			}
 
 			done_index = page->index;
 
@@ -2411,6 +2428,13 @@ void account_page_dirtied(struct page *page, struct address_space *mapping)
 		task_io_account_write(PAGE_SIZE);
 		current->nr_dirtied++;
 		this_cpu_inc(bdp_ratelimits);
+
+		/*
+		 * Dirty pages may be written by writeback thread later.
+		 * To get real i/o owner of this page, we shall keep it
+		 * before writeback takes over.
+		 */
+		mtk_btag_pidlog_set_pid(page);
 	}
 }
 EXPORT_SYMBOL(account_page_dirtied);

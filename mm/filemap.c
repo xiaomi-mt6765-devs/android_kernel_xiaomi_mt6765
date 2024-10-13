@@ -437,16 +437,18 @@ static int __filemap_fdatawait_range(struct address_space *mapping,
 		goto out;
 
 	pagevec_init(&pvec, 0);
-	while (index <= end) {
+	while ((index <= end) &&
+			(nr_pages = pagevec_lookup_tag(&pvec, mapping, &index,
+			PAGECACHE_TAG_WRITEBACK,
+			min(end - index, (pgoff_t)PAGEVEC_SIZE-1) + 1)) != 0) {
 		unsigned i;
-
-		nr_pages = pagevec_lookup_range_tag(&pvec, mapping, &index,
-				end, PAGECACHE_TAG_WRITEBACK);
-		if (!nr_pages)
-			break;
 
 		for (i = 0; i < nr_pages; i++) {
 			struct page *page = pvec.pages[i];
+
+			/* until radix tree lookup accepts end_index */
+			if (page->index > end)
+				continue;
 
 			wait_on_page_writeback(page);
 			if (TestClearPageError(page))
@@ -1489,10 +1491,9 @@ repeat:
 EXPORT_SYMBOL(find_get_pages_contig);
 
 /**
- * find_get_pages_range_tag - find and return pages in given range matching @tag
+ * find_get_pages_tag - find and return pages that match @tag
  * @mapping:	the address_space to search
  * @index:	the starting page index
- * @end:	The final page index (inclusive)
  * @tag:	the tag index
  * @nr_pages:	the maximum number of pages
  * @pages:	where the resulting pages are placed
@@ -1500,9 +1501,8 @@ EXPORT_SYMBOL(find_get_pages_contig);
  * Like find_get_pages, except we only return pages which are tagged with
  * @tag.   We update @index to index the next page for the traversal.
  */
-unsigned find_get_pages_range_tag(struct address_space *mapping, pgoff_t *index,
-			pgoff_t end, int tag, unsigned int nr_pages,
-			struct page **pages)
+unsigned find_get_pages_tag(struct address_space *mapping, pgoff_t *index,
+			int tag, unsigned int nr_pages, struct page **pages)
 {
 	struct radix_tree_iter iter;
 	void **slot;
@@ -1515,9 +1515,6 @@ unsigned find_get_pages_range_tag(struct address_space *mapping, pgoff_t *index,
 	radix_tree_for_each_tagged(slot, &mapping->page_tree,
 				   &iter, *index, tag) {
 		struct page *head, *page;
-
-		if (iter.index > end)
-			break;
 repeat:
 		page = radix_tree_deref_slot(slot);
 		if (unlikely(!page))
@@ -1559,28 +1556,18 @@ repeat:
 		}
 
 		pages[ret] = page;
-		if (++ret == nr_pages) {
-			*index = pages[ret - 1]->index + 1;
-			goto out;
-		}
+		if (++ret == nr_pages)
+			break;
 	}
 
-	/*
-	 * We come here when we got at @end. We take care to not overflow the
-	 * index @index as it confuses some of the callers. This breaks the
-	 * iteration when there is page at index -1 but that is already broken
-	 * anyway.
-	 */
-	if (end == (pgoff_t)-1)
-		*index = (pgoff_t)-1;
-	else
-		*index = end + 1;
-out:
 	rcu_read_unlock();
+
+	if (ret)
+		*index = pages[ret - 1]->index + 1;
 
 	return ret;
 }
-EXPORT_SYMBOL(find_get_pages_range_tag);
+EXPORT_SYMBOL(find_get_pages_tag);
 
 /**
  * find_get_entries_tag - find and return entries that match @tag
@@ -2141,6 +2128,11 @@ int filemap_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
 	} else if (!page) {
 		/* No page in the page cache at all */
 		do_sync_mmap_readahead(vma, ra, file, offset);
+
+		/* mlog */
+		count_vm_event(PGFMFAULT);
+		current->fm_flt++;
+
 		count_vm_event(PGMAJFAULT);
 		mem_cgroup_count_vm_event(vma->vm_mm, PGMAJFAULT);
 		ret = VM_FAULT_MAJOR;

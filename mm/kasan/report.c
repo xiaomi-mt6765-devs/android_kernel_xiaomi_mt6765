@@ -30,6 +30,10 @@
 
 #include <asm/sections.h>
 
+#include <mt-plat/aee.h>
+
+#include "../../../drivers/misc/mediatek/include/mt-plat/aee.h"
+
 #include "kasan.h"
 #include "../slab.h"
 
@@ -358,6 +362,8 @@ static void kasan_report_error(struct kasan_access_info *info)
 	}
 
 	kasan_end_report(&flags);
+	/* trigger KE to get the KAsan corruption message */
+	BUG();
 }
 
 static unsigned long kasan_flags;
@@ -405,6 +411,7 @@ void kasan_report(unsigned long addr, size_t size,
 	disable_trace_on_warning();
 
 	info.access_addr = (void *)addr;
+	info.first_bad_addr = (void *)addr;
 	info.access_size = size;
 	info.is_write = is_write;
 	info.ip = ip;
