@@ -44,6 +44,8 @@
 #include <asm/exception.h>
 #include <asm/system_misc.h>
 #include <asm/sysreg.h>
+#include <mt-plat/aee.h>
+#include <sched.h>
 
 static const char *handler[]= {
 	"Synchronous Abort",
@@ -165,6 +167,9 @@ static void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk)
 		frame.fp = (unsigned long)__builtin_frame_address(0);
 		frame.sp = current_stack_pointer;
 		frame.pc = (unsigned long)dump_backtrace;
+	} else if (tsk == task_rq(tsk)->curr) {
+		pr_notice("Do not dump other cpus' running task\n");
+		return;
 	} else {
 		/*
 		 * task blocked in __switch_to
@@ -271,11 +276,35 @@ static DEFINE_RAW_SPINLOCK(die_lock);
  */
 void die(const char *str, struct pt_regs *regs, int err)
 {
+	struct thread_info *thread = current_thread_info();
 	int ret;
+	int cpu = -1;
+	static int die_owner = -1;
+
+	if (ESR_ELx_EC(err) == ESR_ELx_EC_DABT_CUR)
+		thread->cpu_excp++;
+
+	if (die_owner == -1)
+		aee_save_excp_regs(regs);
 
 	oops_enter();
 
-	raw_spin_lock_irq(&die_lock);
+	cpu = get_cpu();
+	if (!raw_spin_trylock_irq(&die_lock)) {
+		if (cpu != die_owner) {
+			pr_notice("die_lock:cpu:%d trylock failed(owner:%d)\n",
+				cpu, die_owner);
+			dump_stack();
+			put_cpu();
+			while (1)
+				cpu_relax();
+		} else {
+			pr_notice("die_lock:cpu:%d already locked(owner:%d)\n",
+				cpu, die_owner);
+			dump_stack();
+		}
+	}
+	die_owner = cpu;
 	console_verbose();
 	bust_spinlocks(1);
 	ret = __die(str, err, regs);
@@ -635,6 +664,22 @@ const char *esr_get_class_string(u32 esr)
 	return esr_class_str[ESR_ELx_EC(esr)];
 }
 
+
+#ifdef CONFIG_MEDIATEK_SOLUTION
+static void (*async_abort_handler)(struct pt_regs *regs, void *);
+static void *async_abort_priv;
+
+int register_async_abort_handler(void (*fn)(struct pt_regs *regs, void *),
+				 void *priv)
+{
+	async_abort_handler = fn;
+	async_abort_priv = priv;
+
+	return 0;
+}
+#endif
+
+
 /*
  * bad_mode handles the impossible case in the exception vector. This is always
  * fatal.
@@ -642,6 +687,15 @@ const char *esr_get_class_string(u32 esr)
 asmlinkage void bad_mode(struct pt_regs *regs, int reason, unsigned int esr)
 {
 	console_verbose();
+
+#ifdef CONFIG_MEDIATEK_SOLUTION
+	/*
+	 * reason is defined in entry.S, 3 means BAD_ERROR,
+	 * which would be triggered by async abort
+	 */
+	if ((reason == 3) && async_abort_handler)
+		async_abort_handler(regs, async_abort_priv);
+#endif
 
 	pr_crit("Bad mode in %s handler detected on CPU%d, code 0x%08x -- %s\n",
 		handler[reason], smp_processor_id(), esr,
