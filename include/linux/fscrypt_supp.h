@@ -28,7 +28,7 @@ struct fscrypt_operations {
 	int (*set_context)(struct inode *, const void *, size_t, void *);
 	bool (*dummy_context)(struct inode *);
 	bool (*empty_dir)(struct inode *);
-	unsigned int max_namelen;
+	unsigned (*max_namelen)(struct inode *);
 };
 
 struct fscrypt_ctx {
@@ -74,12 +74,32 @@ static inline struct page *fscrypt_control_page(struct page *page)
 
 extern void fscrypt_restore_control_page(struct page *);
 
+extern const struct dentry_operations fscrypt_d_ops;
+
+static inline void fscrypt_set_d_op(struct dentry *dentry)
+{
+	d_set_d_op(dentry, &fscrypt_d_ops);
+}
+
+static inline void fscrypt_set_encrypted_dentry(struct dentry *dentry)
+{
+	spin_lock(&dentry->d_lock);
+	dentry->d_flags |= DCACHE_ENCRYPTED_WITH_KEY;
+	spin_unlock(&dentry->d_lock);
+}
+
 /* policy.c */
 extern int fscrypt_ioctl_set_policy(struct file *, const void __user *);
 extern int fscrypt_ioctl_get_policy(struct file *, void __user *);
 extern int fscrypt_has_permitted_context(struct inode *, struct inode *);
 extern int fscrypt_inherit_context(struct inode *, struct inode *,
 					void *, bool);
+extern int fscrypt_set_bio_ctx(struct inode *inode, struct bio *bio);
+extern int fscrypt_key_payload(struct bio_crypt_ctx *ctx, const char *data,
+				const unsigned char **key);
+extern int fscrypt_is_hw_encrypt(struct inode *inode);
+extern int fscrypt_is_sw_encrypt(struct inode *inode);
+
 /* keyinfo.c */
 extern int fscrypt_get_encryption_info(struct inode *);
 extern void fscrypt_put_encryption_info(struct inode *);

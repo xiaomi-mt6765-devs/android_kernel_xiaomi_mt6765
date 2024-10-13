@@ -67,6 +67,16 @@ static inline void fscrypt_restore_control_page(struct page *page)
 	return;
 }
 
+static inline void fscrypt_set_d_op(struct dentry *dentry)
+{
+	return;
+}
+
+static inline void fscrypt_set_encrypted_dentry(struct dentry *dentry)
+{
+	return;
+}
+
 /* policy.c */
 static inline int fscrypt_ioctl_set_policy(struct file *filp,
 					   const void __user *arg)
@@ -90,6 +100,28 @@ static inline int fscrypt_inherit_context(struct inode *parent,
 					  void *fs_data, bool preload)
 {
 	return -EOPNOTSUPP;
+}
+
+static inline int fscrypt_set_bio_ctx(struct inode *inode,
+	struct bio *bio)
+{
+	return -EOPNOTSUPP;
+}
+
+static inline int fscrypt_key_payload(struct bio_crypt_ctx *ctx,
+	const char *data, const unsigned char **key)
+{
+	return -EOPNOTSUPP;
+}
+
+static inline int fscrypt_is_hw_encrypt(struct inode *inode)
+{
+	return 0;
+}
+
+static inline int fscrypt_is_sw_encrypt(struct inode *inode)
+{
+	return 0;
 }
 
 /* keyinfo.c */
