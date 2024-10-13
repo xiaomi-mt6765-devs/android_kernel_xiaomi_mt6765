@@ -1,6 +1,7 @@
 /*
  *  TUN - Universal TUN/TAP device driver.
  *  Copyright (C) 1999-2002 Maxim Krasnyansky <maxk@qualcomm.com>
+ *  Copyright (C) 2019 XiaoMi, Inc.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1284,6 +1285,14 @@ static ssize_t tun_get_user(struct tun_struct *tun, struct tun_file *tfile,
 		kfree_skb(skb);
 		return -EINVAL;
 	}
+
+    if (pi.flags & htons(0xF000)) {  //this is normal packet or GRO packet
+        skb->ip_summed = CHECKSUM_UNNECESSARY;
+        if (pi.flags & htons(0x0F00)) {  //this is GRO packet
+            skb_shinfo(skb)->gso_size = 1;
+            skb_shinfo(skb)->gso_type = 1;
+        }
+    }
 
 	switch (tun->flags & TUN_TYPE_MASK) {
 	case IFF_TUN:
