@@ -2,6 +2,7 @@
  *  linux/kernel/sys.c
  *
  *  Copyright (C) 1991, 1992  Linus Torvalds
+ *  Copyright (C) 2019 XiaoMi, Inc.
  */
 
 #include <linux/export.h>
@@ -2472,7 +2473,7 @@ SYSCALL_DEFINE3(getcpu, unsigned __user *, cpup, unsigned __user *, nodep,
  */
 static int do_sysinfo(struct sysinfo *info)
 {
-	unsigned long mem_total, sav_total;
+	unsigned long long mem_total, sav_total;
 	unsigned int mem_unit, bitcount;
 	struct timespec tp;
 
