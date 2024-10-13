@@ -168,6 +168,8 @@ extern int pid_delete_dentry(const struct dentry *);
 extern int proc_pid_readdir(struct file *, struct dir_context *);
 extern struct dentry *proc_pid_lookup(struct inode *, struct dentry *, unsigned int);
 extern loff_t mem_lseek(struct file *, loff_t, int);
+extern unsigned long uclamp_tg_min(struct task_struct *task);
+extern unsigned long uclamp_ts_min(struct task_struct *task);
 
 /* Lookups */
 typedef int instantiate_t(struct inode *, struct dentry *,
