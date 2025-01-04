@@ -28,6 +28,11 @@
 
 #include "internal.h"
 
+#if defined(CONFIG_MTK_AEE_FEATURE) && \
+	defined(CONFIG_MTK_FD_LEAK_SPECIFIC_DEBUG)
+#include <mt-plat/aee.h>
+#endif
+
 /*
  * New pipe buffers will be restricted to this size while the user is exceeding
  * their pipe buffer quota. The general pipe use case needs at least two
@@ -845,6 +850,39 @@ static int __do_pipe_flags(int *fd, struct file **files, int flags)
 	audit_fd_pair(fdr, fdw);
 	fd[0] = fdr;
 	fd[1] = fdw;
+
+#if defined(CONFIG_MTK_AEE_FEATURE) && \
+	defined(CONFIG_MTK_FD_LEAK_SPECIFIC_DEBUG)
+	/* sample and report warning */
+	int greaterFd = (fdr > fdw) ? fdr : fdw;
+
+	if ((greaterFd >= 1000 && greaterFd < 1020) ||
+		(greaterFd >= 2000 && greaterFd < 2012) ||
+		(greaterFd >= 3000 && greaterFd < 3012)) {
+
+		char aee_msg[200];
+		struct task_struct *process = current->group_leader;
+
+		snprintf(aee_msg, sizeof(aee_msg),
+			"[FDLEAK] pipe_fd[%d, %d], %s [tid:%d] [pid:%d],\n"
+			"Process: %s, %d, %d\n",
+			fdr, fdw, current->comm, current->pid, current->tgid,
+			process->comm, process->pid, process->tgid);
+		if (strstr(process->comm, "omx@1.0-service")) {
+			aee_kernel_warning_api("FDLEAK_DEBUG", 0,
+				DB_OPT_DEFAULT |
+				DB_OPT_LOW_MEMORY_KILLER |
+				DB_OPT_PID_MEMORY_INFO | /* smaps and hprof*/
+				DB_OPT_NATIVE_BACKTRACE |
+				DB_OPT_DUMPSYS_ACTIVITY |
+				/* DB_OPT_PROCESS_COREDUMP | */
+				DB_OPT_DUMPSYS_SURFACEFLINGER |
+				DB_OPT_DUMPSYS_GFXINFO |
+				DB_OPT_DUMPSYS_PROCSTATS,
+				"show kernel & natvie backtace\n", aee_msg);
+		}
+	}
+#endif
 	return 0;
 
  err_fdr:
