@@ -1377,7 +1377,7 @@ static int dm_any_congested(void *congested_data, int bdi_bits)
 			 * With request-based DM we only need to check the
 			 * top-level queue for congestion.
 			 */
-			r = md->queue->backing_dev_info.wb.state & bdi_bits;
+			r = md->queue->backing_dev_info->wb.state & bdi_bits;
 		} else {
 			map = dm_get_live_table_fast(md);
 			if (map)
