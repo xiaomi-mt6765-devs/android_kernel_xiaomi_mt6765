@@ -279,6 +279,7 @@ int __swap_writepage(struct page *page, struct writeback_control *wbc,
 		unlock_page(page);
 		ret = mapping->a_ops->direct_IO(&kiocb, &from);
 		if (ret == PAGE_SIZE) {
+			current->swap_out++;
 			count_vm_event(PSWPOUT);
 			ret = 0;
 		} else {
@@ -304,6 +305,7 @@ int __swap_writepage(struct page *page, struct writeback_control *wbc,
 	ret = bdev_write_page(sis->bdev, map_swap_page(page, &sis->bdev),
 			      page, wbc);
 	if (!ret) {
+		current->swap_out++;
 		count_vm_event(PSWPOUT);
 		return 0;
 	}
@@ -320,6 +322,8 @@ int __swap_writepage(struct page *page, struct writeback_control *wbc,
 		bio_set_op_attrs(bio, REQ_OP_WRITE, REQ_SYNC);
 	else
 		bio_set_op_attrs(bio, REQ_OP_WRITE, 0);
+
+	current->swap_out++;
 	count_vm_event(PSWPOUT);
 	set_page_writeback(page);
 	unlock_page(page);
