@@ -234,7 +234,6 @@ static irqreturn_t ut_drv_irq_handler(int irq, void *dev)
 {
 	int irq_id = 0;
 	int retVal = 0;
-	struct tz_driver_state *s = get_tz_drv_state();
 
 	/* Get the interrupt ID */
 	irq_id = teei_secure_call(N_GET_NON_IRQ_NUM, 0, 0, 0);
