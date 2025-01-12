@@ -104,13 +104,13 @@ struct energy_env {
 
 /* cpu_core_energy & cpu_cluster_energy both implmented in topology.c */
 extern
-const struct sched_group_energy * const cpu_core_energy(int cpu);
+const struct sched_group_energy * cpu_core_energy(int cpu);
 
 extern
-const struct sched_group_energy * const cpu_cluster_energy(int cpu);
+const struct sched_group_energy * cpu_cluster_energy(int cpu);
 
 #ifdef CONFIG_MTK_SCHED_EAS_POWER_SUPPORT
-extern const struct sched_group_energy * const cci_energy(void);
+extern const struct sched_group_energy * cci_energy(void);
 extern int
 mtk_idle_power(int cpu_idx, int idle_state, int cpu, void *argu, int sd_level);
 
