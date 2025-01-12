@@ -781,14 +781,16 @@ static IMG_UINT32 MTKCalPowerIndex(void)
 static void MTKCalGpuLoading(unsigned int *pui32Loading,
 	unsigned int *pui32Block, unsigned int *pui32Idle)
 {
-	PVRSRV_DEVICE_NODE *psDevNode = MTKGetRGXDevNode();
+	PVRSRV_DEVICE_NODE *psDevNode;
+	PVRSRV_RGXDEV_INFO *psDevInfo;
 
+	psDevNode = MTKGetRGXDevNode();
 	if (!psDevNode) {
 		PVR_DPF((PVR_DBG_ERROR, "psDevNode not found"));
 		return;
 	}
 
-	PVRSRV_RGXDEV_INFO *psDevInfo = psDevNode->pvDevice;
+	psDevInfo = psDevNode->pvDevice;
 
 	if (psDevInfo && psDevInfo->pfnGetGpuUtilStats) {
 		RGXFWIF_GPU_UTIL_STATS sGpuUtilStats = {0};
@@ -1373,7 +1375,6 @@ PVRSRV_ERROR MTKMFGSystemInit(void)
 		PVRSRV_DEVICE_NODE *psDevNode = MTKGetRGXDevNode();
 
 		if (psDevNode) {
-			PVRSRV_RGXDEV_INFO *psDevInfo = psDevNode->pvDevice;
 
 			PVRSRV_DEVICE_CONFIG *psDevConfig
 				= psDevNode->psDevConfig;
