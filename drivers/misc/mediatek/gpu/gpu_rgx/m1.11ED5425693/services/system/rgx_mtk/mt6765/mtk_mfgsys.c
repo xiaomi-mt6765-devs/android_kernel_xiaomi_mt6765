@@ -1385,11 +1385,15 @@ PVRSRV_ERROR MTKMFGSystemInit(void)
 				g_pvRegsKM =
 				OSMapPhysToLin(gsRegsPBase, 0x1000, 0);
 
-				PVR_DPF((PVR_DBG_ERROR,
-				"g_pvRegsKM = 0x%p", g_pvRegsKM));
-			}
-		}
-	}
+                if (!g_pvRegsKM) {
+                    PVR_DPF((PVR_DBG_ERROR, "Failed to map registers to kernel memory"));
+                    goto ERROR; // Transition to the ERROR label in case of an error
+                }
+
+                PVR_DPF((PVR_DBG_ERROR, "g_pvRegsKM = 0x%p", g_pvRegsKM));
+            }
+        }
+    }
 #endif
 
 	return PVRSRV_OK;
