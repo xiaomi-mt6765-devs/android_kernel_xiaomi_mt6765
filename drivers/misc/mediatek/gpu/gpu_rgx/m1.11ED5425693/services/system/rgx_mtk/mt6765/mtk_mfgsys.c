@@ -317,7 +317,6 @@ static void MTKDisableMfgClock(IMG_BOOL bForce)
 #if defined(MTK_USE_HW_APM)
 static int MTKInitHWAPM(void)
 {
-	unsigned int regval;
 
 	if (!g_pvRegsKM)
 		g_pvRegsKM = OSMapPhysToLin(gsRegsPBase, 0x1000, 0);
