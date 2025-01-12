@@ -344,34 +344,34 @@ static int MTKInitHWAPM(void)
 	mfg_writel(0x8004001b, (g_pvRegsKM + 0x24));
 
 	if (gpu_debug_enable) {
-		PVR_DPF((PVR_DBG_ERROR, "HWAPM: *g_pvRegsKM+0x%x = 0x%x",
+		PVR_DPF((PVR_DBG_ERROR, "HWAPM: *g_pvRegsKM+0x%p = 0x%x",
 		(g_pvRegsKM + 0x504), mfg_readl(g_pvRegsKM + 0x504)));
 
-		PVR_DPF((PVR_DBG_ERROR, "HWAPM: *g_pvRegsKM+0x%x = 0x%x",
+		PVR_DPF((PVR_DBG_ERROR, "HWAPM: *g_pvRegsKM+0x%p = 0x%x",
 		(g_pvRegsKM + 0x508), mfg_readl(g_pvRegsKM + 0x508)));
 
-		PVR_DPF((PVR_DBG_ERROR, "HWAPM: *g_pvRegsKM+0x%x = 0x%x",
+		PVR_DPF((PVR_DBG_ERROR, "HWAPM: *g_pvRegsKM+0x%p = 0x%x",
 		(g_pvRegsKM + 0x50c), mfg_readl(g_pvRegsKM + 0x50c)));
 
-		PVR_DPF((PVR_DBG_ERROR, "HWAPM: *g_pvRegsKM+0x%x = 0x%x",
+		PVR_DPF((PVR_DBG_ERROR, "HWAPM: *g_pvRegsKM+0x%p = 0x%x",
 		(g_pvRegsKM + 0x510), mfg_readl(g_pvRegsKM + 0x510)));
 
-		PVR_DPF((PVR_DBG_ERROR, "HWAPM: *g_pvRegsKM+0x%x = 0x%x",
+		PVR_DPF((PVR_DBG_ERROR, "HWAPM: *g_pvRegsKM+0x%p = 0x%x",
 		(g_pvRegsKM + 0x514), mfg_readl(g_pvRegsKM + 0x514)));
 
-		PVR_DPF((PVR_DBG_ERROR, "HWAPM: *g_pvRegsKM+0x%x = 0x%x",
+		PVR_DPF((PVR_DBG_ERROR, "HWAPM: *g_pvRegsKM+0x%p = 0x%x",
 		(g_pvRegsKM + 0x518), mfg_readl(g_pvRegsKM + 0x518)));
 
-		PVR_DPF((PVR_DBG_ERROR, "HWAPM: *g_pvRegsKM+0x%x = 0x%x",
+		PVR_DPF((PVR_DBG_ERROR, "HWAPM: *g_pvRegsKM+0x%p = 0x%x",
 		(g_pvRegsKM + 0x51c), mfg_readl(g_pvRegsKM + 0x51c)));
 
-		PVR_DPF((PVR_DBG_ERROR, "HWAPM: *g_pvRegsKM+0x%x = 0x%x",
+		PVR_DPF((PVR_DBG_ERROR, "HWAPM: *g_pvRegsKM+0x%p = 0x%x",
 		(g_pvRegsKM + 0x520), mfg_readl(g_pvRegsKM + 0x520)));
 
-		PVR_DPF((PVR_DBG_ERROR, "HWAPM: *g_pvRegsKM+0x%x = 0x%x",
+		PVR_DPF((PVR_DBG_ERROR, "HWAPM: *g_pvRegsKM+0x%p = 0x%x",
 		(g_pvRegsKM + 0x524), mfg_readl(g_pvRegsKM + 0x524)));
 
-		PVR_DPF((PVR_DBG_ERROR, "HWAPM: *g_pvRegsKM+0x%x = 0x%x",
+		PVR_DPF((PVR_DBG_ERROR, "HWAPM: *g_pvRegsKM+0x%p = 0x%x",
 		(g_pvRegsKM + 0x528), mfg_readl(g_pvRegsKM + 0x528)));
 
 		PVR_DPF((PVR_DBG_ERROR, "LV1 *g_pvRegsKM = 0x%x",
