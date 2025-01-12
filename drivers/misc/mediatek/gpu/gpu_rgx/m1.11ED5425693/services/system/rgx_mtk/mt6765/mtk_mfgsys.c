@@ -191,7 +191,6 @@ static IMG_UINT32 MTKGetRGXDevIdx(void)
 static void MTKWriteBackFreqToRGX(PVRSRV_DEVICE_NODE *psDevNode,
 		IMG_UINT32 ui32NewFreq)
 {
-	PVRSRV_DATA *psPVRSRVData = PVRSRVGetPVRSRVData();
 	RGX_DATA *psRGXData = (RGX_DATA *)psDevNode->psDevConfig->hDevData;
 
 	/* kHz to Hz write to RGX as the same unit */
