@@ -1270,9 +1270,6 @@ EXPORT_SYMBOL(mtk_fdvfs_update_cur_freq);
 
 PVRSRV_ERROR MTKMFGSystemInit(void)
 {
-	int i;
-	PVRSRV_ERROR error;
-
 
 #ifndef MTK_GPU_DVFS
 	gpu_dvfs_enable = 0;
@@ -1281,6 +1278,7 @@ PVRSRV_ERROR MTKMFGSystemInit(void)
 
 
 #ifndef ENABLE_COMMON_DVFS
+	PVRSRV_ERROR error;
 	error = OSLockCreate(&ghDVFSLock);
 	if (error != PVRSRV_OK) {
 		PVR_DPF((PVR_DBG_ERROR, "Create DVFS Lock Failed"));
