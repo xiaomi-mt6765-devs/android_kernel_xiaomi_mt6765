@@ -1450,8 +1450,6 @@ void MTKMFGSystemDeInit(void)
 
 int MTKRGXDeviceInit(PVRSRV_DEVICE_CONFIG *psDevConfig)
 {
-	struct device *pdev;
-
 	_mtk_ged_log = ged_log_buf_alloc(64, 64 * 32,
 			GED_LOG_BUF_TYPE_RINGBUFFER, "PowerLog", "ppL");
 
