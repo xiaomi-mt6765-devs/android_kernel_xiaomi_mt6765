@@ -1518,24 +1518,26 @@ void MTKFWDump(void)
 EXPORT_SYMBOL(MTKFWDump);
 
 #if defined(MODULE)
-int mtk_mfg_async_init(void)
+    int mtk_mfg_async_init(void) __maybe_unused;
 #else
-static int __init mtk_mfg_async_init(void)
+    static int __init mtk_mfg_async_init(void) __maybe_unused;
 #endif
-{
-	return 0;
-}
 
+int mtk_mfg_async_init(void)
+{
+    return 0;
+}
 
 #if defined(MODULE)
-int mtk_mfg_2d_init(void)
+    int mtk_mfg_2d_init(void) __maybe_unused;
 #else
-static int __init mtk_mfg_2d_init(void)
+    static int __init mtk_mfg_2d_init(void) __maybe_unused;
 #endif
-{
-	return 0;
-}
 
+int mtk_mfg_2d_init(void)
+{
+    return 0;
+}
 
 #ifndef ENABLE_COMMON_DVFS
 module_param(gpu_loading, uint, 0644);
