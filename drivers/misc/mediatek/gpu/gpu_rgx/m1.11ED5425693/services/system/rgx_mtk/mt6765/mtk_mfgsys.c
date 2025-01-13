@@ -402,7 +402,6 @@ static IMG_BOOL MTKDoGpuDVFS(IMG_UINT32 ui32NewFreqID, IMG_BOOL bIdleDevice)
 {
 	PVRSRV_ERROR eResult;
 	IMG_UINT32 ui32RGXDevIdx;
-	IMG_BOOL bet = IMG_FALSE;
 
 	/* bottom bound */
 	if (ui32NewFreqID > g_bottom_freq_id)
