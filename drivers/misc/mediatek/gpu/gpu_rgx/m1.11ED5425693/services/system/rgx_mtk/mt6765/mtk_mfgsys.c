@@ -1491,7 +1491,7 @@ int MTKRGXDeviceDeInit(PVRSRV_DEVICE_CONFIG *psDevConfig)
 	return 0;
 }
 
-void MTKSaveFrame(const char func_name[])
+static void MTKSaveFrame(const char func_name[])
 {
 	ged_log_buf_print2(_track_ged_log, GED_LOG_ATTR_TIME, "%s", func_name);
 }
