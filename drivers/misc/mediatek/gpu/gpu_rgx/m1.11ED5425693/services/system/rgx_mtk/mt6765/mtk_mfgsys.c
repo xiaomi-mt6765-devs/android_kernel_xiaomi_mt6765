@@ -470,6 +470,8 @@ static IMG_BOOL MTKDoGpuDVFS(IMG_UINT32 ui32NewFreqID, IMG_BOOL bIdleDevice)
 static void MTKFDVFSCommitFreqIdx(unsigned long ui32NewFreqID,
 		GED_FDVFS_COMMIT_TYPE eCommitType, int *pbCommited)
 {
+	unsigned int ui32GPUFreq;
+	unsigned int ui32CurFreqID;
 	PVRSRV_DEV_POWER_STATE ePowerState;
 	PVRSRV_DEVICE_NODE *psDevNode = MTKGetRGXDevNode();
 	PVRSRV_ERROR eResult;
@@ -479,9 +481,6 @@ static void MTKFDVFSCommitFreqIdx(unsigned long ui32NewFreqID,
 				IMG_FALSE, (void *)NULL);
 
 		if ((eResult == PVRSRV_OK) || (eResult == PVRSRV_ERROR_RETRY)) {
-			unsigned int ui32GPUFreq;
-			unsigned int ui32CurFreqID;
-			PVRSRV_DEV_POWER_STATE ePowerState;
 
 			PVRSRVGetDevicePowerState(psDevNode, &ePowerState);
 
@@ -536,6 +535,8 @@ static void MTKFDVFSCommitFreqIdx(unsigned long ui32NewFreqID,
 static void MTKCommitFreqIdx(unsigned long ui32NewFreqID,
 	GED_DVFS_COMMIT_TYPE eCommitType, int *pbCommited)
 {
+	unsigned int ui32GPUFreq;
+	unsigned int ui32CurFreqID;
 	PVRSRV_DEV_POWER_STATE ePowerState;
 	PVRSRV_DEVICE_NODE *psDevNode = MTKGetRGXDevNode();
 	PVRSRV_ERROR eResult;
@@ -545,9 +546,6 @@ static void MTKCommitFreqIdx(unsigned long ui32NewFreqID,
 		eResult = PVRSRVDevicePreClockSpeedChange(psDevNode,
 			IMG_FALSE, (void *)NULL);
 		if ((eResult == PVRSRV_OK) || (eResult == PVRSRV_ERROR_RETRY)) {
-			unsigned int ui32GPUFreq;
-			unsigned int ui32CurFreqID;
-			PVRSRV_DEV_POWER_STATE ePowerState;
 
 			PVRSRVGetDevicePowerState(psDevNode, &ePowerState);
 
