@@ -598,7 +598,7 @@ static void MTKCommitFreqIdx(unsigned long ui32NewFreqID,
 	if (pbCommited)
 		*pbCommited = IMG_FALSE;
 }
-unsigned int MTKCommitFreqForPVR(unsigned long ui32NewFreq)
+static unsigned int __maybe_unused MTKCommitFreqForPVR(unsigned long ui32NewFreq)
 {
 	int i32MaxLevel = (int)(mt_gpufreq_get_dvfs_table_num()-1);
 	unsigned int ui32NewFreqID = 0;
@@ -669,6 +669,7 @@ static void MTKFreqPowerLimitCB(unsigned int ui32LimitFreqID)
 	OSLockRelease(ghDVFSLock);
 }
 #endif /* ifdef MTK_GPU_DVFS */
+
 #ifdef MTK_CAL_POWER_INDEX
 static void MTKStartPowerIndex(void)
 {
