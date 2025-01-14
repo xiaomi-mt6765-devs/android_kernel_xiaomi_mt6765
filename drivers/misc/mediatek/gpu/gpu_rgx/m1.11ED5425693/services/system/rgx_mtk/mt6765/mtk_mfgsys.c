@@ -1077,7 +1077,7 @@ static void MTKSetBottomGPUFreq(unsigned int ui32FreqLevel)
 
 }
 
-static unsigned int MTKCustomGetGpuFreqLevelCount(void)
+static unsigned int __maybe_unused MTKCustomGetGpuFreqLevelCount(void)
 {
 	return mt_gpufreq_get_dvfs_table_num();
 }
