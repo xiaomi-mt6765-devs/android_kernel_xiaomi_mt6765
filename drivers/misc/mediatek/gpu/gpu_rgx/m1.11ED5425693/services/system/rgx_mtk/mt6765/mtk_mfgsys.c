@@ -1144,14 +1144,14 @@ static void MTKCustomUpBoundGpuFreq(unsigned int ui32FreqLevel)
 	OSLockRelease(ghDVFSLock);
 }
 
-unsigned int MTKGetCustomBoostGpuFreq(void)
+static unsigned int __maybe_unused MTKGetCustomBoostGpuFreq(void)
 {
 	unsigned int ui32MaxLevel = mt_gpufreq_get_dvfs_table_num() - 1;
 
 	return ui32MaxLevel - g_cust_boost_freq_id;
 }
 
-unsigned int MTKGetCustomUpBoundGpuFreq(void)
+static unsigned int __maybe_unused MTKGetCustomUpBoundGpuFreq(void)
 {
 	unsigned int ui32MaxLevel = mt_gpufreq_get_dvfs_table_num() - 1;
 
