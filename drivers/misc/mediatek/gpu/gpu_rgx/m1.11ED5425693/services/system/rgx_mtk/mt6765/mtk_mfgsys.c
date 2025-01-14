@@ -165,7 +165,7 @@ static PVRSRV_DEVICE_NODE *MTKGetRGXDevNode(void)
 	return NULL;
 }
 
-static IMG_UINT32 MTKGetRGXDevIdx(void)
+static IMG_UINT32 MTKGetRGXDevIdx(void) __maybe_unused
 {
 	static IMG_UINT32 ms_ui32RGXDevIdx = MTK_RGX_DEVICE_INDEX_INVALID;
 
