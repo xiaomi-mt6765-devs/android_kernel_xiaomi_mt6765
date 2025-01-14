@@ -1250,17 +1250,17 @@ void mtk_fdvfs_update_cur_freq(int ui32GPUFreq)
 
 	if (s_ui32GPUFreq != ui32GPUFreq) {
 		if (psDevNode) {
-		eResult = PVRSRVDevicePreClockSpeedChange(psDevNode,
-			IMG_FALSE, (void *)NULL);
-		if ((eResult == PVRSRV_OK) || (eResult == PVRSRV_ERROR_RETRY)) {
-			MTKWriteBackFreqToRGX(psDevNode, ui32GPUFreq);
-			if (eResult == PVRSRV_OK)
-				PVRSRVDevicePostClockSpeedChange(psDevNode,
-				IMG_FALSE, (void *)NULL);
+			eResult = PVRSRVDevicePreClockSpeedChange(psDevNode, IMG_FALSE, (void *)NULL);
+			if ((eResult == PVRSRV_OK) || (eResult == PVRSRV_ERROR_RETRY)) {
+
+				MTKWriteBackFreqToRGX(psDevNode, ui32GPUFreq);
+
+				if (eResult == PVRSRV_OK)
+					PVRSRVDevicePostClockSpeedChange(psDevNode, IMG_FALSE, (void *)NULL);
+			}
 		}
+		s_ui32GPUFreq = ui32GPUFreq;
 	}
-	s_ui32GPUFreq = ui32GPUFreq;
-}
 }
 EXPORT_SYMBOL(mtk_fdvfs_update_cur_freq);
 
