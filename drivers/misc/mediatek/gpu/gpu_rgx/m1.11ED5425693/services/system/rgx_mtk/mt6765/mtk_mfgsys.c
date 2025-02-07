@@ -490,42 +490,42 @@ static void MTKFDVFSCommitFreqIdx(unsigned long ui32NewFreqID,
 			}
 
 			ui32CurFreqID = mt_gpufreq_get_cur_freq_index();
-
-			ui32GPUFreq =
-			mt_gpufreq_get_frequency_by_level(ui32CurFreqID);
-
+			ui32GPUFreq = mt_gpufreq_get_frequency_by_level(ui32CurFreqID);
 			gpu_freq = ui32GPUFreq;
+
 #if defined(CONFIG_TRACING) && defined(CONFIG_MTK_SCHED_TRACERS)
-
-
-			if (PVRGpuTraceIsEnabled())
+			if (PVRGpuTraceIsEnabled()) {
 				trace_gpu_freq(ui32GPUFreq);
+			}
 #endif
 			MTKWriteBackFreqToRGX(psDevNode, ui32GPUFreq);
 
 #ifdef MTK_DEBUG
-		if (gpu_debug_enable)
-			pr_debug("PVR_K: 3DFreq=%d, Volt=%d\n",
-			ui32GPUFreq, mt_gpufreq_get_cur_volt());
+			if (gpu_debug_enable) {
+				pr_debug("PVR_K: 3DFreq=%d, Volt=%d\n",
+					ui32GPUFreq, mt_gpufreq_get_cur_volt());
+			}
 #endif
 
-			if (eResult == PVRSRV_OK)
+			if (eResult == PVRSRV_OK) {
 				PVRSRVDevicePostClockSpeedChange(psDevNode,
-				IMG_FALSE, (void *)NULL);
+					IMG_FALSE, (void *)NULL);
+			}
 
-
-		/* Always return true because the APM would almost
-		 * letting GPU power down with high possibility
-		 * while DVFS committing
-		 */
-		if (pbCommited)
-			*pbCommited = IMG_TRUE;
-			return;
+			/* Always return true because the APM would almost
+			 * let GPU power down with high possibility
+			 * while DVFS committing
+			 */
+			if (pbCommited) {
+				*pbCommited = IMG_TRUE;
+				return;
+			}
 		}
 	}
 
-	if (pbCommited)
+	if (pbCommited) {
 		*pbCommited = IMG_FALSE;
+	}
 }
 
 /* For ged_dvfs idx commit */
