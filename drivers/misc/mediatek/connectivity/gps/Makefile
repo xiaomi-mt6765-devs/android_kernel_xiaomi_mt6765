@@ -57,7 +57,7 @@ obj-y += $(MODULE_NAME).o
 WMT_SRC_FOLDER := $(srctree)/drivers/misc/mediatek/connectivity/common
 
 ifeq ($(CONFIG_MTK_COMBO_CHIP),)
-    $(warning CONFIG_MTK_COMBO_CHIP not defined)
+
 endif
 
 ifneq ($(filter "CONSYS_%",$(CONFIG_MTK_COMBO_CHIP)),)
