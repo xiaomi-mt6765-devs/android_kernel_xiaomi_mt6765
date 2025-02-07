@@ -443,7 +443,7 @@ static int memory_group_manager_probe(struct platform_device *pdev)
 	}
 
 	platform_set_drvdata(pdev, mgm_dev);
-	dev_info(&pdev->dev, "Memory group manager probed successfully\n");
+	dev_dbg(&pdev->dev, "Memory group manager probed successfully\n");
 
 	return 0;
 }
@@ -459,7 +459,7 @@ static int memory_group_manager_remove(struct platform_device *pdev)
 
 	kfree(mgm_dev);
 
-	dev_info(&pdev->dev, "Memory group manager removed successfully\n");
+	dev_dbg(&pdev->dev, "Memory group manager removed successfully\n");
 
 	return 0;
 }

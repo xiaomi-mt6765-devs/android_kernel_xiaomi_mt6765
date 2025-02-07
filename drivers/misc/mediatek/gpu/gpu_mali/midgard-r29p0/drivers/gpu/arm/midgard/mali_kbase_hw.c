@@ -289,7 +289,7 @@ static const enum base_hw_issue *kbase_hw_get_issues_for_new_id(
 			dev_warn(kbdev->dev,
 				"GPU hardware issue table may need updating:\n"
 #else
-			dev_info(kbdev->dev,
+			dev_dbg(kbdev->dev,
 #endif
 				"r%dp%d status %d is unknown; treating as r%dp%d status %d",
 				(gpu_id & GPU_ID2_VERSION_MAJOR) >>
@@ -528,7 +528,7 @@ int kbase_hw_set_issues_mask(struct kbase_device *kbdev)
 	}
 
 	if (GPU_ID_IS_NEW_FORMAT(product_id)) {
-		dev_info(kbdev->dev,
+		dev_dbg(kbdev->dev,
 			"GPU identified as 0x%x arch %d.%d.%d r%dp%d status %d",
 			(gpu_id & GPU_ID2_PRODUCT_MAJOR) >>
 				GPU_ID2_PRODUCT_MAJOR_SHIFT,
@@ -545,7 +545,7 @@ int kbase_hw_set_issues_mask(struct kbase_device *kbdev)
 			(gpu_id & GPU_ID2_VERSION_STATUS) >>
 				GPU_ID2_VERSION_STATUS_SHIFT);
 	} else {
-		dev_info(kbdev->dev,
+		dev_dbg(kbdev->dev,
 			"GPU identified as 0x%04x r%dp%d status %d",
 			(gpu_id & GPU_ID_VERSION_PRODUCT_ID) >>
 				GPU_ID_VERSION_PRODUCT_ID_SHIFT,

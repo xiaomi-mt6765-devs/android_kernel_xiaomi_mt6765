@@ -29,7 +29,7 @@ struct mtk_config {
 	do { \
 		if (config->clk) { \
 			if (clk_prepare_enable(config->clk)) { \
-				pr_info("MALI: clk_prepare_enable failed when enabling" #clk); \
+				pr_debug("MALI: clk_prepare_enable failed when enabling" #clk); \
 			} \
 		} \
 	} while (0)

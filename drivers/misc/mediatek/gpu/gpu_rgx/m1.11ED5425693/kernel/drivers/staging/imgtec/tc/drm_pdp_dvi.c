@@ -128,10 +128,10 @@ static int pdp_dvi_connector_helper_get_modes(struct drm_connector *connector)
 	int len = strlen(preferred_mode_name);
 
 	if (len)
-		dev_info(dev->dev, "detected dvi_preferred_mode=%s\n",
+		dev_dbg(dev->dev, "detected dvi_preferred_mode=%s\n",
 					preferred_mode_name);
 	else
-		dev_info(dev->dev, "no dvi_preferred_mode\n");
+		dev_dbg(dev->dev, "no dvi_preferred_mode\n");
 
 	num_modes = drm_add_modes_noedid(connector,
 					 dev->mode_config.max_width,

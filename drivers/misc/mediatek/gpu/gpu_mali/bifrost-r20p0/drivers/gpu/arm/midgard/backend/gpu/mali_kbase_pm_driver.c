@@ -1772,7 +1772,7 @@ static void kbase_pm_hw_issues_detect(struct kbase_device *kbdev)
 
 	if (!of_property_read_u32(np, "quirks_jm",
 				&kbdev->hw_quirks_jm)) {
-		dev_info(kbdev->dev,
+		dev_dbg(kbdev->dev,
 			"Found quirks_jm = [0x%x] in Devicetree\n",
 			kbdev->hw_quirks_jm);
 	} else {
@@ -1781,7 +1781,7 @@ static void kbase_pm_hw_issues_detect(struct kbase_device *kbdev)
 
 	if (!of_property_read_u32(np, "quirks_sc",
 				&kbdev->hw_quirks_sc)) {
-		dev_info(kbdev->dev,
+		dev_dbg(kbdev->dev,
 			"Found quirks_sc = [0x%x] in Devicetree\n",
 			kbdev->hw_quirks_sc);
 	} else {
@@ -1790,7 +1790,7 @@ static void kbase_pm_hw_issues_detect(struct kbase_device *kbdev)
 
 	if (!of_property_read_u32(np, "quirks_tiler",
 				&kbdev->hw_quirks_tiler)) {
-		dev_info(kbdev->dev,
+		dev_dbg(kbdev->dev,
 			"Found quirks_tiler = [0x%x] in Devicetree\n",
 			kbdev->hw_quirks_tiler);
 	} else {
@@ -1799,7 +1799,7 @@ static void kbase_pm_hw_issues_detect(struct kbase_device *kbdev)
 
 	if (!of_property_read_u32(np, "quirks_mmu",
 				&kbdev->hw_quirks_mmu)) {
-		dev_info(kbdev->dev,
+		dev_dbg(kbdev->dev,
 			"Found quirks_mmu = [0x%x] in Devicetree\n",
 			kbdev->hw_quirks_mmu);
 	} else {

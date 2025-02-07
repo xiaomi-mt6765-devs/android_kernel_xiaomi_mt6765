@@ -359,7 +359,7 @@ end:
 	if (err)
 		kbase_ipa_term_locked(kbdev);
 	else
-		dev_info(kbdev->dev,
+		dev_dbg(kbdev->dev,
 			 "Using configured power model %s, and fallback %s\n",
 			 kbdev->ipa.configured_model->ops->name,
 			 kbdev->ipa.fallback_model->ops->name);

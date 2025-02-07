@@ -452,16 +452,16 @@ void kutf_helper_output_named_val(struct kutf_helper_named_val *named_val)
 {
 	switch (named_val->type) {
 	case KUTF_HELPER_VALTYPE_U64:
-		pr_warn("%s=0x%llx\n", named_val->val_name, named_val->u.val_u64);
+		pr_debug("%s=0x%llx\n", named_val->val_name, named_val->u.val_u64);
 		break;
 	case KUTF_HELPER_VALTYPE_STR:
-		pr_warn("%s=\"%s\"\n", named_val->val_name, named_val->u.val_str);
+		pr_debug("%s=\"%s\"\n", named_val->val_name, named_val->u.val_str);
 		break;
 	case KUTF_HELPER_VALTYPE_INVALID:
-		pr_warn("%s is invalid\n", named_val->val_name);
+		pr_debug("%s is invalid\n", named_val->val_name);
 		break;
 	default:
-		pr_warn("%s has unknown type %d\n", named_val->val_name, named_val->type);
+		pr_debug("%s has unknown type %d\n", named_val->val_name, named_val->type);
 		break;
 	}
 }

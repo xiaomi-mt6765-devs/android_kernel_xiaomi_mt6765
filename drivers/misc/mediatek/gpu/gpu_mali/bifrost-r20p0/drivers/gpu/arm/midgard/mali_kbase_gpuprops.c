@@ -112,7 +112,7 @@ static void kbase_gpuprops_construct_coherent_groups(base_gpu_props * const prop
 	}
 
 	if (group_present != 0)
-		pr_warn("Too many coherent groups (keeping only %d groups).\n", BASE_MAX_COHERENT_GROUPS);
+		pr_debug("Too many coherent groups (keeping only %d groups).\n", BASE_MAX_COHERENT_GROUPS);
 
 	props->coherency_info.num_groups = num_groups;
 }
@@ -410,7 +410,7 @@ void kbase_gpuprops_update_l2_features(struct kbase_device *kbdev)
 		/* Dump L2_FEATURES register */
 		kbase_backend_gpuprops_get_l2_features(kbdev, &regdump);
 
-		dev_info(kbdev->dev, "Reflected L2_FEATURES is 0x%x\n",
+		dev_dbg(kbdev->dev, "Reflected L2_FEATURES is 0x%x\n",
 				regdump.l2_features);
 
 		/* Update gpuprops with reflected L2_FEATURES */

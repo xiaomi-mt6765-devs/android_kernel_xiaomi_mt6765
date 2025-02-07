@@ -54,7 +54,7 @@ void MTKCalGpuUtilization(unsigned int *pui32Loading,
 	struct kbase_device *kbdev = (struct kbase_device *)MaliGetMaliData();
 
 	if (kbdev == NULL) {
-		pr_info("kbdev is null, maybe GPU is not initialized.");
+		pr_debug("kbdev is null, maybe GPU is not initialized.");
 		return;
 	}
 

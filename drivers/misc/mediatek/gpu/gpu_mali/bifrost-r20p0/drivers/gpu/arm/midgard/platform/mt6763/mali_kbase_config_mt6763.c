@@ -41,7 +41,7 @@
 #define MTCMOS_READY
 
 #ifdef GPU_DVFS_DEBUG
-#define MFG_DEBUG(fmt, ...) pr_info(fmt, ##__VA_ARGS__)
+#define MFG_DEBUG(fmt, ...) pr_debug(fmt, ##__VA_ARGS__)
 #else
 #define MFG_DEBUG(...)
 #endif
@@ -88,7 +88,7 @@ static void _mtk_pm_callback_power_suspend(void)
 	struct mtk_config *config = g_config;
 
 	if (!config) {
-		pr_info("[MALI] power_suspend : mtk_config is NULL\n");
+		pr_debug("[MALI] power_suspend : mtk_config is NULL\n");
 		return;
 	}
 
@@ -110,7 +110,7 @@ static int _mtk_pm_callback_power_resume(void)
 	struct mtk_config *config = g_config;
 
 	if (!config) {
-		pr_info("[MALI] power_resume : mtk_config is NULL\n");
+		pr_debug("[MALI] power_resume : mtk_config is NULL\n");
 		return -1;
 	}
 
@@ -138,7 +138,7 @@ static void _mtk_pm_callback_power_off(void)
 	struct mtk_config *config = g_config;
 
 	if (!config) {
-		pr_info("[MALI] power_off : mtk_config is NULL\n");
+		pr_debug("[MALI] power_off : mtk_config is NULL\n");
 		return;
 	}
 
@@ -176,7 +176,7 @@ static int _mtk_pm_callback_power_on(void)
 	u32 val;
 
 	if (!config) {
-		pr_info("[MALI] power_on : mtk_config is NULL\n");
+		pr_debug("[MALI] power_on : mtk_config is NULL\n");
 		return -1;
 	}
 
@@ -240,7 +240,7 @@ static void *_mtk_of_ioremap(const char *node_name)
 	if (node)
 		return of_iomap(node, 0);
 
-	pr_info("[MALI] cannot find [%s] of_node, please fix me\n", node_name);
+	pr_debug("[MALI] cannot find [%s] of_node, please fix me\n", node_name);
 	return NULL;
 }
 
@@ -310,15 +310,15 @@ int mtk_platform_init(struct platform_device *pdev, struct kbase_device *kbdev)
 	struct mtk_config *config;
 
 	if (!pdev || !kbdev) {
-		pr_info("[MALI] input parameter is NULL\n");
+		pr_debug("[MALI] input parameter is NULL\n");
 		return -1;
 	}
 	config = (struct mtk_config *)kbdev->mtk_config;
 	if (!config) {
-		pr_info("[MALI] Alloc mtk_config\n");
+		pr_debug("[MALI] Alloc mtk_config\n");
 		config = kmalloc(sizeof(struct mtk_config), GFP_KERNEL);
 		if (config == NULL) {
-			pr_info("[MALI] Fail to alloc mtk_config\n");
+			pr_debug("[MALI] Fail to alloc mtk_config\n");
 			return -1;
 		}
 		g_config = kbdev->mtk_config = config;
@@ -326,37 +326,37 @@ int mtk_platform_init(struct platform_device *pdev, struct kbase_device *kbdev)
 
 	config->mfg_register = g_MFG_base = _mtk_of_ioremap("mediatek,mfgcfg");
 	if (g_MFG_base == NULL) {
-		pr_info("[MALI] Fail to remap MGF register\n");
+		pr_debug("[MALI] Fail to remap MGF register\n");
 		return -1;
 	}
 
 	config->clk_mfg0 = devm_clk_get(&pdev->dev, "mtcmos-mfg-async");
 	if (IS_ERR(config->clk_mfg0)) {
-		pr_info("cannot get mtcmos-mfg-async\n");
+		pr_debug("cannot get mtcmos-mfg-async\n");
 		return PTR_ERR(config->clk_mfg0);
 	}
 
 	config->clk_mfg1 = devm_clk_get(&pdev->dev, "mtcmos-mfg");
 	if (IS_ERR(config->clk_mfg1)) {
-		pr_info("cannot get mtcmos-mfg\n");
+		pr_debug("cannot get mtcmos-mfg\n");
 		return PTR_ERR(config->clk_mfg1);
 	}
 
 	config->clk_mfg2 = devm_clk_get(&pdev->dev, "mtcmos-mfg-core0");
 	if (IS_ERR(config->clk_mfg2)) {
-		pr_info("cannot get mtcmos-mfg-core0\n");
+		pr_debug("cannot get mtcmos-mfg-core0\n");
 		return PTR_ERR(config->clk_mfg2);
 	}
 
 	config->clk_mfg3 = devm_clk_get(&pdev->dev, "mtcmos-mfg-core1");
 	if (IS_ERR(config->clk_mfg3)) {
-		pr_info("cannot get mtcmos-mfg-core1\n");
+		pr_debug("cannot get mtcmos-mfg-core1\n");
 		return PTR_ERR(config->clk_mfg3);
 	}
 
 	config->clk_mfg_cg = devm_clk_get(&pdev->dev, "subsys-mfg-cg");
 	if (IS_ERR(config->clk_mfg_cg)) {
-		pr_info("cannot get subsys-mfg-cg\n");
+		pr_debug("cannot get subsys-mfg-cg\n");
 		return PTR_ERR(config->clk_mfg_cg);
 	}
 

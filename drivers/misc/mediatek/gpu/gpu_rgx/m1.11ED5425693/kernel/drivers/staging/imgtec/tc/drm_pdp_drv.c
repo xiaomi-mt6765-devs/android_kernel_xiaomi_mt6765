@@ -578,7 +578,7 @@ static int pdp_component_bind(struct device *dev)
 	struct drm_device *ddev;
 	int ret;
 
-	dev_info(dev, "Loading platform device\n");
+	dev_dbg(dev, "Loading platform device\n");
 	ddev = drm_dev_alloc(&pdp_drm_driver, &pdev->dev);
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 9, 0))
 	if (IS_ERR(ddev))
@@ -632,7 +632,7 @@ static void pdp_component_unbind(struct device *dev)
 {
 	struct drm_device *ddev = dev_get_drvdata(dev);
 
-	dev_info(dev, "Unloading platform device\n");
+	dev_dbg(dev, "Unloading platform device\n");
 	BUG_ON(pdp_drm_driver.unload != NULL);
 	pdp_early_unload(ddev);
 	drm_dev_unregister(ddev);

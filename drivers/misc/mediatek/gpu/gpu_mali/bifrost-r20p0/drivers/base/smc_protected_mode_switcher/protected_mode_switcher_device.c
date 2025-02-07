@@ -130,16 +130,16 @@ static int protected_mode_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, protected_dev);
 
-	dev_info(&pdev->dev, "Protected mode switcher %s loaded\n", pdev->name);
-	dev_info(&pdev->dev, "SMC enable: 0x%x\n", sdev->smc_fid_enable);
-	dev_info(&pdev->dev, "SMC disable: 0x%x\n", sdev->smc_fid_disable);
+	dev_dbg(&pdev->dev, "Protected mode switcher %s loaded\n", pdev->name);
+	dev_dbg(&pdev->dev, "SMC enable: 0x%x\n", sdev->smc_fid_enable);
+	dev_dbg(&pdev->dev, "SMC disable: 0x%x\n", sdev->smc_fid_disable);
 
 	return 0;
 }
 
 static int protected_mode_remove(struct platform_device *pdev)
 {
-	dev_info(&pdev->dev, "Protected mode switcher %s removed\n",
+	dev_dbg(&pdev->dev, "Protected mode switcher %s removed\n",
 			pdev->name);
 
 	return 0;

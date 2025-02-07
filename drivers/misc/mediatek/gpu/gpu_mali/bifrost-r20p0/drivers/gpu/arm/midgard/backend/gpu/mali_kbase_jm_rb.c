@@ -1177,7 +1177,7 @@ void kbase_gpu_complete_hw(struct kbase_device *kbdev, int js,
 	} else if (kbase_hw_has_issue(kbdev, BASE_HW_ISSUE_10676)) {
 		if (kbdev->gpu_props.num_core_groups > 1 &&
 				katom->device_nr >= 1) {
-			dev_info(kbdev->dev, "JD: Flushing cache due to PRLAM-10676\n");
+			dev_dbg(kbdev->dev, "JD: Flushing cache due to PRLAM-10676\n");
 			katom->need_cache_flush_cores_retained = true;
 		}
 	}
@@ -1726,7 +1726,7 @@ void kbase_gpu_dump_slots(struct kbase_device *kbdev)
 
 	spin_lock_irqsave(&kbdev->hwaccess_lock, flags);
 
-	dev_info(kbdev->dev, "kbase_gpu_dump_slots:\n");
+	dev_dbg(kbdev->dev, "kbase_gpu_dump_slots:\n");
 
 	for (js = 0; js < kbdev->gpu_props.num_job_slots; js++) {
 		int idx;
@@ -1737,11 +1737,11 @@ void kbase_gpu_dump_slots(struct kbase_device *kbdev)
 									idx);
 
 			if (katom)
-				dev_info(kbdev->dev,
+				dev_dbg(kbdev->dev,
 				"  js%d idx%d : katom=%p gpu_rb_state=%d\n",
 				js, idx, katom, katom->gpu_rb_state);
 			else
-				dev_info(kbdev->dev, "  js%d idx%d : empty\n",
+				dev_dbg(kbdev->dev, "  js%d idx%d : empty\n",
 								js, idx);
 		}
 	}

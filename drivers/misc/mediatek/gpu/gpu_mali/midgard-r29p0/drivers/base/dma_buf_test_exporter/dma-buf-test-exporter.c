@@ -716,7 +716,7 @@ static int __init dma_buf_te_init(void)
 	}
 	te_device.this_device->coherent_dma_mask = DMA_BIT_MASK(32);
 
-	dev_info(te_device.this_device, "dma_buf_te ready\n");
+	dev_dbg(te_device.this_device, "dma_buf_te ready\n");
 	return 0;
 
 }

@@ -109,7 +109,7 @@ static void kbase_gpuprops_construct_coherent_groups(base_gpu_props * const prop
 	}
 
 	if (group_present != 0)
-		pr_warn("Too many coherent groups (keeping only %d groups).\n", BASE_MAX_COHERENT_GROUPS);
+		pr_debug("Too many coherent groups (keeping only %d groups).\n", BASE_MAX_COHERENT_GROUPS);
 
 	props->coherency_info.num_groups = num_groups;
 }

@@ -203,7 +203,7 @@ static void pm_callback_power_off(struct kbase_device *kbdev)
 	for (i=0; i < DELAY_LOOP_COUNT;i++);
 	if (DELAY_LOOP_COUNT != i)
 	{
-		pr_warn("[MALI] power off delay error!\n");
+		pr_debug("[MALI] power off delay error!\n");
 	}
 
 	/// 2. Polling the MFG_DEBUG_REG for checking GPU IDLE before MTCMOS power off (0.1ms)
@@ -222,7 +222,7 @@ static void pm_callback_power_off(struct kbase_device *kbdev)
 
 	if (polling_count <=0)
 	{
-		pr_warn("[MALI]!!!!MFG(GPU) subsys is still BUSY!!!!!, polling_count=%d\n", polling_count);
+		pr_debug("[MALI]!!!!MFG(GPU) subsys is still BUSY!!!!!, polling_count=%d\n", polling_count);
 	}
 
 #if HARD_RESET_AT_POWER_OFF

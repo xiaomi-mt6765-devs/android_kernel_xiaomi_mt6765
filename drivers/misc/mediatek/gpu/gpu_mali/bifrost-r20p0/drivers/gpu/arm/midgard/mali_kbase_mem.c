@@ -950,7 +950,7 @@ int kbase_mem_init(struct kbase_device *kbdev)
 	mgm_node = of_parse_phandle(kbdev->dev->of_node,
 		"physical-memory-group-manager", 0);
 	if (!mgm_node) {
-		dev_info(kbdev->dev,
+		dev_dbg(kbdev->dev,
 			"No memory group manager is configured\n");
 	} else {
 		struct platform_device *const pdev =
@@ -962,7 +962,7 @@ int kbase_mem_init(struct kbase_device *kbdev)
 		} else {
 			kbdev->mgm_dev = platform_get_drvdata(pdev);
 			if (!kbdev->mgm_dev) {
-				dev_info(kbdev->dev,
+				dev_dbg(kbdev->dev,
 					"Memory group manager is not ready\n");
 				err = -EPROBE_DEFER;
 			} else if (!try_module_get(kbdev->mgm_dev->owner)) {

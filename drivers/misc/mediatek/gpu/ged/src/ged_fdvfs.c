@@ -334,7 +334,7 @@ static void *_mtk_of_ioremap(const char *node_name)
 	if (node)
 		return of_iomap(node, 0);
 
-	pr_info("#@# %s:(%s::%d) Cannot find [%s] of_node\n", "FDVFS", __FILE__, __LINE__, node_name);
+	pr_debug("#@# %s:(%s::%d) Cannot find [%s] of_node\n", "FDVFS", __FILE__, __LINE__, node_name);
 	return NULL;
 }
 #endif

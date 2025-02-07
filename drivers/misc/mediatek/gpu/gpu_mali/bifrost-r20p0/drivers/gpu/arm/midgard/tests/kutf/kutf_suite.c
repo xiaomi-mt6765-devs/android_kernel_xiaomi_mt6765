@@ -424,19 +424,19 @@ static ssize_t kutf_debugfs_run_read(struct file *file, char __user *buf,
 		message_len = strlen(res->message);
 		if (message_len > len-1) {
 			message_len = len-1;
-			pr_warn("User data truncated, read not long enough\n");
+			pr_debug("User data truncated, read not long enough\n");
 		}
 		bytes_not_copied = copy_to_user(buf, res->message,
 				message_len);
 		if (bytes_not_copied != 0) {
-			pr_warn("Failed to copy data to user space buffer\n");
+			pr_debug("Failed to copy data to user space buffer\n");
 			return -EFAULT;
 		}
 		/* Finally the terminator */
 		bytes_not_copied = copy_to_user(&buf[message_len],
 				&terminator, 1);
 		if (bytes_not_copied != 0) {
-			pr_warn("Failed to copy data to user space buffer\n");
+			pr_debug("Failed to copy data to user space buffer\n");
 			return -EFAULT;
 		}
 		return message_len+1;

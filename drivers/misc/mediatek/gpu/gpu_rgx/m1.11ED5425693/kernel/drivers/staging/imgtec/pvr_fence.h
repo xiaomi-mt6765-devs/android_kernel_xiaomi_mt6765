@@ -216,7 +216,7 @@ static inline void pvr_fence_cleanup(void)
 #define PVR_FENCE_CTX_WARN(c, fmt, ...)                                    \
 	do {                                                               \
 		struct pvr_fence_context *__fctx = (c);                    \
-		pr_warn("c %llu: (PVR) " fmt, (u64) __fctx->fence_context, \
+		pr_debug("c %llu: (PVR) " fmt, (u64) __fctx->fence_context, \
 			## __VA_ARGS__);                                   \
 	} while (0)
 

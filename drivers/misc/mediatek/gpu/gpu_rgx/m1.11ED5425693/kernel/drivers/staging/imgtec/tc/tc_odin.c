@@ -143,7 +143,7 @@ static int get_odin_sai_status(struct tc_device *tc, int bank)
 	train_ack = ioread32(reg_addr);
 
 #if 0 /* enable this to get debug info if the board is not aligning */
-	dev_info(&tc->pdev->dev,
+	dev_dbg(&tc->pdev->dev,
 		"odin bank %d align: eyes=%08x clk_taps=%08x train_ack=%08x\n",
 		bank, eyes, clk_taps, train_ack);
 #endif
@@ -168,7 +168,7 @@ static int read_odin_mca_status(struct tc_device *tc)
 	mca_status = ioread32(reg_addr);
 
 #if 0 /* Enable this if there are alignment issues */
-	dev_info(&tc->pdev->dev,
+	dev_dbg(&tc->pdev->dev,
 		"Odin MCA_STATUS = %08x\n", mca_status);
 #endif
 	return mca_status & ODN_ALIGNMENT_FOUND_MASK;
@@ -189,7 +189,7 @@ static int read_dut_mca_status(struct tc_device *tc)
 	spi_read(tc, spi_address, &mca_status);
 
 #if 0 /* Enable this if there are alignment issues */
-	dev_info(&tc->pdev->dev,
+	dev_dbg(&tc->pdev->dev,
 		"DUT MCA_STATUS = %08x\n", mca_status);
 #endif
 	return mca_status & 1;  /* 'alignment found' status is in bit 1 */
@@ -216,7 +216,7 @@ static int get_dut_sai_status(struct tc_device *tc, int bank)
 		+ DWORD_OFFSET(BONNIE_TCF_OFFSET_SAI_TRAIN_ACK), &train_ack);
 
 #if 0 /* enable this to get debug info if the board is not aligning */
-	dev_info(&tc->pdev->dev,
+	dev_dbg(&tc->pdev->dev,
 		"dut  bank %d align: eyes=%08x clk_taps=%08x train_ack=%08x\n",
 		bank, eyes, clk_taps, train_ack);
 #endif
@@ -517,7 +517,7 @@ static int odin_fpga_set_dut_core_clk(struct tc_device *tc,
 		  tc->tcf.registers + ODN_CORE_EXTERNAL_RESETN);
 	msleep(20);
 
-	dev_info(dev, "DUT core clock set-up successful\n");
+	dev_dbg(dev, "DUT core clock set-up successful\n");
 
 	return err;
 }
@@ -619,7 +619,7 @@ static int odin_fpga_set_dut_if_clk(struct tc_device *tc,
 		  tc->tcf.registers + ODN_CORE_EXTERNAL_RESETN);
 	msleep(20);
 
-	dev_info(dev, "DUT IF clock set-up successful\n");
+	dev_dbg(dev, "DUT IF clock set-up successful\n");
 
 	return err;
 }
@@ -633,8 +633,8 @@ static void odin_fpga_update_dut_clk_freq(struct tc_device *tc,
 	int dut_clk_info = ioread32(tc->tcf.registers + ODN_CORE_DUT_CLK_INFO);
 
 	if ((dut_clk_info != 0) && (dut_clk_info != 0xbaadface) && (dut_clk_info != 0xffffffff)) {
-		dev_info(dev, "ODN_DUT_CLK_INFO = %08x\n", dut_clk_info);
-		dev_info(dev, "Overriding provided DUT clock values: core %i, mem %i\n",
+		dev_dbg(dev, "ODN_DUT_CLK_INFO = %08x\n", dut_clk_info);
+		dev_dbg(dev, "Overriding provided DUT clock values: core %i, mem %i\n",
 			 *core_clock, *mem_clock);
 
 		*core_clock = ((dut_clk_info & ODN_DUT_CLK_INFO_CORE_MASK)
@@ -645,7 +645,7 @@ static void odin_fpga_update_dut_clk_freq(struct tc_device *tc,
 	}
 #endif
 
-	dev_info(dev, "DUT clock values: core %i, mem %i\n",
+	dev_dbg(dev, "DUT clock values: core %i, mem %i\n",
 		 *core_clock, *mem_clock);
 }
 
@@ -708,13 +708,13 @@ static int odin_hard_reset_bonnie(struct tc_device *tc)
 
 		/* Check the odin Multi Clocked bank Align status */
 		alignment_found = read_odin_mca_status(tc);
-		dev_info(&tc->pdev->dev,
+		dev_dbg(&tc->pdev->dev,
 				"Odin mca_status indicates %s\n",
 				(alignment_found)?"aligned":"UNALIGNED");
 
 		/* Check the DUT MCA status */
 		alignment_found = read_dut_mca_status(tc);
-		dev_info(&tc->pdev->dev,
+		dev_dbg(&tc->pdev->dev,
 				"DUT mca_status indicates %s\n",
 				(alignment_found)?"aligned":"UNALIGNED");
 
@@ -738,7 +738,7 @@ static int odin_hard_reset_bonnie(struct tc_device *tc)
 		}
 
 		if (aligned) {
-			dev_info(&tc->pdev->dev,
+			dev_dbg(&tc->pdev->dev,
 				"all banks have aligned\n");
 			break;
 		}
@@ -767,7 +767,7 @@ static void odin_set_mem_latency(struct tc_device *tc,
 	} else {
 		mem_latency -= 4;
 
-		dev_info(&tc->pdev->dev,
+		dev_dbg(&tc->pdev->dev,
 			 "Setting memory read latency to %i cycles\n",
 			 mem_latency);
 	}
@@ -781,7 +781,7 @@ static void odin_set_mem_latency(struct tc_device *tc,
 	} else {
 		mem_wresp_latency -= 2;
 
-		dev_info(&tc->pdev->dev,
+		dev_dbg(&tc->pdev->dev,
 			 "Setting memory write response latency to %i cycles\n",
 			 mem_wresp_latency);
 	}
@@ -879,7 +879,7 @@ static int odin_enable_irq(struct tc_device *tc)
 	iowrite32(0xffffffff, tc->tcf.registers +
 		ODN_CORE_INTERRUPT_CLR);
 
-	dev_info(&tc->pdev->dev,
+	dev_dbg(&tc->pdev->dev,
 		"Registering IRQ %d for use by Odin\n",
 		tc->pdev->irq);
 
@@ -891,7 +891,7 @@ static int odin_enable_irq(struct tc_device *tc)
 			"Error - IRQ %d failed to register\n",
 			tc->pdev->irq);
 	} else {
-		dev_info(&tc->pdev->dev,
+		dev_dbg(&tc->pdev->dev,
 			"IRQ %d was successfully registered for use by Odin\n",
 			tc->pdev->irq);
 	}
@@ -930,11 +930,11 @@ odin_detect_daughterboard_version(struct tc_device *tc)
 			val, reg);
 		return TC_INVALID_VERSION;
 	case 1:
-		dev_info(&tc->pdev->dev, "DUT: Bonnie TC\n");
+		dev_dbg(&tc->pdev->dev, "DUT: Bonnie TC\n");
 		return ODIN_VERSION_TCF_BONNIE;
 	case 2:
 	case 3:
-		dev_info(&tc->pdev->dev, "DUT: FPGA\n");
+		dev_dbg(&tc->pdev->dev, "DUT: FPGA\n");
 		return ODIN_VERSION_FPGA;
 	}
 }
@@ -1031,22 +1031,22 @@ static int odin_dev_init(struct tc_device *tc, struct pci_dev *pdev,
 #endif
 
 	val = ioread32(tc->tcf.registers + ODN_CORE_REVISION);
-	dev_info(&pdev->dev, "ODN_CORE_REVISION = %08x\n", val);
+	dev_dbg(&pdev->dev, "ODN_CORE_REVISION = %08x\n", val);
 
 	val = ioread32(tc->tcf.registers + ODN_CORE_CHANGE_SET);
-	dev_info(&pdev->dev, "ODN_CORE_CHANGE_SET = %08x\n", val);
+	dev_dbg(&pdev->dev, "ODN_CORE_CHANGE_SET = %08x\n", val);
 
 	val = ioread32(tc->tcf.registers + ODN_CORE_USER_ID);
-	dev_info(&pdev->dev, "ODN_CORE_USER_ID = %08x\n", val);
+	dev_dbg(&pdev->dev, "ODN_CORE_USER_ID = %08x\n", val);
 
 	val = ioread32(tc->tcf.registers + ODN_CORE_USER_BUILD);
-	dev_info(&pdev->dev, "ODN_CORE_USER_BUILD = %08x\n", val);
+	dev_dbg(&pdev->dev, "ODN_CORE_USER_BUILD = %08x\n", val);
 
 err_out:
 	return err;
 
 err_odin_unmap_sys_registers:
-	dev_info(&pdev->dev,
+	dev_dbg(&pdev->dev,
 		 "%s: failed - unmapping the io regions.\n", __func__);
 
 	iounmap(tc->tcf.registers);
@@ -1216,7 +1216,7 @@ int odin_register_ext_device(struct tc_device *tc)
 		.secure_heap_memory_size = tc->secure_heap_mem_size,
 #endif
 	};
-	struct platform_device_info odin_rogue_dev_info = {
+	struct platform_device_info odin_rogue_dev_dbg = {
 		.parent = &tc->pdev->dev,
 		.name = TC_DEVICE_NAME_ROGUE,
 		.id = -2,
@@ -1236,7 +1236,7 @@ int odin_register_ext_device(struct tc_device *tc)
 	};
 
 	tc->ext_dev
-		= platform_device_register_full(&odin_rogue_dev_info);
+		= platform_device_register_full(&odin_rogue_dev_dbg);
 
 	if (IS_ERR(tc->ext_dev)) {
 		err = PTR_ERR(tc->ext_dev);
@@ -1258,11 +1258,11 @@ void odin_enable_interrupt_register(struct tc_device *tc,
 
 	switch (interrupt_id) {
 	case TC_INTERRUPT_PDP:
-		dev_info(&tc->pdev->dev,
+		dev_dbg(&tc->pdev->dev,
 			"Enabling Odin PDP interrupts\n");
 		break;
 	case TC_INTERRUPT_EXT:
-		dev_info(&tc->pdev->dev,
+		dev_dbg(&tc->pdev->dev,
 			"Enabling Odin DUT interrupts\n");
 		break;
 	default:
@@ -1286,11 +1286,11 @@ void odin_disable_interrupt_register(struct tc_device *tc,
 
 	switch (interrupt_id) {
 	case TC_INTERRUPT_PDP:
-		dev_info(&tc->pdev->dev,
+		dev_dbg(&tc->pdev->dev,
 			"Disabling Odin PDP interrupts\n");
 		break;
 	case TC_INTERRUPT_EXT:
-		dev_info(&tc->pdev->dev,
+		dev_dbg(&tc->pdev->dev,
 			"Disabling Odin DUT interrupts\n");
 		break;
 	default:
@@ -1383,7 +1383,7 @@ int odin_sys_strings(struct tc_device *tc,
 		 HEX2DEC((val & ODN_REVISION_MINOR_MASK)
 			 >> ODN_REVISION_MINOR_SHIFT));
 
-	dev_info(&tc->pdev->dev, "Odin core revision %s\n",
+	dev_dbg(&tc->pdev->dev, "Odin core revision %s\n",
 		 str_tcf_core_rev);
 
 	/* Read the Odin register containing the Perforce changelist

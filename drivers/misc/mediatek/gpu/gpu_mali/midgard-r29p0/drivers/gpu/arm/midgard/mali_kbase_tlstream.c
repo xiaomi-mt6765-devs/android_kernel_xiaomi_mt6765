@@ -1504,7 +1504,7 @@ int kbase_tlstream_acquire(struct kbase_context *kctx, u32 flags)
 		 * timeout as the default value of 3 seconds is often
 		 * insufficient. */
 		if (flags & BASE_TLSTREAM_JOB_DUMPING_ENABLED) {
-			dev_info(kctx->kbdev->dev,
+			dev_dbg(kctx->kbdev->dev,
 					"Job dumping is enabled, readjusting the software event's timeout\n");
 			atomic_set(&kctx->kbdev->js_data.soft_job_timeout_ms,
 					1800000);

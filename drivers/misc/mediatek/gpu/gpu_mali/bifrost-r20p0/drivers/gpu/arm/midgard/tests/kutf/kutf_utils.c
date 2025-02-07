@@ -53,7 +53,7 @@ const char *kutf_dsprintf(struct kutf_mempool *pool,
 	}
 
 	if (len >= sizeof(tmp_buffer)) {
-		pr_warn("kutf_dsprintf: Truncated dsprintf message %s\n", fmt);
+		pr_debug("kutf_dsprintf: Truncated dsprintf message %s\n", fmt);
 		size = sizeof(tmp_buffer);
 	} else {
 		size = len + 1;

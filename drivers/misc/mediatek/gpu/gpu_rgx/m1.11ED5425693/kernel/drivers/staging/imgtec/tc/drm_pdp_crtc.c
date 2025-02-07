@@ -240,7 +240,7 @@ static void pdp_crtc_mode_set(struct drm_crtc *crtc,
 	ok = pdp_clocks_set(crtc, adjusted_mode);
 
 	if (!ok) {
-		dev_info(crtc->dev->dev, "%s failed\n", __func__);
+		dev_dbg(crtc->dev->dev, "%s failed\n", __func__);
 		return;
 	}
 

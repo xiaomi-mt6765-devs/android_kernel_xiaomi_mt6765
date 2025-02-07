@@ -71,19 +71,19 @@ bool mtk_kbase_dump_gpu_memory_usage(void)
 	int i = 0;
 
 	/* output the total memory usage and cap for this device */
-	pr_warn("%10s\t%16s\n", "PID", "GPU Memory by Page");
-	pr_warn("============================\n");
+	pr_debug("%10s\t%16s\n", "PID", "GPU Memory by Page");
+	pr_debug("============================\n");
 
 	for (i = 0; (i < MTK_MEMINFO_SIZE) && (g_mtk_gpu_meminfo[i].pid != 0); i++) {
-		pr_warn("%10d\t%16d\n", g_mtk_gpu_meminfo[i].pid,
+		pr_debug("%10d\t%16d\n", g_mtk_gpu_meminfo[i].pid,
 										g_mtk_gpu_meminfo[i].used_pages);
 		}
 
-	pr_warn("============================\n");
-	pr_warn("%10s\t%16u\n",
+	pr_debug("============================\n");
+	pr_debug("%10s\t%16u\n",
 			"Total",
 			g_mtk_gpu_total_memory_usage_in_pages_debugfs);
-	pr_warn("============================\n");
+	pr_debug("============================\n");
 	return true;
 }
 

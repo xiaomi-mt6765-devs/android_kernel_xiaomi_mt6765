@@ -100,7 +100,7 @@ MODULE_PARM_DESC(num_devices,
 static int pvr_devices_register(void)
 {
 #if 0 /*defined(MODULE) && !defined(PVR_LDM_PLATFORM_PRE_REGISTERED)*/
-	struct platform_device_info pvr_dev_info = {
+	struct platform_device_info pvr_dev_dbg = {
 		.name = SYS_RGX_DEV_NAME,
 		.id = -2,
 #if defined(NO_HARDWARE)
@@ -123,7 +123,7 @@ static int pvr_devices_register(void)
 		return -ENOMEM;
 
 	for (i = 0; i < pvr_num_devices; i++) {
-		pvr_devices[i] = platform_device_register_full(&pvr_dev_info);
+		pvr_devices[i] = platform_device_register_full(&pvr_dev_dbg);
 		if (IS_ERR(pvr_devices[i])) {
 			DRM_ERROR("unable to register device %u (err=%ld)\n",
 				  i, PTR_ERR(pvr_devices[i]));

@@ -272,7 +272,7 @@ static int GetOPPValues(struct device *dev,
 
 	*min_volt = dev_pm_opp_get_voltage(opp);
 	*max_freq = *min_freq = freq_table[0] = freq;
-	dev_info(dev, "opp[%d/%d]: (%lu Hz, %lu uV)\n", 1, count, freq, *min_volt);
+	dev_dbg(dev, "opp[%d/%d]: (%lu Hz, %lu uV)\n", 1, count, freq, *min_volt);
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 11, 0))
 	dev_pm_opp_put(opp);
 #endif
@@ -291,7 +291,7 @@ static int GetOPPValues(struct device *dev,
 
 		freq_table[i] = freq;
 		*max_freq = freq;
-		dev_info(dev,
+		dev_dbg(dev,
 				 "opp[%d/%d]: (%lu Hz, %lu uV)\n",
 				  i + 1,
 				  count,
@@ -337,7 +337,7 @@ static int RegisterCoolingDevice(struct device *dev,
 
 	if (!powerOps)
 	{
-		dev_info(dev, "Cooling: power ops not registered, not enabling cooling");
+		dev_dbg(dev, "Cooling: power ops not registered, not enabling cooling");
 		return 0;
 	}
 

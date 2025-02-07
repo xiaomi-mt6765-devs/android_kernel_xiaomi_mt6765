@@ -297,7 +297,7 @@ static int kbase_devfreq_init_freq_table(struct kbase_device *kbdev,
 			dev_err(kbdev->dev, "failed to find slowest clock");
 			return 0;
 		}
-		dev_info(kbdev->dev, "suspend clock %lu from slowest", freq);
+		dev_dbg(kbdev->dev, "suspend clock %lu from slowest", freq);
 		kbdev->pm.backend.gpu_clock_suspend_freq = freq;
 	}
 
@@ -353,7 +353,7 @@ static void kbasep_devfreq_read_suspend_clock(struct kbase_device *kbdev,
 		return;
 
 	kbdev->pm.backend.gpu_clock_suspend_freq = freq;
-	dev_info(kbdev->dev,
+	dev_dbg(kbdev->dev,
 		"suspend clock %llu by opp-mali-errata-1485982", freq);
 }
 
@@ -487,7 +487,7 @@ static int kbase_devfreq_init_core_mask_table(struct kbase_device *kbdev)
 		}
 #endif
 
-		dev_info(kbdev->dev, "OPP %d : opp_freq=%llu core_mask=%llx\n",
+		dev_dbg(kbdev->dev, "OPP %d : opp_freq=%llu core_mask=%llx\n",
 				i, opp_freq, core_mask);
 
 		i++;

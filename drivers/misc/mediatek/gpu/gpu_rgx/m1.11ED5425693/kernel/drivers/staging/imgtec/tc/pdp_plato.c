@@ -55,7 +55,7 @@ void pdp_plato_set_syncgen_enabled(struct device *dev, void __iomem *pdp_reg,
 	u32 value;
 
 #ifdef PDP_VERBOSE
-	dev_info(dev, "Set syncgen: %s\n", enable ? "enable" : "disable");
+	dev_dbg(dev, "Set syncgen: %s\n", enable ? "enable" : "disable");
 #endif
 
 	value = pdp_rreg32(pdp_reg, PDP_SYNCCTRL_OFFSET);
@@ -76,7 +76,7 @@ void pdp_plato_set_vblank_enabled(struct device *dev, void __iomem *pdp_reg,
 	u32 value;
 
 #ifdef PDP_VERBOSE
-	dev_info(dev, "Set vblank: %s\n", enable ? "enable" : "disable");
+	dev_dbg(dev, "Set vblank: %s\n", enable ? "enable" : "disable");
 #endif
 
 	pdp_wreg32(pdp_reg, PDP_INTCLR_OFFSET, 0xFFFFFFFF);
@@ -112,7 +112,7 @@ void pdp_plato_set_plane_enabled(struct device *dev, void __iomem *pdp_reg,
 	u32 value;
 
 #ifdef PDP_VERBOSE
-	dev_info(dev, "Set plane %u: %s\n",
+	dev_dbg(dev, "Set plane %u: %s\n",
 		 plane, enable ? "enable" : "disable");
 #endif
 	value = pdp_rreg32(pdp_reg, PDP_GRPH1CTRL_OFFSET);
@@ -132,7 +132,7 @@ void pdp_plato_set_surface(struct device *dev,
 	u32 value;
 
 #ifdef PDP_VERBOSE
-	dev_info(dev,
+	dev_dbg(dev,
 		 "Set surface: size=%dx%d stride=%d format=%d address=0x%llx\n",
 		 width, height, stride, format, address);
 #endif
@@ -216,11 +216,11 @@ void pdp_plato_mode_set(struct device *dev, void __iomem *pdp_reg,
 {
 	u32 value;
 
-	dev_info(dev, "Set mode: %dx%d\n", h_display, v_display);
+	dev_dbg(dev, "Set mode: %dx%d\n", h_display, v_display);
 #ifdef PDP_VERBOSE
-	dev_info(dev, " ht: %d hbps %d has %d hlbs %d hfps %d hrbs %d\n",
+	dev_dbg(dev, " ht: %d hbps %d has %d hlbs %d hfps %d hrbs %d\n",
 		 ht, hbps, has, hlbs, hfps, hrbs);
-	dev_info(dev, " vt: %d vbps %d vas %d vtbs %d vfps %d vbbs %d\n",
+	dev_dbg(dev, " vt: %d vbps %d vas %d vtbs %d vfps %d vbbs %d\n",
 		 vt, vbps, vas, vtbs, vfps, vbbs);
 #endif
 

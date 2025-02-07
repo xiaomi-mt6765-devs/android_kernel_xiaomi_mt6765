@@ -132,7 +132,7 @@ int tc_ion_init(struct tc_device *tc, int mem_bar)
 	 * There is no way to remove heaps, so take a reference on the
 	 * module to prevent it being unloaded.
 	 */
-	dev_info(&tc->pdev->dev,
+	dev_dbg(&tc->pdev->dev,
 		 "Adding custom ION heaps. This module cannot be unloaded.\n");
 
 	if (!try_module_get(THIS_MODULE)) {

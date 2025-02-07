@@ -478,7 +478,7 @@ static int tc_init(struct pci_dev *pdev, const struct pci_device_id *id)
 	if (pdev->vendor == PCI_VENDOR_ID_ODIN &&
 	    pdev->device == DEVICE_ID_ODIN) {
 
-		dev_info(&pdev->dev, "Odin detected");
+		dev_dbg(&pdev->dev, "Odin detected");
 		tc->odin = true;
 
 		err = odin_init(tc, pdev,
@@ -489,7 +489,7 @@ static int tc_init(struct pci_dev *pdev, const struct pci_device_id *id)
 			goto err_dev_cleanup;
 
 	} else {
-		dev_info(&pdev->dev, "Apollo detected");
+		dev_dbg(&pdev->dev, "Apollo detected");
 		tc->odin = false;
 
 		err = apollo_init(tc, pdev,

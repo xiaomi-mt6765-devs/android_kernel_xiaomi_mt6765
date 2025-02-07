@@ -279,7 +279,7 @@ int kbase_timeline_io_acquire(struct kbase_device *kbdev, u32 flags)
 		 * insufficient.
 		 */
 		if (flags & BASE_TLSTREAM_JOB_DUMPING_ENABLED) {
-			dev_info(kbdev->dev,
+			dev_dbg(kbdev->dev,
 					"Job dumping is enabled, readjusting the software event's timeout\n");
 			atomic_set(&kbdev->js_data.soft_job_timeout_ms,
 					1800000);

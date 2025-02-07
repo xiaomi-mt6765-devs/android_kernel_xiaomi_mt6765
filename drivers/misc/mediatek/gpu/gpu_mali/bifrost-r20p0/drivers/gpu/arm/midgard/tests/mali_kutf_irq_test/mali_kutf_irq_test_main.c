@@ -238,7 +238,7 @@ int mali_kutf_irq_test_main_init(void)
 	irq_app = kutf_create_application("irq");
 
 	if (NULL == irq_app) {
-		pr_warn("Creation of test application failed!\n");
+		pr_debug("Creation of test application failed!\n");
 		return -ENOMEM;
 	}
 
@@ -247,7 +247,7 @@ int mali_kutf_irq_test_main_init(void)
 			mali_kutf_irq_default_remove_fixture);
 
 	if (NULL == suite) {
-		pr_warn("Creation of test suite failed!\n");
+		pr_debug("Creation of test suite failed!\n");
 		kutf_destroy_application(irq_app);
 		return -ENOMEM;
 	}
