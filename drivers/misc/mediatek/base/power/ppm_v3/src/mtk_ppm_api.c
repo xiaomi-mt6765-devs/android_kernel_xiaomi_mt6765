@@ -63,6 +63,13 @@ void mt_ppm_register_client(enum ppm_client client,
 {
 	FUNC_ENTER(FUNC_LV_API);
 
+	/* Add bounds checking to prevent array overflow */
+	if (client < 0 || client >= NR_PPM_CLIENTS) {
+		ppm_err("Invalid client ID: %d. Max allowed: %d\n", client, NR_PPM_CLIENTS - 1);
+		FUNC_EXIT(FUNC_LV_API);
+		return;
+	}
+
 	ppm_lock(&ppm_main_info.lock);
 
 	/* init client */
