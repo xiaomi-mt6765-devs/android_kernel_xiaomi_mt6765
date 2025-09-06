@@ -11,7 +11,6 @@
 # GNU General Public License for more details.
 #
 
-$(info build trng...)
 ifeq ($(CONFIG_MTK_ENG_BUILD),y)
 ccflags-y += -DTRNG_DUMP
 endif
