@@ -125,7 +125,6 @@ CONFIG_CUSTOM_KERNEL_IMGSENSOR="cactus_ov13855_ofilm_mipi_raw cactus_s5k3l8_sunn
 CONFIG_IMGSENSOR_MAIN="cactus_ov13855_ofilm_mipi_raw cactus_s5k3l8_sunny_mipi_raw"
 CONFIG_IMGSENSOR_MAIN2=" "
 CONFIG_IMGSENSOR_SUB="cactus_s5k5e8yx_ofilm_mipi_raw cactus_hi556_sunny_mipi_raw cereus_s5k5e8yx_sunny_mipi_raw"
-CONFIG_MTK_CAM_CAL=y
 CONFIG_MTK_VIDEOCODEC_DRIVER=y
 CONFIG_MTK_CAMERA_ISP_DPE_SUPPORT=y
 CONFIG_MTK_SMI_EXT=y
