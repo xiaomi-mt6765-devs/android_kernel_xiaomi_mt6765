@@ -1,0 +1,80 @@
+name: Certus Kernel Build
+
+on:
+  workflow_dispatch: # Запуск вручную кнопкой в Actions
+
+env:
+  TZ: Europe/Moscow
+  DEVICE: Certus
+  DEFCONFIG: certus_defconfig
+  CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+  TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+
+jobs:
+  kernel-build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential bc bison flex libssl-dev libelf-dev \
+          gcc-aarch64-linux-gnu gcc-arm-linux-gnueabi binutils-aarch64-linux-gnu \
+          git zip curl libncurses5-dev libncurses5
+
+      - name: Download Linaro GCC 7.5
+        run: |
+          git clone --depth=1 https://github.com/Linaro/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu.git toolchain
+          echo "CROSS_COMPILE_PATH=$(pwd)/toolchain/bin/aarch64-linux-gnu-" >> $GITHUB_ENV
+
+      - name: Build Kernel
+        run: |
+          # Функция для отправки сообщений в Telegram
+          send_msg() {
+            curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" \
+            -d chat_id="${CHAT_ID}" -d parse_mode="HTML" -d text="$1"
+          }
+
+          # Засекаем время
+          START=$(date +"%s")
+          send_msg "🚀 <b>Сборка ядра $DEVICE запущена!</b>"
+
+          # Настройка окружения
+          export ARCH=arm64
+          export SUBARCH=arm64
+          export CROSS_COMPILE=${{ env.CROSS_COMPILE_PATH }}
+          
+          # Сама сборка
+          mkdir -p out
+          make O=out $DEFCONFIG
+          
+          # Компиляция (используем все ядра процессора GitHub)
+          if make -j$(nproc --all) O=out 2>&1 | tee build.log; then
+            END=$(date +"%s")
+            DIFF=$((END - START))
+            K_VER=$(make O=out kernelversion)
+            
+            MSG="✅ <b>Ядро успешно собрано!</b>%0A%0A"
+            MSG+="📱 <b>Устройство:</b> $DEVICE%0A"
+            MSG+="📋 <b>Версия:</b> $K_VER%0A"
+            MSG+="⏳ <b>Время сборки:</b> $((DIFF / 60))м $((DIFF % 60))с"
+            
+            send_msg "$MSG"
+            
+            # Отправка лога
+            curl -F chat_id="${CHAT_ID}" -F document=@"build.log" -F caption="Лог сборки" "https://api.telegram.org/bot${TOKEN}/sendDocument"
+            
+            # Проверка и отправка образа (Image.gz-dtb — стандарт для Xiaomi/MTK)
+            if [ -f "out/arch/arm64/boot/Image.gz-dtb" ]; then
+              curl -F chat_id="${CHAT_ID}" -F document=@"out/arch/arm64/boot/Image.gz-dtb" -F caption="Готовое ядро (Image.gz-dtb)" "https://api.telegram.org/bot${TOKEN}/sendDocument"
+            elif [ -f "out/arch/arm64/boot/Image.gz" ]; then
+              curl -F chat_id="${CHAT_ID}" -F document=@"out/arch/arm64/boot/Image.gz" -F caption="Готовое ядро (Image.gz)" "https://api.telegram.org/bot${TOKEN}/sendDocument"
+            fi
+          else
+            send_msg "❌ <b>Ошибка при сборке!</b> Проверь прикрепленный лог."
+            curl -F chat_id="${CHAT_ID}" -F document=@"build.log" -F caption="Лог с ошибками" "https://api.telegram.org/bot${TOKEN}/sendDocument"
+            exit 1
+          fi
